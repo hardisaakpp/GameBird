@@ -1,0 +1,794 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		81684E0E2D456EE7000558C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81684DEC2D456EDF000558C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81684DF32D456EDF000558C9;
+			remoteInfo = WordCraftGame;
+		};
+		81684E182D456EE7000558C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81684DEC2D456EDF000558C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81684DF32D456EDF000558C9;
+			remoteInfo = WordCraftGame;
+		};
+		81DFF75F2D4EBE100000F7EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81684DEC2D456EDF000558C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81684DF32D456EDF000558C9;
+			remoteInfo = WordCraftGame;
+		};
+		81DFF78C2D4EBE370000F7EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81684DEC2D456EDF000558C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81684DF32D456EDF000558C9;
+			remoteInfo = WordCraftGame;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		81DFF76D2D4EBE100000F7EE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		81684DF42D456EDF000558C9 /* WordCraftGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordCraftGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordCraftGameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordCraftGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81DFF7B42D4EC0FE0000F7EE /* ModelsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81DFF7B52D4EC0FE0000F7EE /* ComponentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ComponentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		81684DF62D456EDF000558C9 /* WordCraftGame */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WordCraftGame;
+			sourceTree = "<group>";
+		};
+		81684E102D456EE7000558C9 /* WordCraftGameTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WordCraftGameTests;
+			sourceTree = "<group>";
+		};
+		81684E1A2D456EE7000558C9 /* WordCraftGameUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WordCraftGameUITests;
+			sourceTree = "<group>";
+		};
+		81DFF7A62D4EC0020000F7EE /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		81DFF7A72D4EC00A0000F7EE /* Components */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Components;
+			sourceTree = "<group>";
+		};
+		81EEC6352D46CE0B007C4880 /* Utilities */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		81684DF12D456EDF000558C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E0A2D456EE7000558C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E142D456EE7000558C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7582D4EBE100000F7EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7852D4EBE370000F7EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		81684DEB2D456EDF000558C9 = {
+			isa = PBXGroup;
+			children = (
+				81DFF7A72D4EC00A0000F7EE /* Components */,
+				81DFF7A62D4EC0020000F7EE /* Models */,
+				81EEC6352D46CE0B007C4880 /* Utilities */,
+				81684DF62D456EDF000558C9 /* WordCraftGame */,
+				81684E102D456EE7000558C9 /* WordCraftGameTests */,
+				81684E1A2D456EE7000558C9 /* WordCraftGameUITests */,
+				81684DF52D456EDF000558C9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		81684DF52D456EDF000558C9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81684DF42D456EDF000558C9 /* WordCraftGame.app */,
+				81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */,
+				81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */,
+				81DFF7B42D4EC0FE0000F7EE /* ModelsTests.xctest */,
+				81DFF7B52D4EC0FE0000F7EE /* ComponentsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		81684DF32D456EDF000558C9 /* WordCraftGame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGame" */;
+			buildPhases = (
+				81684DF02D456EDF000558C9 /* Sources */,
+				81684DF12D456EDF000558C9 /* Frameworks */,
+				81684DF22D456EDF000558C9 /* Resources */,
+				81DFF76D2D4EBE100000F7EE /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				81684DF62D456EDF000558C9 /* WordCraftGame */,
+				81DFF7A62D4EC0020000F7EE /* Models */,
+				81DFF7A72D4EC00A0000F7EE /* Components */,
+				81EEC6352D46CE0B007C4880 /* Utilities */,
+			);
+			name = WordCraftGame;
+			packageProductDependencies = (
+			);
+			productName = WordCraftGame;
+			productReference = 81684DF42D456EDF000558C9 /* WordCraftGame.app */;
+			productType = "com.apple.product-type.application";
+		};
+		81684E0C2D456EE7000558C9 /* WordCraftGameTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameTests" */;
+			buildPhases = (
+				81684E092D456EE7000558C9 /* Sources */,
+				81684E0A2D456EE7000558C9 /* Frameworks */,
+				81684E0B2D456EE7000558C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81684E0F2D456EE7000558C9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				81684E102D456EE7000558C9 /* WordCraftGameTests */,
+			);
+			name = WordCraftGameTests;
+			packageProductDependencies = (
+			);
+			productName = WordCraftGameTests;
+			productReference = 81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		81684E162D456EE7000558C9 /* WordCraftGameUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameUITests" */;
+			buildPhases = (
+				81684E132D456EE7000558C9 /* Sources */,
+				81684E142D456EE7000558C9 /* Frameworks */,
+				81684E152D456EE7000558C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81684E192D456EE7000558C9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				81684E1A2D456EE7000558C9 /* WordCraftGameUITests */,
+			);
+			name = WordCraftGameUITests;
+			packageProductDependencies = (
+			);
+			productName = WordCraftGameUITests;
+			productReference = 81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		81DFF75A2D4EBE100000F7EE /* ModelsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81DFF76E2D4EBE100000F7EE /* Build configuration list for PBXNativeTarget "ModelsTests" */;
+			buildPhases = (
+				81DFF7572D4EBE100000F7EE /* Sources */,
+				81DFF7582D4EBE100000F7EE /* Frameworks */,
+				81DFF7592D4EBE100000F7EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81DFF7602D4EBE100000F7EE /* PBXTargetDependency */,
+			);
+			name = ModelsTests;
+			packageProductDependencies = (
+			);
+			productName = ModelsTests;
+			productReference = 81DFF7B42D4EC0FE0000F7EE /* ModelsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		81DFF7872D4EBE370000F7EE /* ComponentsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81DFF79A2D4EBE370000F7EE /* Build configuration list for PBXNativeTarget "ComponentsTests" */;
+			buildPhases = (
+				81DFF7842D4EBE370000F7EE /* Sources */,
+				81DFF7852D4EBE370000F7EE /* Frameworks */,
+				81DFF7862D4EBE370000F7EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81DFF78D2D4EBE370000F7EE /* PBXTargetDependency */,
+			);
+			name = ComponentsTests;
+			packageProductDependencies = (
+			);
+			productName = ComponentsTests;
+			productReference = 81DFF7B52D4EC0FE0000F7EE /* ComponentsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81684DEC2D456EDF000558C9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					81684DF32D456EDF000558C9 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					81684E0C2D456EE7000558C9 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 81684DF32D456EDF000558C9;
+					};
+					81684E162D456EE7000558C9 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 81684DF32D456EDF000558C9;
+					};
+					81DFF75A2D4EBE100000F7EE = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 81684DF32D456EDF000558C9;
+					};
+					81DFF7872D4EBE370000F7EE = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 81684DF32D456EDF000558C9;
+					};
+				};
+			};
+			buildConfigurationList = 81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "WordCraftGame" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 81684DEB2D456EDF000558C9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 81684DF52D456EDF000558C9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				81684DF32D456EDF000558C9 /* WordCraftGame */,
+				81684E0C2D456EE7000558C9 /* WordCraftGameTests */,
+				81684E162D456EE7000558C9 /* WordCraftGameUITests */,
+				81DFF75A2D4EBE100000F7EE /* ModelsTests */,
+				81DFF7872D4EBE370000F7EE /* ComponentsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		81684DF22D456EDF000558C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E0B2D456EE7000558C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E152D456EE7000558C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7592D4EBE100000F7EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7862D4EBE370000F7EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81684DF02D456EDF000558C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E092D456EE7000558C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81684E132D456EE7000558C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7572D4EBE100000F7EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81DFF7842D4EBE370000F7EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		81684E0F2D456EE7000558C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			targetProxy = 81684E0E2D456EE7000558C9 /* PBXContainerItemProxy */;
+		};
+		81684E192D456EE7000558C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			targetProxy = 81684E182D456EE7000558C9 /* PBXContainerItemProxy */;
+		};
+		81DFF7602D4EBE100000F7EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			targetProxy = 81DFF75F2D4EBE100000F7EE /* PBXContainerItemProxy */;
+		};
+		81DFF78D2D4EBE370000F7EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			targetProxy = 81DFF78C2D4EBE370000F7EE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		81684E1F2D456EE7000558C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		81684E202D456EE7000558C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		81684E222D456EE7000558C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YC522D2FA8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGame;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		81684E232D456EE7000558C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YC522D2FA8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGame;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		81684E252D456EE7000558C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGameTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Debug;
+		};
+		81684E262D456EE7000558C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGameTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Release;
+		};
+		81684E282D456EE7000558C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGameUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WordCraftGame;
+			};
+			name = Debug;
+		};
+		81684E292D456EE7000558C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.WordCraftGameUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WordCraftGame;
+			};
+			name = Release;
+		};
+		81DFF76F2D4EBE100000F7EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.ModelsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Debug;
+		};
+		81DFF7702D4EBE100000F7EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.ModelsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Release;
+		};
+		81DFF79B2D4EBE370000F7EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.ComponentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Debug;
+		};
+		81DFF79C2D4EBE370000F7EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = game.ComponentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "WordCraftGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81684E1F2D456EE7000558C9 /* Debug */,
+				81684E202D456EE7000558C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81684E222D456EE7000558C9 /* Debug */,
+				81684E232D456EE7000558C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81684E252D456EE7000558C9 /* Debug */,
+				81684E262D456EE7000558C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81684E282D456EE7000558C9 /* Debug */,
+				81684E292D456EE7000558C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81DFF76E2D4EBE100000F7EE /* Build configuration list for PBXNativeTarget "ModelsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81DFF76F2D4EBE100000F7EE /* Debug */,
+				81DFF7702D4EBE100000F7EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81DFF79A2D4EBE370000F7EE /* Build configuration list for PBXNativeTarget "ComponentsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81DFF79B2D4EBE370000F7EE /* Debug */,
+				81DFF79C2D4EBE370000F7EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 81684DEC2D456EDF000558C9 /* Project object */;
+}
