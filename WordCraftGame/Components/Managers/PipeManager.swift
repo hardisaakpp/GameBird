@@ -58,4 +58,10 @@ class PipeManager {
             }
         }
     }
+    
+    func restart() {
+        stopAllPipes()
+        removeAllPipes()
+        startGeneratingPipes()
+    }
 }

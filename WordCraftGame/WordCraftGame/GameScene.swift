@@ -1,138 +1,90 @@
 import SpriteKit
 
-// MARK: - Constantes Globales del Escenario
-struct RotationSettings {
-    static let minAngle: CGFloat = -1.0           // Rotación máxima hacia abajo
-    static let maxAngle: CGFloat = 0.5            // Rotación máxima hacia arriba
-    static let downwardFactor: CGFloat = 0.003    // Factor de rotación al caer
-    static let upwardFactor: CGFloat = 0.001      // Factor de rotación al subir
-}
-
-// MARK: - Categorías de Física
-struct PhysicsCategory {
-    static let bird: UInt32 = 1 << 0     // 1
-    static let ground: UInt32 = 1 << 1  // 2
-    static let top: UInt32 = 1 << 2    // 4
-    static let pipe: UInt32 = 1 << 3
-}
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     
     // MARK: - Constantes de Configuración
-    let gravity: CGFloat = -5.0
-    let birdImpulse: CGFloat = 50.0
-    let groundOffsetX: CGFloat = -240
-    let groundOffsetY: CGFloat = -760
     let backgroundSpeed: CGFloat = 30.0 // Fondo lento
     let groundSpeed: CGFloat = 150.0    // Suelo rápido
-
+    
     // MARK: - Propiedades del Escenario
-    var bird = SKSpriteNode()
     let birdTexture1 = SKTexture(imageNamed: "redbird-midflap")
     let birdTexture2 = SKTexture(imageNamed: "redbird-downflap")
     let groundTexture = SKTexture(imageNamed: "base")
     let backgroundTexture = SKTexture(imageNamed: "background-day")
     
-    var restartButton: SKLabelNode!
-    
     // Componentes
-    private var groundComponent: GroundComponent?         // Suelo
-    private var backgroundComponent: BackgroundComponent?   // Fondo
-    private var pipeComponent: PipeComponent?
-    var pipeManager: PipeManager!
-
+    private var birdComponent: BirdComponent!         // Pájaros
+    private var groundComponent: GroundComponent!         // Suelo
+    private var backgroundComponent: BackgroundComponent!   // Fondo
+    private var pipeComponent: PipeComponent!
+    private var pipeManager: PipeManager!
+    private var restartButton: SKLabelNode!
+    
     // MARK: - Ciclo de Vida de la Escena
     override func didMove(to view: SKView) {
+        super.didMove(to: view)
         // Configuración del mundo físico
-        physicsWorld.gravity = CGVector(dx: 0.0, dy: gravity)
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: GameConfig.Physics.gravity)
         physicsWorld.contactDelegate = self
         view.showsPhysics = true // Debug de físicas
-
-        // Configuración de los elementos del juego
-        configureGround()
-        configureBackground()
-        configureTopBoundary()
         
-        configureBird()
+        setupGameWorld()
+        setupComponents()
+        setupUI()
+        
+        // Configuración de los elementos del juego
         pipeManager = PipeManager(scene: self)
         pipeManager.startGeneratingPipes()
-        configureRestartButton()
-    }
-
-    // MARK: - Configuración de Elementos del Juego
-
-    /// Configura al pájaro, sus texturas, animación y cuerpo físico.
-    func configureBird() {
-        birdTexture1.filteringMode = .nearest
-        birdTexture2.filteringMode = .nearest
-
-        let flapAnimation = SKAction.animate(with: [birdTexture1, birdTexture2], timePerFrame: 0.2)
-        let flyAction = SKAction.repeatForever(flapAnimation)
-        
-        bird = SKSpriteNode(texture: birdTexture1)
-        bird.setScale(2.0)
-        bird.position = CGPoint(x: -frame.size.width / 4, y: frame.midY)
-        bird.run(flyAction)
-        
-        // Configuración del cuerpo físico del pájaro
-        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2)
-        bird.physicsBody?.isDynamic = true
-        bird.physicsBody?.allowsRotation = false
-        bird.physicsBody?.categoryBitMask = PhysicsCategory.bird
-        bird.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.top | PhysicsCategory.pipe
-        bird.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe
-        bird.physicsBody?.restitution = 0.5
-
-        addChild(bird)
     }
     
-    /// Configura el suelo utilizando su componente.
-    func configureGround() {
+    private func setupGameWorld() {
+        PhysicsManager.configureWorld(for: self, gravity: GameConfig.Physics.gravity)
+        PhysicsManager.createBoundary(for: self,
+                                      position: CGPoint(x: frame.midX, y: frame.size.height / 2),
+                                      size: CGSize(width: frame.size.width, height: 1),
+                                      category: PhysicsCategory.top)
+    }
+    
+    private func setupComponents() {
+        // Bird Component
+        birdComponent = BirdComponent(
+            textures: [birdTexture1, birdTexture2],
+            position: CGPoint(x: -frame.size.width / 4, y: frame.midY)
+        )
+        addChild(birdComponent.bird)
+        
         groundComponent = GroundComponent(scene: self)
-        let ground = groundComponent!.createGround()
-        addChild(ground)
-    }
-    
-    /// Configura el fondo utilizando su componente.
-    func configureBackground() {
+        addChild(groundComponent.createGround())
+        
         backgroundComponent = BackgroundComponent(scene: self)
-        let background = backgroundComponent!.createBackground()
-        addChild(background)
+        addChild(backgroundComponent.createBackground())
+        
+        pipeManager = PipeManager(scene: self)
+        pipeManager.startGeneratingPipes()
     }
     
-    /// Configura los tubos utilizando el PipeComponent
-    func configurePipes() {
-        pipeComponent = PipeComponent(scene: self)
-        let pipePair = pipeComponent!.createPipePair()
-        addChild(pipePair)
-    }
-    
-    /// Configura la barrera superior que limita el movimiento del pájaro.
-    func configureTopBoundary() {
-        let topBoundary = SKNode()
-        topBoundary.position = CGPoint(x: frame.midX, y: frame.size.height / 2)
-        topBoundary.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: frame.size.width, height: 1))
-        topBoundary.physicsBody?.isDynamic = false
-        topBoundary.physicsBody?.categoryBitMask = PhysicsCategory.top
-        topBoundary.physicsBody?.collisionBitMask = PhysicsCategory.bird
-        addChild(topBoundary)
+    private func setupUI() {
+        restartButton = UIComponent.createRestartButton(in: self)
+        addChild(restartButton)
     }
     
     // MARK: - Métodos de Interacción del Usuario
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isGameOver {
-            guard let touch = touches.first else { return }
-            let touchLocation = touch.location(in: self)
-            
-            // Verificar toque en el botón
-            if nodes(at: touchLocation).contains(where: { $0.name == "restartButton" }) {
-                restartGame()
-            }
+            handleRestart(touches)
         } else {
             // Lógica existente del salto
-            bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-            bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: birdImpulse))
+            birdComponent.applyImpulse()
+        }
+    }
+    
+    private func handleRestart(_ touches: Set<UITouch>) {
+        guard let touch = touches.first else { return }
+        let touchLocation = touch.location(in: self)
+        
+        if nodes(at: touchLocation).contains(where: { $0.name == "restartButton" }) {
+            restartGame()
         }
     }
     
@@ -148,28 +100,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: - Actualización y Lógica del Juego
     override func update(_ currentTime: TimeInterval) {
-        guard let physicsBody = bird.physicsBody else { return }
+        guard let physicsBody = birdComponent.bird.physicsBody else { return }
         
         let yVelocity = physicsBody.velocity.dy
-        let rotationFactor = yVelocity < 0 ? RotationSettings.downwardFactor : RotationSettings.upwardFactor
+        let rotationFactor = yVelocity < 0 ? GameConfig.Rotation.downwardFactor : GameConfig.Rotation.upwardFactor
         let targetRotation = yVelocity * rotationFactor
         
-        bird.zRotation = clampedRotation(
+        birdComponent.bird.zRotation = clampedRotation(
             value: targetRotation,
-            min: RotationSettings.minAngle,
-            max: RotationSettings.maxAngle
+            min: GameConfig.Rotation.minAngle,
+            max: GameConfig.Rotation.maxAngle
         )
+        // Suavizar transicion de rotacion
+        let rotateAction = SKAction.rotate(toAngle: targetRotation, duration: 0.2)
+        birdComponent.bird.run(rotateAction)
     }
     
     /// Función que limita un valor entre un mínimo y un máximo.
-    func clampedRotation(value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
-        if value < min {
-            return min
-        } else if value > max {
-            return max
-        } else {
-            return value
-        }
+    private func clampedRotation(value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
+        return Swift.max(min, Swift.min(max, value))
     }
 }
 
@@ -197,7 +146,7 @@ extension GameScene {
     
     func stopAllGameElements() {
         physicsWorld.speed = 0
-        bird.physicsBody?.isDynamic = false
+        birdComponent.bird.physicsBody?.isDynamic = false
         
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
@@ -206,29 +155,17 @@ extension GameScene {
         isUserInteractionEnabled = false
     }
     
-    func restartGame() {
+    private func restartGame() {
+        GameState.shared.reset()
+        restartButton.isHidden = true
+        backgroundComponent.changeBackgroundColor(to: .white)
+        
+        birdComponent.reset()
+        physicsWorld.speed = 1.0
+        pipeManager.restart()
+        
         // Restablecer estado del juego
         isGameOver = false
-        restartButton.isHidden = true
-        backgroundComponent?.changeBackgroundColor(to: .white)
-        
-        // Reiniciar pájaro
-        bird.position = CGPoint(x: -frame.size.width / 4, y: frame.midY)
-        bird.zRotation = 0
-        bird.physicsBody?.isDynamic = true
-        bird.physicsBody?.velocity = .zero
-        bird.physicsBody?.angularVelocity = 0
-        
-        // Reiniciar física
-        physicsWorld.speed = 1.0
-        
-        // Reiniciar componentes
-        // groundComponent?.startMovement()
-        // backgroundComponent?.startMovement()
-        pipeManager?.removeAllPipes()
-        pipeManager?.startGeneratingPipes()
-        
-        // Restablecer contactos
-        bird.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe
+        isUserInteractionEnabled = true
     }
 }
