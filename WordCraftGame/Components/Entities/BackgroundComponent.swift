@@ -1,10 +1,3 @@
-//
-//  BackgroundComponent.swift
-//  WordCraftGame
-//
-//  Created by Isaac Ortiz on 26/1/25.
-//
-
 import SpriteKit
 
 class BackgroundComponent {
@@ -13,43 +6,46 @@ class BackgroundComponent {
     
     init(scene: SKScene) {
         self.scene = scene
+        self.backgroundContainer = createBackground()
     }
     
     func createBackground() -> SKNode {
-            backgroundContainer = SKNode()  // Guardar referencia
-            
-            for i in 0..<2 {
-                let backgroundNode = Background()
-                backgroundNode.configure(scene: scene)
-                positionBackgroundNode(backgroundNode, index: i)
-                addMovement(to: backgroundNode)
-                backgroundContainer?.addChild(backgroundNode)
-            }
-            
-            return backgroundContainer!
+        backgroundContainer = SKNode()
+        
+        for i in 0..<2 {
+            let backgroundNode = Background()
+            backgroundNode.configure(scene: scene)
+            positionBackgroundNode(backgroundNode, index: i)
+            addMovement(to: backgroundNode)
+            backgroundContainer.addChild(backgroundNode)
         }
+        
+        return backgroundContainer
+    }
     
-    // Nuevo método para cambiar color
+    func resetBackgroundColor() {
+        backgroundContainer.children.forEach { node in
+            if let bgNode = node as? Background {
+                bgNode.resetColor()
+            }
+        }
+    }
+    
     func changeBackgroundColor(to color: UIColor) {
         let flashAction = SKAction.sequence([
-            SKAction.run {
-                self.backgroundContainer?.children.forEach {
-                    ($0 as? SKSpriteNode)?.color = color
-                    ($0 as? SKSpriteNode)?.colorBlendFactor = 1.0
+            SKAction.run { [weak self] in
+                self?.backgroundContainer.children.forEach {
+                    ($0 as? Background)?.applyTemporaryColor(color)
                 }
             },
             SKAction.wait(forDuration: 0.1),
-            SKAction.run {
-                self.backgroundContainer?.children.forEach {
-                    ($0 as? SKSpriteNode)?.color = .white
-                    ($0 as? SKSpriteNode)?.colorBlendFactor = 0.0
-                }
+            SKAction.run { [weak self] in
+                self?.resetBackgroundColor()
             },
             SKAction.wait(forDuration: 0.1)
         ])
-        backgroundContainer?.run(flashAction)
-        
-        }
+        backgroundContainer.run(flashAction)
+    }
     
     private func positionBackgroundNode(_ node: Background, index: Int) {
         node.position = CGPoint(
@@ -59,16 +55,35 @@ class BackgroundComponent {
     }
     
     private func addMovement(to node: Background) {
-            // Se mueve una distancia igual al ancho de la escena
-            let moveAction = createLoopingMovementAction(distance: -scene.frame.width, movementSpeed: BackgroundConstants.movementSpeed)
-            node.run(moveAction)
+        let moveAction = createLoopingMovementAction(
+            distance: -scene.frame.width,
+            movementSpeed: BackgroundConstants.movementSpeed
+        )
+        node.run(moveAction)
     }
     
-    func stopMovement () {
-        backgroundContainer.removeAllActions()
+    func stopMovement() {
+        backgroundContainer?.removeAllActions()
+        backgroundContainer?.children.forEach { $0.removeAllActions() }
     }
     
-    //func startMovement() {
-    //  backgroundNodes.forEach { $0.speed = 1.0 }
-    //}
+    func reset() {
+        // Guardar posición actual antes de resetear
+        let currentPosition = backgroundContainer.position
+        
+        // Limpiar el fondo anterior
+        backgroundContainer?.removeAllActions()
+        backgroundContainer?.removeFromParent()
+        
+        // Crear nuevo fondo
+        backgroundContainer = createBackground()
+        backgroundContainer.position = currentPosition
+        scene.addChild(backgroundContainer)
+    }
+    
+    // Helper para movimiento continuo
+    private func createLoopingMovementAction(distance: CGFloat, movementSpeed: CGFloat) -> SKAction {
+        let moveAction = SKAction.moveBy(x: distance, y: 0, duration: TimeInterval(abs(distance) / movementSpeed))
+        return SKAction.repeatForever(moveAction)
+    }
 }

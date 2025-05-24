@@ -13,6 +13,20 @@ class Background: SKSpriteNode {
         self.texture?.filteringMode = .linear
         setupSize(scene: scene)
         self.zPosition = BackgroundConstants.zPosition
+        
+        // Asegurar valores por defecto del color
+        self.color = .white
+        self.colorBlendFactor = 0.0
+    }
+    
+    func applyTemporaryColor(_ color: UIColor) {
+        self.color = color
+        self.colorBlendFactor = 1.0
+    }
+    
+    func resetColor() {
+        self.color = .white
+        self.colorBlendFactor = 0.0
     }
     
     private func setupSize(scene: SKScene) {

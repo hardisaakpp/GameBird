@@ -19,7 +19,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var backgroundComponent: BackgroundComponent!   // Fondo
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
-    private var restartButton: SKLabelNode!
+    private var restartButton: SKNode!
     
     // MARK: - Ciclo de Vida de la Escena
     override func didMove(to view: SKView) {
@@ -47,6 +47,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupComponents() {
+        backgroundComponent = BackgroundComponent(scene: self)
+        addChild(backgroundComponent.createBackground())
+        
+        groundComponent = GroundComponent(scene: self)
+        addChild(groundComponent.createGround())
+        
         // Bird Component
         birdComponent = BirdComponent(
             textures: [birdTexture1, birdTexture2],
@@ -54,18 +60,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         addChild(birdComponent.bird)
         
-        groundComponent = GroundComponent(scene: self)
-        addChild(groundComponent.createGround())
-        
-        backgroundComponent = BackgroundComponent(scene: self)
-        addChild(backgroundComponent.createBackground())
-        
         pipeManager = PipeManager(scene: self)
         pipeManager.startGeneratingPipes()
     }
     
     private func setupUI() {
         restartButton = UIComponent.createRestartButton(in: self)
+        restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
     }
     
@@ -83,19 +84,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
-        if nodes(at: touchLocation).contains(where: { $0.name == "restartButton" }) {
-            restartGame()
-        }
-    }
-    
-    func configureRestartButton() {
-        restartButton = SKLabelNode(text: "Reiniciar")
-        restartButton.name = "restartButton"
-        restartButton.position = CGPoint(x: frame.midX, y: frame.midY)
-        restartButton.fontSize = 40
-        restartButton.fontColor = .white
-        restartButton.isHidden = true
-        addChild(restartButton)
+        if restartButton.contains(touchLocation) {
+                // Feedback visual
+                let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
+                let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
+                
+                restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
+                    self.restartButton.isHidden = true
+                    self.restartGame()
+                }
+            }
     }
     
     // MARK: - Actualización y Lógica del Juego
@@ -141,7 +139,35 @@ extension GameScene {
     }
     
     func showRestartButton() {
+        // Animación de elementos del juego
+        let dimAction = SKAction.customAction(withDuration: 0.1) { node, _ in
+            if let sprite = node as? SKSpriteNode {
+                sprite.color = .darkGray
+            }
+        }
+        
+        // Aplicar a elementos principales (excepto botón)
+        children.filter { $0.name != "restartButton" }.forEach {
+            $0.run(dimAction)
+        }
+        
+        // Mostrar y animar botón
         restartButton.isHidden = false
+        restartButton.run(SKAction.sequence([
+            SKAction.fadeIn(withDuration: 0.3),
+            SKAction.scale(to: 1.1, duration: 0.2),
+            SKAction.scale(to: 1.0, duration: 0.1)
+        ]))
+    }
+    
+    private func hideRestartButton() {
+        // Restaurar elementos del juego
+        let restoreAction = SKAction.customAction(withDuration: 0.1) { node, _ in
+            if let sprite = node as? SKSpriteNode {
+                sprite.colorBlendFactor = 0.0
+            }
+        }
+        children.forEach { $0.run(restoreAction) }
     }
     
     func stopAllGameElements() {
@@ -152,20 +178,36 @@ extension GameScene {
         backgroundComponent?.stopMovement()
         pipeManager?.stopAllPipes()
         
-        isUserInteractionEnabled = false
+        // Mostrar botón y habilitar interacción
+        showRestartButton()
+        isUserInteractionEnabled = true // Permitir tocar el botón
     }
     
     private func restartGame() {
-        GameState.shared.reset()
         restartButton.isHidden = true
-        backgroundComponent.changeBackgroundColor(to: .white)
-        
-        birdComponent.reset()
+        // Resetear estado general
+        isGameOver = false
         physicsWorld.speed = 1.0
+        removeAllActions()
+        
+        // Limpiar elementos antiguos
+        children.forEach { node in
+            if node.name == "pipe" || node.name == "scoreDetector" {
+                node.removeFromParent()
+            }
+        }
+        
+        // Reiniciar componentes
+        birdComponent.reset()
+        groundComponent.reset()
+        backgroundComponent.reset()
+        backgroundComponent.resetBackgroundColor()
+        pipeManager.removeAllPipes() // Limpieza adicional
         pipeManager.restart()
         
-        // Restablecer estado del juego
-        isGameOver = false
-        isUserInteractionEnabled = true
+        // Restaurar UI
+        hideRestartButton()
+        backgroundComponent.reset()
+        birdComponent.bird.physicsBody?.isDynamic = true
     }
 }

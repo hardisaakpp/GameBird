@@ -17,6 +17,7 @@ class GroundComponent {
     
     func createGround() -> SKNode {
         let groundContainer = SKNode()
+        self.groundContainer = groundContainer // Guardar referencia
         let groundYPosition = calculateGroundYPosition()
         
         createVisualPieces(for: groundContainer, yPosition: groundYPosition)
@@ -64,7 +65,12 @@ class GroundComponent {
         groundContainer.removeAllActions()
     }
     
-    //func starMovement() {
-    //    groundComponent.forEach { $0.speed = 1.0 }
-    //}
+    func reset() {
+        groundContainer?.removeAllActions()
+        groundContainer?.removeFromParent()
+        
+        let newGround = createGround()
+        scene.addChild(newGround)
+        groundContainer = newGround
+    }
 }

@@ -59,6 +59,10 @@ class BirdComponent {
         bird.physicsBody?.velocity = .zero
         bird.physicsBody?.angularVelocity = 0
         bird.zRotation = 0
-        bird.position = CGPoint(x: -bird.parent!.frame.width / 4, y: bird.parent!.frame.midY)
+        bird.position = CGPoint(
+            x: -bird.parent!.frame.width / 4,
+            y: bird.parent!.frame.midY
+        )
+        bird.setScale(2.0) // Asegurar tamaño original
     }
 }
