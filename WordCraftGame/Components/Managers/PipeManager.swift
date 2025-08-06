@@ -13,6 +13,7 @@ class PipeManager {
     let spawnInterval: TimeInterval = 1.8
     private var activePipes = [SKNode]()
     private var spawnAction: SKAction?
+    private var isPaused = false // Nueva propiedad para rastrear el estado de pausa
     
     init(scene: SKScene) {
         self.scene = scene
@@ -52,13 +53,43 @@ class PipeManager {
         ]))
     }
     
+    func pausePipes() {
+        isPaused = true
+        // Pausar la generación de nuevos tubos
+        scene.removeAction(forKey: "pipeGeneration")
+        
+        // Pausar el movimiento de tubos existentes sin remover las acciones
+        activePipes.forEach { pipe in
+            pipe.isPaused = true
+        }
+    }
+    
+    func resumePipes() {
+        guard isPaused else { return }
+        isPaused = false
+        
+        // Reanudar el movimiento de tubos existentes
+        activePipes.forEach { pipe in
+            pipe.isPaused = false
+        }
+        
+        // Reanudar la generación de nuevos tubos
+        if spawnAction != nil {
+            scene.run(spawnAction!, withKey: "pipeGeneration")
+        } else {
+            startGeneratingPipes()
+        }
+    }
+    
     func stopAllPipes() {
         // Detener la acción de generación
         scene.removeAction(forKey: "pipeGeneration")
-        spawnAction = nil
         
-        // Detener movimiento de tubos existentes
-        activePipes.forEach { $0.removeAllActions() }
+        // Solo detener movimiento si no está pausado (para game over)
+        if !isPaused {
+            spawnAction = nil
+            activePipes.forEach { $0.removeAllActions() }
+        }
     }
     
     func removeAllPipes() {

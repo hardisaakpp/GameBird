@@ -70,20 +70,23 @@ class BackgroundComponent {
     }
     
     func changeBackgroundColor(to color: UIColor) {
-        // Crear un overlay rojo que cubra toda la pantalla
-        let screenOverlay = SKSpriteNode(color: color, size: scene.size)
+        // Crear un overlay rojo intenso que refleje una colisión
+        let collisionColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0) // Rojo puro e intenso
+        let screenOverlay = SKSpriteNode(color: collisionColor, size: scene.size)
         screenOverlay.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
         screenOverlay.zPosition = 1000 // Poner encima de todo
         screenOverlay.alpha = 0.0
-        screenOverlay.name = "redOverlay"
+        screenOverlay.name = "collisionOverlay"
         
         scene.addChild(screenOverlay)
         
-        // Hacer el efecto de flash rojo
+        // Hacer el efecto de flash rojo más dramático para colisión
         let flashSequence = SKAction.sequence([
-            SKAction.fadeAlpha(to: 0.7, duration: 0.1), // Aparecer rápidamente
-            SKAction.wait(forDuration: 1.0), // Mantener visible por 1 segundo
-            SKAction.fadeAlpha(to: 0.0, duration: 0.3), // Desaparecer gradualmente
+            SKAction.fadeAlpha(to: 0.8, duration: 0.05), // Aparecer muy rápido y más intenso
+            SKAction.wait(forDuration: 0.15), // Flash inicial corto
+            SKAction.fadeAlpha(to: 0.5, duration: 0.1), // Reducir un poco
+            SKAction.wait(forDuration: 0.8), // Mantener visible por más tiempo
+            SKAction.fadeAlpha(to: 0.0, duration: 0.4), // Desaparecer más lentamente
             SKAction.removeFromParent() // Eliminar el overlay
         ])
         
@@ -102,6 +105,11 @@ class BackgroundComponent {
         backgroundContainer?.removeAction(forKey: "infiniteBackgroundScroll")
         backgroundContainer?.removeAllActions()
         backgroundContainer?.children.forEach { $0.removeAllActions() }
+    }
+    
+    func startMovement() {
+        // Reiniciar el movimiento infinito del fondo
+        startInfiniteMovement()
     }
     
     func reset() {

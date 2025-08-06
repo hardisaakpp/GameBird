@@ -2,6 +2,7 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
+    var isGamePaused = false // Nueva propiedad para manejar el estado de pausa
     
     // MARK: - Constantes de Configuración
     let backgroundSpeed: CGFloat = 30.0 // Fondo lento
@@ -20,6 +21,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
+    private var pauseButton: SKNode! // Nuevo botón de pausa
+    private var pauseMenu: SKNode! // Menú de pausa
     
     // MARK: - Ciclo de Vida de la Escena
     override func didMove(to view: SKView) {
@@ -68,32 +71,124 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartButton = UIComponent.createRestartButton(in: self)
         restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
+        
+        // Botón de pausa
+        pauseButton = UIComponent.createPauseButton(in: self)
+        addChild(pauseButton)
+        
+        // Menú de pausa
+        pauseMenu = UIComponent.createPauseMenu(in: self)
+        pauseMenu.isHidden = true
+        addChild(pauseMenu)
     }
     
     // MARK: - Métodos de Interacción del Usuario
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isGameOver {
-            handleRestart(touches)
-        } else {
-            // Lógica existente del salto
-            birdComponent.applyImpulse()
-        }
-    }
-    
-    private func handleRestart(_ touches: Set<UITouch>) {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
-        if restartButton.contains(touchLocation) {
-                // Feedback visual
-                let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
-                let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
-                
-                restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
-                    self.restartButton.isHidden = true
-                    self.restartGame()
+        if isGameOver {
+            handleRestart(touches)
+        } else if isGamePaused {
+            handlePauseMenuTouches(touches)
+        } else {
+            // Verificar si se tocó el botón de pausa
+            if pauseButton.contains(touchLocation) {
+                pauseGame()
+            } else {
+                // Lógica existente del salto
+                birdComponent.applyImpulse()
+            }
+        }
+    }
+    
+    private func handlePauseMenuTouches(_ touches: Set<UITouch>) {
+        guard let touch = touches.first else { return }
+        let touchLocation = touch.location(in: self)
+        
+        // Buscar directamente los botones en el menú de pausa
+        for child in pauseMenu.children {
+            // Convertir la ubicación del toque al sistema de coordenadas del nodo hijo
+            let localLocation = child.convert(touchLocation, from: self)
+            
+            if child.contains(localLocation) {
+                // Verificar si es un botón basándose en el nombre de sus nodos hijos
+                for grandChild in child.children {
+                    if grandChild.name?.contains("resumeButton") == true {
+                        print("Botón CONTINUAR tocado")
+                        resumeGame()
+                        return
+                    } else if grandChild.name?.contains("restartFromPauseButton") == true {
+                        print("Botón REINICIAR tocado")
+                        restartFromPause()
+                        return
+                    }
                 }
             }
+        }
+    }
+    
+    // MARK: - Sistema de Pausa
+    private func pauseGame() {
+        guard !isGameOver && !isGamePaused else { return }
+        
+        isGamePaused = true
+        physicsWorld.speed = 0
+        birdComponent.bird.physicsBody?.isDynamic = false
+        
+        // Pausar movimiento de componentes
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        pipeManager?.pausePipes() // Usar el nuevo método específico
+        
+        // Mostrar menú de pausa con animación
+        pauseMenu.isHidden = false
+        pauseMenu.alpha = 0.0
+        pauseMenu.run(SKAction.fadeIn(withDuration: 0.3))
+        
+        // Ocultar botón de pausa
+        pauseButton.isHidden = true
+    }
+    
+    private func resumeGame() {
+        isGamePaused = false
+        physicsWorld.speed = 1.0
+        birdComponent.bird.physicsBody?.isDynamic = true
+        
+        // Reiniciar movimiento de componentes
+        groundComponent?.startMovement()
+        backgroundComponent?.startMovement()
+        
+        // Reanudar las acciones de los tubos existentes
+        children.forEach { node in
+            if node.name == "pipe" || node.name == "pipePair" {
+                // Reanudar el movimiento de los tubos existentes si está pausado
+                if node.isPaused {
+                    node.isPaused = false
+                }
+                node.speed = 1.0 // Asegurar que la velocidad esté normal
+            }
+        }
+        
+        // Reanudar la generación de nuevos tubos solo si no hay una acción activa
+        if self.action(forKey: "pipeGeneration") == nil {
+            pipeManager?.startGeneratingPipes()
+        }
+        
+        // Ocultar menú de pausa con animación
+        pauseMenu.run(SKAction.fadeOut(withDuration: 0.2)) {
+            self.pauseMenu.isHidden = true
+        }
+        
+        // Mostrar botón de pausa
+        pauseButton.isHidden = false
+    }
+    
+    private func restartFromPause() {
+        isGamePaused = false
+        pauseMenu.isHidden = true
+        pauseButton.isHidden = false
+        restartGame()
     }
     
     // MARK: - Actualización y Lógica del Juego
@@ -209,5 +304,21 @@ extension GameScene {
         hideRestartButton()
         backgroundComponent.reset()
         birdComponent.bird.physicsBody?.isDynamic = true
+    }
+    
+    private func handleRestart(_ touches: Set<UITouch>) {
+        guard let touch = touches.first else { return }
+        let touchLocation = touch.location(in: self)
+        
+        if restartButton.contains(touchLocation) {
+            // Feedback visual
+            let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
+            let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
+            
+            restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
+                self.restartButton.isHidden = true
+                self.restartGame()
+            }
+        }
     }
 }

@@ -54,4 +54,138 @@ class UIComponent {
         
         return buttonContainer
     }
+    
+    // MARK: - Pause System Components
+    
+    static func createPauseButton(in scene: SKScene) -> SKNode {
+        let buttonContainer = SKNode()
+        buttonContainer.zPosition = GameConfig.ZPosition.UI
+        
+        // Crear un botón de pausa más visible
+        let buttonBackground = SKShapeNode(
+            rect: CGRect(x: -30, y: -30, width: 60, height: 60),
+            cornerRadius: 12
+        )
+        buttonBackground.fillColor = .white
+        buttonBackground.strokeColor = .black
+        buttonBackground.lineWidth = 3
+        buttonBackground.alpha = 0.9
+        
+        // Crear el símbolo de pausa (dos barras verticales) más grande y visible
+        let pauseSymbol1 = SKShapeNode(rect: CGRect(x: -10, y: -15, width: 6, height: 30))
+        pauseSymbol1.fillColor = .black
+        pauseSymbol1.strokeColor = .clear
+        
+        let pauseSymbol2 = SKShapeNode(rect: CGRect(x: 4, y: -15, width: 6, height: 30))
+        pauseSymbol2.fillColor = .black
+        pauseSymbol2.strokeColor = .clear
+        
+        [buttonBackground, pauseSymbol1, pauseSymbol2].forEach { node in
+            node.name = "pauseButton"
+            buttonContainer.addChild(node)
+        }
+        
+        // Posicionar en la esquina superior IZQUIERDA como solicitaste
+        // Mover el botón más hacia la derecha para mejor visibilidad
+        buttonContainer.position = CGPoint(
+            x: scene.frame.minX + 120, // Movido más a la derecha para mejor visibilidad
+            y: scene.frame.maxY - 70
+        )
+        
+        return buttonContainer
+    }
+    
+    static func createPauseMenu(in scene: SKScene) -> SKNode {
+        let menuContainer = SKNode()
+        menuContainer.zPosition = GameConfig.ZPosition.UI + 10
+        
+        // Fondo semi-transparente que cubre toda la pantalla
+        let overlay = SKSpriteNode(color: .black, size: scene.size)
+        overlay.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        overlay.alpha = 0.6
+        overlay.name = "pauseOverlay"
+        menuContainer.addChild(overlay)
+        
+        // Panel principal del menú
+        let menuPanel = SKShapeNode(
+            rect: CGRect(x: -150, y: -120, width: 300, height: 240),
+            cornerRadius: 20
+        )
+        menuPanel.fillColor = .white
+        menuPanel.strokeColor = .systemBlue
+        menuPanel.lineWidth = 4
+        menuPanel.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        menuContainer.addChild(menuPanel)
+        
+        // Título "PAUSADO"
+        let titleLabel = SKLabelNode(text: "PAUSADO")
+        titleLabel.fontName = "AvenirNext-Bold"
+        titleLabel.fontSize = 32
+        titleLabel.fontColor = .systemBlue
+        titleLabel.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 60)
+        titleLabel.verticalAlignmentMode = .center
+        menuContainer.addChild(titleLabel)
+        
+        // Botón de reanudar
+        let resumeButtonContainer = createResumeButton(in: scene)
+        resumeButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        menuContainer.addChild(resumeButtonContainer)
+        
+        // Botón de reiniciar desde pausa
+        let restartFromPauseContainer = createRestartFromPauseButton(in: scene)
+        restartFromPauseContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 60)
+        menuContainer.addChild(restartFromPauseContainer)
+        
+        return menuContainer
+    }
+    
+    static func createResumeButton(in scene: SKScene) -> SKNode {
+        let buttonContainer = SKNode()
+        
+        let buttonBackground = SKShapeNode(
+            rect: CGRect(x: -80, y: -25, width: 160, height: 50),
+            cornerRadius: 12
+        )
+        buttonBackground.fillColor = .systemGreen
+        buttonBackground.strokeColor = .white
+        buttonBackground.lineWidth = 2
+        
+        let buttonLabel = SKLabelNode(text: "CONTINUAR")
+        buttonLabel.fontName = "AvenirNext-Bold"
+        buttonLabel.fontSize = 18
+        buttonLabel.fontColor = .white
+        buttonLabel.verticalAlignmentMode = .center
+        
+        [buttonBackground, buttonLabel].forEach { node in
+            node.name = "resumeButton"
+            buttonContainer.addChild(node)
+        }
+        
+        return buttonContainer
+    }
+    
+    static func createRestartFromPauseButton(in scene: SKScene) -> SKNode {
+        let buttonContainer = SKNode()
+        
+        let buttonBackground = SKShapeNode(
+            rect: CGRect(x: -80, y: -25, width: 160, height: 50),
+            cornerRadius: 12
+        )
+        buttonBackground.fillColor = .systemRed
+        buttonBackground.strokeColor = .white
+        buttonBackground.lineWidth = 2
+        
+        let buttonLabel = SKLabelNode(text: "REINICIAR")
+        buttonLabel.fontName = "AvenirNext-Bold"
+        buttonLabel.fontSize = 18
+        buttonLabel.fontColor = .white
+        buttonLabel.verticalAlignmentMode = .center
+        
+        [buttonBackground, buttonLabel].forEach { node in
+            node.name = "restartFromPauseButton"
+            buttonContainer.addChild(node)
+        }
+        
+        return buttonContainer
+    }
 }

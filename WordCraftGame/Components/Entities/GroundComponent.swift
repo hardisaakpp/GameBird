@@ -1,4 +1,3 @@
-
 //  Created by Isaac Ortiz on 26/1/25.
 //  Ground.swift
 //  WordCraftGame
@@ -62,7 +61,17 @@ class GroundComponent {
     }
     
     func stopMovement() {
-        groundContainer.removeAllActions()
+        groundContainer?.removeAllActions()
+        groundContainer?.children.forEach { $0.removeAllActions() }
+    }
+    
+    func startMovement() {
+        // Reiniciar el movimiento de todas las piezas del suelo
+        let pieceWidth = scene.frame.width * GroundConstants.Size.pieceWidthRatio
+        groundContainer?.children.forEach { child in
+            let moveAction = createLoopingMovementAction(distance: -pieceWidth, movementSpeed: GroundConstants.movementSpeed)
+            child.run(moveAction)
+        }
     }
     
     func reset() {
