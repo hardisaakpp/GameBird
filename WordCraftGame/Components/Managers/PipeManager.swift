@@ -13,7 +13,8 @@ class PipeManager {
     let spawnInterval: TimeInterval = 1.8
     private var activePipes = [SKNode]()
     private var spawnAction: SKAction?
-    private var isPaused = false // Nueva propiedad para rastrear el estado de pausa
+    private var isPaused = false
+    private var lastSpawnTime: TimeInterval = 0 // Nueva propiedad para controlar el espaciado
     
     init(scene: SKScene) {
         self.scene = scene
@@ -35,24 +36,6 @@ class PipeManager {
         scene.run(spawnAction!, withKey: "pipeGeneration")
     }
 
-    private func spawnPipe() {
-        let pipePair = pipeComponent.createPipePair()
-        pipePair.name = "pipePair"
-        scene.addChild(pipePair)
-        activePipes.append(pipePair)
-        
-        let moveDistance = scene.frame.width + pipePair.frame.width
-        let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
-        
-        pipePair.run(SKAction.sequence([
-            SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
-            SKAction.removeFromParent(),
-            SKAction.run { [weak self] in
-                self?.activePipes.removeAll { $0 == pipePair }
-            }
-        ]))
-    }
-    
     func pausePipes() {
         isPaused = true
         // Pausar la generación de nuevos tubos
@@ -73,17 +56,45 @@ class PipeManager {
             pipe.isPaused = false
         }
         
-        // Reanudar la generación de nuevos tubos
-        if spawnAction != nil {
-            scene.run(spawnAction!, withKey: "pipeGeneration")
-        } else {
-            startGeneratingPipes()
-        }
+        // Calcular delay apropiado antes de generar el siguiente tubo
+        let timeSinceLastSpawn = CACurrentMediaTime() - lastSpawnTime
+        let remainingTime = max(0, spawnInterval - timeSinceLastSpawn)
+        
+        // Crear la acción con el delay apropiado
+        let delayedStart = SKAction.sequence([
+            SKAction.wait(forDuration: remainingTime),
+            SKAction.run { [weak self] in
+                self?.startGeneratingPipes()
+            }
+        ])
+        
+        scene.run(delayedStart, withKey: "delayedPipeRestart")
+    }
+    
+    private func spawnPipe() {
+        lastSpawnTime = CACurrentMediaTime() // Actualizar tiempo del último spawn
+        
+        let pipePair = pipeComponent.createPipePair()
+        pipePair.name = "pipePair"
+        scene.addChild(pipePair)
+        activePipes.append(pipePair)
+        
+        let moveDistance = scene.frame.width + pipePair.frame.width
+        let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
+        
+        pipePair.run(SKAction.sequence([
+            SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
+            SKAction.removeFromParent(),
+            SKAction.run { [weak self] in
+                self?.activePipes.removeAll { $0 == pipePair }
+            }
+        ]))
     }
     
     func stopAllPipes() {
         // Detener la acción de generación
         scene.removeAction(forKey: "pipeGeneration")
+        scene.removeAction(forKey: "delayedPipeRestart")
         
         // Solo detener movimiento si no está pausado (para game over)
         if !isPaused {

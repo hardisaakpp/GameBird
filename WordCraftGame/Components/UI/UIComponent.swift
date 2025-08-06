@@ -85,10 +85,9 @@ class UIComponent {
             buttonContainer.addChild(node)
         }
         
-        // Posicionar en la esquina superior IZQUIERDA como solicitaste
-        // Mover el botón más hacia la derecha para mejor visibilidad
+        // Mantener la ubicación original del botón de pausa
         buttonContainer.position = CGPoint(
-            x: scene.frame.minX + 120, // Movido más a la derecha para mejor visibilidad
+            x: scene.frame.minX + 120,
             y: scene.frame.maxY - 70
         )
         

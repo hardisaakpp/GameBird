@@ -139,7 +139,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Pausar movimiento de componentes
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
-        pipeManager?.stopAllPipes()
+        pipeManager?.pausePipes() // Cambiar a pausePipes() para mantener las acciones
         
         // Mostrar menú de pausa con animación
         pauseMenu.isHidden = false
@@ -258,8 +258,13 @@ extension GameScene {
         // Efecto visual de impacto
         addImpactEffect()
         
-        // Esperar a que el pájaro toque el suelo para mostrar el botón de reinicio
-        // No mostrar el botón inmediatamente
+        // Mostrar el botón de reinicio con un temporizador de seguridad
+        // Esto asegura que siempre aparezca, independientemente de si toca el suelo
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if self.isGameOver && self.restartButton.isHidden {
+                self.showRestartButton()
+            }
+        }
     }
     
     private func triggerGameOver() {
