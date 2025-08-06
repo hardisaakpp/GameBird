@@ -139,7 +139,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Pausar movimiento de componentes
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
-        pipeManager?.pausePipes() // Usar el nuevo método específico
+        pipeManager?.stopAllPipes()
         
         // Mostrar menú de pausa con animación
         pauseMenu.isHidden = false
@@ -158,22 +158,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Reiniciar movimiento de componentes
         groundComponent?.startMovement()
         backgroundComponent?.startMovement()
-        
-        // Reanudar las acciones de los tubos existentes
-        children.forEach { node in
-            if node.name == "pipe" || node.name == "pipePair" {
-                // Reanudar el movimiento de los tubos existentes si está pausado
-                if node.isPaused {
-                    node.isPaused = false
-                }
-                node.speed = 1.0 // Asegurar que la velocidad esté normal
-            }
-        }
-        
-        // Reanudar la generación de nuevos tubos solo si no hay una acción activa
-        if self.action(forKey: "pipeGeneration") == nil {
-            pipeManager?.startGeneratingPipes()
-        }
+        pipeManager?.resumePipes() // Usar el nuevo método específico
         
         // Ocultar menú de pausa con animación
         pauseMenu.run(SKAction.fadeOut(withDuration: 0.2)) {
@@ -220,17 +205,106 @@ extension GameScene {
     func didBegin(_ contact: SKPhysicsContact) {
         let collisionMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
-        // Verifica si el pájaro (1) colisionó con el suelo (2)
-        if collisionMask == (PhysicsCategory.bird | PhysicsCategory.ground) || collisionMask == (PhysicsCategory.bird | PhysicsCategory.pipe) {
-            
+        // Verificar colisión con tubo - hacer que el pájaro caiga
+        if collisionMask == (PhysicsCategory.bird | PhysicsCategory.pipe) {
             guard !isGameOver else { return }
-            isGameOver = true
             
-            print("¡Game Over!")
-            backgroundComponent!.changeBackgroundColor(to: .red)
-            showRestartButton()
-            stopAllGameElements()
+            print("¡Colisión con tubo! El pájaro cae...")
+            handlePipeCollision()
+            return
         }
+        
+        // Verificar colisión con el suelo - game over definitivo
+        if collisionMask == (PhysicsCategory.bird | PhysicsCategory.ground) {
+            guard !isGameOver else { return }
+            
+            print("¡Game Over! Pájaro tocó el suelo")
+            triggerGameOver()
+        }
+    }
+    
+    private func handlePipeCollision() {
+        // Evitar múltiples colisiones
+        guard !isGameOver else { return }
+        isGameOver = true
+        
+        // Detener la generación de nuevos tubos pero mantener los existentes
+        pipeManager?.stopAllPipes()
+        
+        // Detener movimiento del fondo y suelo
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        
+        // Configurar el pájaro para que caiga dramáticamente
+        if let birdPhysics = birdComponent.bird.physicsBody {
+            // Reducir la masa para una caída más dramática
+            birdPhysics.mass = 0.1
+            
+            // Aplicar un impulso hacia abajo y ligeramente hacia atrás
+            let fallImpulse = CGVector(dx: -50, dy: -200)
+            birdPhysics.applyImpulse(fallImpulse)
+            
+            // Permitir rotación para efecto dramático
+            birdPhysics.allowsRotation = true
+            birdPhysics.angularVelocity = -3.0 // Rotación hacia atrás
+            
+            // Reducir la fricción para que caiga más rápido
+            birdPhysics.linearDamping = 0.1
+        }
+        
+        // Cambiar el color de fondo para indicar el impacto
+        backgroundComponent?.changeBackgroundColor(to: .red)
+        
+        // Efecto visual de impacto
+        addImpactEffect()
+        
+        // Esperar a que el pájaro toque el suelo para mostrar el botón de reinicio
+        // No mostrar el botón inmediatamente
+    }
+    
+    private func triggerGameOver() {
+        // Solo ejecutar si no se ha ejecutado ya
+        guard isGameOver else { return }
+        
+        print("¡Game Over final!")
+        
+        // Detener completamente el pájaro
+        birdComponent.bird.physicsBody?.isDynamic = false
+        
+        // Mostrar botón de reinicio con delay para dramatismo
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.showRestartButton()
+        }
+    }
+    
+    private func addImpactEffect() {
+        // Efecto de vibración/sacudida de la pantalla
+        let shakeAction = SKAction.sequence([
+            SKAction.moveBy(x: -5, y: 0, duration: 0.05),
+            SKAction.moveBy(x: 10, y: 0, duration: 0.05),
+            SKAction.moveBy(x: -10, y: 0, duration: 0.05),
+            SKAction.moveBy(x: 5, y: 0, duration: 0.05),
+            SKAction.moveBy(x: 0, y: 0, duration: 0.05)
+        ])
+        
+        // Aplicar shake a la cámara/escena
+        self.run(shakeAction)
+        
+        // Efecto de flash blanco
+        let flashOverlay = SKSpriteNode(color: .white, size: frame.size)
+        flashOverlay.position = CGPoint(x: frame.midX, y: frame.midY)
+        flashOverlay.alpha = 0.0
+        flashOverlay.zPosition = 100
+        
+        addChild(flashOverlay)
+        
+        let flashEffect = SKAction.sequence([
+            SKAction.fadeAlpha(to: 0.6, duration: 0.05),
+            SKAction.fadeAlpha(to: 0.0, duration: 0.2),
+            SKAction.removeFromParent()
+        ])
+        
+        flashOverlay.run(flashEffect)
     }
     
     func showRestartButton() {

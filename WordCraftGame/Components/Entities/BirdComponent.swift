@@ -64,5 +64,13 @@ class BirdComponent {
             y: bird.parent!.frame.midY
         )
         bird.setScale(2.0) // Asegurar tamaño original
+        
+        // Restaurar propiedades físicas originales después de una colisión
+        if let physicsBody = bird.physicsBody {
+            physicsBody.mass = GameConfig.Physics.birdMass
+            physicsBody.allowsRotation = false
+            physicsBody.linearDamping = GameConfig.Physics.linearDamping
+            physicsBody.angularVelocity = 0
+        }
     }
 }
