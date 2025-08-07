@@ -2,7 +2,6 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
-    var isGamePaused = false // Nueva propiedad para manejar el estado de pausa
     
     // MARK: - Constantes de Configuración
     let backgroundSpeed: CGFloat = 30.0 // Fondo lento
@@ -21,8 +20,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
-    private var pauseButton: SKNode! // Nuevo botón de pausa
-    private var pauseMenu: SKNode! // Menú de pausa
     
     // MARK: - Ciclo de Vida de la Escena
     override func didMove(to view: SKView) {
@@ -71,15 +68,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartButton = UIComponent.createRestartButton(in: self)
         restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
-        
-        // Botón de pausa
-        pauseButton = UIComponent.createPauseButton(in: self)
-        addChild(pauseButton)
-        
-        // Menú de pausa
-        pauseMenu = UIComponent.createPauseMenu(in: self)
-        pauseMenu.isHidden = true
-        addChild(pauseMenu)
     }
     
     // MARK: - Métodos de Interacción del Usuario
@@ -89,91 +77,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if isGameOver {
             handleRestart(touches)
-        } else if isGamePaused {
-            handlePauseMenuTouches(touches)
         } else {
-            // Verificar si se tocó el botón de pausa
-            if pauseButton.contains(touchLocation) {
-                pauseGame()
-            } else {
-                // Lógica existente del salto
-                birdComponent.applyImpulse()
-            }
+            // Lógica del salto del pájaro
+            birdComponent.applyImpulse()
         }
-    }
-    
-    private func handlePauseMenuTouches(_ touches: Set<UITouch>) {
-        guard let touch = touches.first else { return }
-        let touchLocation = touch.location(in: self)
-        
-        // Buscar directamente los botones en el menú de pausa
-        for child in pauseMenu.children {
-            // Convertir la ubicación del toque al sistema de coordenadas del nodo hijo
-            let localLocation = child.convert(touchLocation, from: self)
-            
-            if child.contains(localLocation) {
-                // Verificar si es un botón basándose en el nombre de sus nodos hijos
-                for grandChild in child.children {
-                    if grandChild.name?.contains("resumeButton") == true {
-                        print("Botón CONTINUAR tocado")
-                        resumeGame()
-                        return
-                    } else if grandChild.name?.contains("restartFromPauseButton") == true {
-                        print("Botón REINICIAR tocado")
-                        restartFromPause()
-                        return
-                    }
-                }
-            }
-        }
-    }
-    
-    // MARK: - Sistema de Pausa
-    private func pauseGame() {
-        guard !isGameOver && !isGamePaused else { return }
-        
-        isGamePaused = true
-        physicsWorld.speed = 0
-        birdComponent.bird.physicsBody?.isDynamic = false
-        
-        // Pausar movimiento de componentes
-        groundComponent?.stopMovement()
-        backgroundComponent?.stopMovement()
-        pipeManager?.pausePipes() // Cambiar a pausePipes() para mantener las acciones
-        
-        // Mostrar menú de pausa con animación
-        pauseMenu.isHidden = false
-        pauseMenu.alpha = 0.0
-        pauseMenu.run(SKAction.fadeIn(withDuration: 0.3))
-        
-        // Ocultar botón de pausa
-        pauseButton.isHidden = true
-    }
-    
-    private func resumeGame() {
-        isGamePaused = false
-        physicsWorld.speed = 1.0
-        birdComponent.bird.physicsBody?.isDynamic = true
-        
-        // Reiniciar movimiento de componentes
-        groundComponent?.startMovement()
-        backgroundComponent?.startMovement()
-        pipeManager?.resumePipes() // Usar el nuevo método específico
-        
-        // Ocultar menú de pausa con animación
-        pauseMenu.run(SKAction.fadeOut(withDuration: 0.2)) {
-            self.pauseMenu.isHidden = true
-        }
-        
-        // Mostrar botón de pausa
-        pauseButton.isHidden = false
-    }
-    
-    private func restartFromPause() {
-        isGamePaused = false
-        pauseMenu.isHidden = true
-        pauseButton.isHidden = false
-        restartGame()
     }
     
     // MARK: - Actualización y Lógica del Juego
