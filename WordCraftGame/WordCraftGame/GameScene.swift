@@ -181,19 +181,42 @@ extension GameScene {
         print("¡Game Over final!")
         isGameOver = true
         
-        // Detener completamente el pájaro
-        birdComponent.bird.physicsBody?.isDynamic = false
+        // Detener la generación de nuevos tubos
+        pipeManager?.stopAllPipes()
         
         // Detener movimiento del fondo y suelo
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
         
-        // Detener la generación de nuevos tubos
-        pipeManager?.stopAllPipes()
+        // Configurar el pájaro para que caiga dramáticamente
+        if let birdPhysics = birdComponent.bird.physicsBody {
+            // Reducir la masa para una caída más dramática
+            birdPhysics.mass = 0.1
+            
+            // Aplicar un impulso hacia abajo y ligeramente hacia atrás
+            let fallImpulse = CGVector(dx: -50, dy: -200)
+            birdPhysics.applyImpulse(fallImpulse)
+            
+            // Permitir rotación para efecto dramático
+            birdPhysics.allowsRotation = true
+            birdPhysics.angularVelocity = -3.0 // Rotación hacia atrás
+            
+            // Reducir la fricción para que caiga más rápido
+            birdPhysics.linearDamping = 0.1
+        }
         
-        // Mostrar botón de reinicio con delay para dramatismo
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.showRestartButton()
+        // Cambiar el color de fondo para indicar el impacto
+        backgroundComponent?.changeBackgroundColor(to: .red)
+        
+        // Efecto visual de impacto
+        addImpactEffect()
+        
+        // Mostrar el botón de reinicio con un temporizador de seguridad
+        // Esto asegura que siempre aparezca, independientemente de si toca el suelo
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if self.isGameOver && self.restartButton.isHidden {
+                self.showRestartButton()
+            }
         }
     }
     
