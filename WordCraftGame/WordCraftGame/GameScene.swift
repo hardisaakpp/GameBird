@@ -176,12 +176,20 @@ extension GameScene {
     
     private func triggerGameOver() {
         // Solo ejecutar si no se ha ejecutado ya
-        guard isGameOver else { return }
+        guard !isGameOver else { return }
         
         print("¡Game Over final!")
+        isGameOver = true
         
         // Detener completamente el pájaro
         birdComponent.bird.physicsBody?.isDynamic = false
+        
+        // Detener movimiento del fondo y suelo
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        
+        // Detener la generación de nuevos tubos
+        pipeManager?.stopAllPipes()
         
         // Mostrar botón de reinicio con delay para dramatismo
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
