@@ -1,4 +1,5 @@
 import SpriteKit
+import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
@@ -36,6 +37,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Configuración de los elementos del juego
         pipeManager = PipeManager(scene: self)
         pipeManager.startGeneratingPipes()
+        
+        // Precarga de sonidos para mejor rendimiento
+        AudioManager.shared.preloadSounds()
+        
+        // Prueba de carga de sonidos
+        SoundTest.testSoundLoading()
     }
     
     private func setupGameWorld() {
@@ -80,6 +87,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             // Lógica del salto del pájaro
             birdComponent.applyImpulse()
+            
+            // Sonido de aleteo cuando el pájaro salta
+            AudioManager.shared.playWingSound()
         }
     }
     
@@ -117,6 +127,10 @@ extension GameScene {
             guard !isGameOver else { return }
             
             print("¡Colisión con tubo! El pájaro cae...")
+            
+            // Sonido de impacto cuando choca con tubería
+            AudioManager.shared.playHitSound()
+            
             handlePipeCollision()
             return
         }
@@ -126,6 +140,10 @@ extension GameScene {
             guard !isGameOver else { return }
             
             print("¡Game Over! Pájaro tocó el suelo")
+            
+            // Sonido de muerte cuando toca el suelo
+            AudioManager.shared.playDieSound()
+            
             triggerGameOver()
         }
     }
@@ -221,6 +239,9 @@ extension GameScene {
     }
     
     private func addImpactEffect() {
+        // Sonido de impacto/efecto
+        AudioManager.shared.playSwooshSound()
+        
         // Efecto de vibración/sacudida de la pantalla
         let shakeAction = SKAction.sequence([
             SKAction.moveBy(x: -5, y: 0, duration: 0.05),
@@ -297,6 +318,10 @@ extension GameScene {
     
     private func restartGame() {
         restartButton.isHidden = true
+        
+        // Sonido de punto cuando se reinicia el juego
+        AudioManager.shared.playPointSound()
+        
         // Resetear estado general
         isGameOver = false
         physicsWorld.speed = 1.0
@@ -328,6 +353,9 @@ extension GameScene {
         let touchLocation = touch.location(in: self)
         
         if restartButton.contains(touchLocation) {
+            // Sonido de botón presionado
+            AudioManager.shared.playSwooshSound()
+            
             // Feedback visual
             let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
             let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
