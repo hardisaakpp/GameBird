@@ -15,8 +15,10 @@ class AudioManager {
     private var audioPlayers: [String: AVAudioPlayer] = [:]
     private var isSoundEnabled = true
     private var isPreloaded = false
-    private let maxConcurrentSounds = 3
+    private let maxConcurrentSounds = 2 // Reducido para mejor rendimiento
     private var activeSounds: Set<String> = []
+    private var lastPlayTime: [String: TimeInterval] = [:] // Evitar spam de sonidos
+    private let minPlayInterval: TimeInterval = 0.1 // Intervalo mínimo entre sonidos
     
     private init() {
         setupAudioSession()
@@ -77,6 +79,14 @@ class AudioManager {
     // MARK: - Reproducción optimizada
     func playSound(_ soundName: String, fileExtension: String = "wav") {
         guard isSoundEnabled else { return }
+        
+        // Optimización: Evitar spam de sonidos
+        let currentTime = CACurrentMediaTime()
+        if let lastTime = lastPlayTime[soundName], 
+           currentTime - lastTime < minPlayInterval {
+            return
+        }
+        lastPlayTime[soundName] = currentTime
         
         // Limitar sonidos concurrentes
         if activeSounds.count >= maxConcurrentSounds {

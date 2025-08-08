@@ -22,6 +22,12 @@ class PhysicsManager {
         bird.physicsBody?.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.top | PhysicsCategory.pipe
         bird.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe
         bird.physicsBody?.restitution = 0.5
+        
+        // Optimización: Configuración de física para mejor rendimiento
+        bird.physicsBody?.linearDamping = 0.8 // Reducir fricción para mejor respuesta
+        bird.physicsBody?.angularDamping = 1.0 // Sin rotación angular
+        bird.physicsBody?.mass = 0.15 // Masa optimizada
+        bird.physicsBody?.friction = 0.0 // Sin fricción para mejor rendimiento
     }
     
     static func createBoundary(for scene: SKScene, position: CGPoint, size: CGSize, category: UInt32) {

@@ -22,13 +22,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
     
-    // MARK: - Ciclo de Vida de la Escena
+    // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        // Configuración del mundo físico
+        
+        // Optimización: Configuración de física optimizada
         physicsWorld.gravity = CGVector(dx: 0.0, dy: GameConfig.Physics.gravity)
         physicsWorld.contactDelegate = self
-        view.showsPhysics = true // Debug de físicas
+        physicsWorld.speed = 1.0
+        
+        // Optimización: Desactivar debug de físicas en producción
+        view.showsPhysics = false // Cambiar a false para mejor rendimiento
         
         setupGameWorld()
         setupComponents()
@@ -77,38 +81,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(restartButton)
     }
     
-    // MARK: - Métodos de Interacción del Usuario
+    // MARK: - Métodos de Interacción del Usuario (Optimizada)
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        let touchLocation = touch.location(in: self)
         
+        // Optimización: Procesar inmediatamente sin verificar ubicación
         if isGameOver {
             handleRestart(touches)
         } else {
-            // Lógica del salto del pájaro
-            birdComponent.applyImpulse()
-            
-            // Sonido de aleteo cuando el pájaro salta
-            AudioManager.shared.playWingSound()
+            // Optimización: Ejecutar acciones en paralelo
+            DispatchQueue.main.async {
+                self.birdComponent.applyImpulse()
+                AudioManager.shared.playWingSound()
+            }
         }
     }
     
-    // MARK: - Actualización y Lógica del Juego
+    // MARK: - Actualización y Lógica del Juego (Optimizada)
     override func update(_ currentTime: TimeInterval) {
+        // Monitoreo de rendimiento
+        PerformanceMonitor.shared.updateFrame()
+        
         guard let physicsBody = birdComponent.bird.physicsBody else { return }
         
+        // Optimización: Calcular rotación solo si es necesario
         let yVelocity = physicsBody.velocity.dy
         let rotationFactor = yVelocity < 0 ? GameConfig.Rotation.downwardFactor : GameConfig.Rotation.upwardFactor
-        let targetRotation = yVelocity * rotationFactor
-        
-        birdComponent.bird.zRotation = clampedRotation(
-            value: targetRotation,
+        let targetRotation = clampedRotation(
+            value: yVelocity * rotationFactor,
             min: GameConfig.Rotation.minAngle,
             max: GameConfig.Rotation.maxAngle
         )
-        // Suavizar transicion de rotacion
-        let rotateAction = SKAction.rotate(toAngle: targetRotation, duration: 0.2)
-        birdComponent.bird.run(rotateAction)
+        
+        // Optimización: Aplicar rotación directamente sin SKAction
+        birdComponent.bird.zRotation = targetRotation
     }
     
     /// Función que limita un valor entre un mínimo y un máximo.
@@ -120,31 +126,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 // MARK: - SKPhysicsContactDelegate
 extension GameScene {
     func didBegin(_ contact: SKPhysicsContact) {
+        // Optimización: Verificar game over primero para evitar procesamiento innecesario
+        guard !isGameOver else { return }
+        
         let collisionMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
-        // Verificar colisión con tubo - hacer que el pájaro caiga
-        if collisionMask == (PhysicsCategory.bird | PhysicsCategory.pipe) {
-            guard !isGameOver else { return }
-            
+        // Optimización: Usar switch para mejor rendimiento
+        switch collisionMask {
+        case PhysicsCategory.bird | PhysicsCategory.pipe:
             print("¡Colisión con tubo! El pájaro cae...")
-            
-            // Sonido de impacto cuando choca con tubería
             AudioManager.shared.playHitSound()
-            
             handlePipeCollision()
-            return
-        }
-        
-        // Verificar colisión con el suelo - game over definitivo
-        if collisionMask == (PhysicsCategory.bird | PhysicsCategory.ground) {
-            guard !isGameOver else { return }
             
+        case PhysicsCategory.bird | PhysicsCategory.ground:
             print("¡Game Over! Pájaro tocó el suelo")
-            
-            // Sonido de muerte cuando toca el suelo
             AudioManager.shared.playDieSound()
-            
             triggerGameOver()
+            
+        default:
+            break
         }
     }
     
