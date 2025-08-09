@@ -8,7 +8,17 @@
 import SpriteKit
 
 struct Pipe {
-    // Definición de las texturas del tubo
-    static let texturaTubo1 = SKTexture(imageNamed: "pipe-green2")
-    static let texturaTubo2 = SKTexture(imageNamed: "pipe-green1") // Si las texturas son iguales o se van a cambiar luego
+    // Texturas cacheadas por modo
+    private static let dayTubo1 = SKTexture(imageNamed: "pipe-green2")
+    private static let dayTubo2 = SKTexture(imageNamed: "pipe-green1")
+    private static let nightTubo1 = SKTexture(imageNamed: "pipe-red2")
+    private static let nightTubo2 = SKTexture(imageNamed: "pipe-red1")
+
+    // Accesores dinámicos: día = verde, noche = rojo
+    static var texturaTubo1: SKTexture {
+        return BackgroundConstants.isNightNow() ? nightTubo1 : dayTubo1
+    }
+    static var texturaTubo2: SKTexture {
+        return BackgroundConstants.isNightNow() ? nightTubo2 : dayTubo2
+    }
 }
