@@ -1,4 +1,5 @@
 import SpriteKit
+import UIKit
 import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -21,6 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
+    private var scoreImageNode: SKSpriteNode?
     
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -47,6 +49,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Prueba de carga de sonidos
         SoundTest.testSoundLoading()
+
+        // Reposicionar tras el primer ciclo de layout para asegurar safeAreaInsets correctos
+        DispatchQueue.main.async { [weak self] in
+            self?.repositionScoreImageNode()
+        }
     }
     
     private func setupGameWorld() {
@@ -79,6 +86,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartButton = UIComponent.createRestartButton(in: self)
         restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
+
+        setupTopCenterZero()
+    }
+
+    private func setupTopCenterZero() {
+        // Crear sprite con la imagen "0" del catálogo de assets
+        let zeroTexture = SKTexture(imageNamed: "0")
+        let zeroNode = SKSpriteNode(texture: zeroTexture)
+        zeroNode.zPosition = 200
+        zeroNode.setScale(2.0) // Duplicar tamaño
+        scoreImageNode = zeroNode
+        addChild(zeroNode)
+        repositionScoreImageNode()
+    }
+
+    private func repositionScoreImageNode() {
+        guard let zeroNode = scoreImageNode else { return }
+        // Priorizar safeArea de la ventana (mejor para Dynamic Island/notch)
+        let windowSafeTop: CGFloat = {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                return keyWindow.safeAreaInsets.top
+            }
+            return 0
+        }()
+        let viewSafeTop = view?.safeAreaInsets.top ?? 0
+        let safeTop = max(windowSafeTop, viewSafeTop)
+
+        // Margen adicional para quedar claramente debajo de la Dynamic Island
+        let topMargin: CGFloat = 45
+        let halfHeight = zeroNode.frame.height / 2 // Usar frame para considerar el escalado
+        zeroNode.position = CGPoint(
+            x: frame.midX,
+            y: frame.maxY - safeTop - halfHeight - topMargin
+        )
+    }
+
+    override func didChangeSize(_ oldSize: CGSize) {
+        super.didChangeSize(oldSize)
+        repositionScoreImageNode()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
