@@ -5,6 +5,7 @@ import AVFoundation
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     private var isPausedGame = false
+    private var isInitialPauseActive = false
     
     // MARK: - Constantes de Configuración
     let backgroundSpeed: CGFloat = 30.0 // Fondo lento
@@ -51,7 +52,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Configuración de los elementos del juego
         pipeManager = PipeManager(scene: self)
-        pipeManager.startGeneratingPipes()
+        // Inicio en pausa hasta que el usuario toque la pantalla
+        startInitialPause()
         
         // Precarga de sonidos para mejor rendimiento
         AudioManager.shared.preloadSounds()
@@ -192,10 +194,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             dim.size = frame.size
             dim.position = CGPoint(x: frame.midX, y: frame.midY)
         }
-        // Centrar título y botón
+        // Centrar título, hint y botón
         resumeOverlay.children.forEach { child in
-            if let label = child as? SKLabelNode, label.text == "PAUSA" {
+            if let label = child as? SKLabelNode, label.name == "resumeTitle" {
                 label.position = CGPoint(x: frame.midX, y: frame.midY + 40)
+            }
+            if let label = child as? SKLabelNode, label.name == "resumeHint" {
+                label.position = CGPoint(x: frame.midX, y: frame.midY - 48)
             }
             if child.name == "resumeButton" {
                 child.position = CGPoint(x: frame.midX, y: frame.midY - 10)
@@ -223,6 +228,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Manejo de pausa
         if isPausedGame {
+            if isInitialPauseActive {
+                // Cualquier toque reanuda el juego al inicio
+                resumeGame()
+                return
+            }
             if let resumeOverlay = resumeOverlay,
                resumeOverlay.contains(touchLocation),
                nodes(at: touchLocation).contains(where: { $0.name == "resumeButton" }) {
@@ -552,20 +562,72 @@ extension GameScene {
         resumeOverlay.isHidden = false
         updateResumeOverlayLayout()
         pauseButton?.isHidden = true
+        // Configurar textos del overlay para pausa normal
+        if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
+            titleLabel.text = "PAUSA"
+        }
+        if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
+            hintLabel.removeAction(forKey: "blink")
+            hintLabel.alpha = 1.0
+            hintLabel.text = "Toca REANUDAR"
+        }
+        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
+            resumeButton.isHidden = false
+        }
     }
 
     private func resumeGame() {
         guard isPausedGame else { return }
+        let resumingFromInitial = isInitialPauseActive
         isPausedGame = false
+        isInitialPauseActive = false
 
         // Reanudar físicas y acciones
         physicsWorld.speed = 1.0
         groundComponent?.startMovement()
         backgroundComponent?.startMovement()
-        pipeManager?.resume()
+        if resumingFromInitial {
+            // Retrasar el primer tubo para que no aparezca de inmediato
+            let delay = pipeManager?.spawnInterval ?? 1.8
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                self?.pipeManager?.startGeneratingPipes()
+            }
+        } else {
+            pipeManager?.resume()
+        }
 
-        // UI
+        // UI: si venía de pausa inicial, vuelve a mostrar el botón para próximas pausas
+        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
+            resumeButton.isHidden = false
+        }
         resumeOverlay.isHidden = true
         if !isGameOver { pauseButton?.isHidden = false }
+    }
+
+    private func startInitialPause() {
+        isPausedGame = true
+        isInitialPauseActive = true
+        physicsWorld.speed = 0
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        pipeManager?.stopAllPipes()
+        // Mostrar overlay en la pausa inicial; ocultar el botón de reanudar
+        resumeOverlay.isHidden = false
+        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
+            resumeButton.isHidden = true
+        }
+        // Textos motivacionales para inicio
+        if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
+            titleLabel.text = "¡Listo para volar!"
+        }
+        if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
+            hintLabel.text = "Toca para jugar"
+            let blink = SKAction.repeatForever(SKAction.sequence([
+                SKAction.fadeAlpha(to: 0.35, duration: 0.6),
+                SKAction.fadeAlpha(to: 1.0, duration: 0.6)
+            ]))
+            hintLabel.run(blink, withKey: "blink")
+        }
+        pauseButton?.isHidden = false
     }
 }

@@ -120,8 +120,18 @@ class UIComponent {
         title.fontColor = .white
         title.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 40)
         title.verticalAlignmentMode = .center
-        title.name = "resumeOverlay"
+        title.name = "resumeTitle"
         overlay.addChild(title)
+
+        // Texto de indicación para inicio
+        let hint = SKLabelNode(text: "Toca para comenzar")
+        hint.fontName = "AvenirNext-Medium"
+        hint.fontSize = 20
+        hint.fontColor = .white.withAlphaComponent(0.9)
+        hint.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 48)
+        hint.verticalAlignmentMode = .center
+        hint.name = "resumeHint"
+        overlay.addChild(hint)
 
         // Botón de reanudar
         let buttonContainer = SKNode()
