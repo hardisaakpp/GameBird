@@ -42,7 +42,11 @@ class BirdComponent {
     }
     
     func applyImpulse() {
-        bird.physicsBody?.velocity = .zero
+        if let body = bird.physicsBody {
+            // Conservar componente positiva para permitir encadenar saltos
+            let upwardVelocity = max(0, body.velocity.dy)
+            body.velocity = CGVector(dx: 0, dy: upwardVelocity)
+        }
         bird.physicsBody?.angularVelocity = 0
         bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: GameConfig.Physics.birdImpulse))
         

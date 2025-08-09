@@ -9,7 +9,9 @@ import SpriteKit
 class PipeComponent {
     let scene: SKScene
     let movementSpeed: CGFloat = 150.0
-    let gapHeight: CGFloat = 200.0 // Altura del espacio entre tubos
+    var gapHeight: CGFloat = 240.0 // Altura inicial del espacio entre tubos (más indulgente)
+    private let minGapHeight: CGFloat = 200.0 // Mínimo para dificultad
+    private let gapDecreasePerPoint: CGFloat = 2.0 // Reduce con el score
     private let pipeCategory: UInt32 = PhysicsCategory.pipe // Categoría de física para los tubos
     
     init(scene: SKScene) {
@@ -22,9 +24,9 @@ class PipeComponent {
         let scaleFactor: CGFloat = 1.6
         let startingX = scene.frame.maxX + 150
         
-        // Generar desplazamiento vertical aleatorio
-        let alturaMaxima = scene.frame.size.height / 2
-        let yOffset = CGFloat.random(in: -alturaMaxima/2...alturaMaxima/2)
+        // Generar desplazamiento vertical aleatorio limitado
+        let maxOffset = scene.frame.size.height * 0.28
+        let yOffset = CGFloat.random(in: -maxOffset...maxOffset)
         
         // Crea el tubo superior
         let upperPipe = SKSpriteNode(texture: Pipe.texturaTubo1)

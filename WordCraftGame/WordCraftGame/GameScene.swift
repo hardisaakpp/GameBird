@@ -22,7 +22,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
-    private var scoreImageNode: SKSpriteNode?
+    // Marcador
+    private var score: Int = 0
+    private var scoreContainer: SKNode = SKNode()
+    private let scoreDigitScale: CGFloat = 2.0
+    private let scoreTopMargin: CGFloat = 45
     
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -52,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Reposicionar tras el primer ciclo de layout para asegurar safeAreaInsets correctos
         DispatchQueue.main.async { [weak self] in
-            self?.repositionScoreImageNode()
+            self?.repositionScoreDisplay()
         }
     }
     
@@ -87,22 +91,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
 
-        setupTopCenterZero()
+        setupScoreDisplay()
     }
 
-    private func setupTopCenterZero() {
-        // Crear sprite con la imagen "0" del catálogo de assets
-        let zeroTexture = SKTexture(imageNamed: "0")
-        let zeroNode = SKSpriteNode(texture: zeroTexture)
-        zeroNode.zPosition = 200
-        zeroNode.setScale(2.0) // Duplicar tamaño
-        scoreImageNode = zeroNode
-        addChild(zeroNode)
-        repositionScoreImageNode()
+    // MARK: - Marcador (Score)
+    private func setupScoreDisplay() {
+        score = 0
+        scoreContainer.zPosition = 200
+        addChild(scoreContainer)
+        updateScoreDisplay()
+        repositionScoreDisplay()
     }
 
-    private func repositionScoreImageNode() {
-        guard let zeroNode = scoreImageNode else { return }
+    private func updateScoreDisplay() {
+        // Limpiar dígitos actuales
+        scoreContainer.removeAllChildren()
+        let scoreString = String(score)
+        var digitNodes: [SKSpriteNode] = []
+
+        // Crear nodos por dígito (usa Assets.xcassets/Numbers/{0-9})
+        for char in scoreString {
+            let digitName = String(char)
+            let texture = SKTexture(imageNamed: digitName)
+            let node = SKSpriteNode(texture: texture)
+            node.setScale(scoreDigitScale)
+            digitNodes.append(node)
+        }
+
+        // Calcular ancho total para centrar
+        let totalWidth: CGFloat = digitNodes.reduce(0) { $0 + $1.frame.width }
+        var currentX = -totalWidth / 2
+
+        // Posicionar dígitos dentro del contenedor
+        for node in digitNodes {
+            node.position = CGPoint(x: currentX + node.frame.width / 2, y: 0)
+            scoreContainer.addChild(node)
+            currentX += node.frame.width
+        }
+
+        repositionScoreDisplay()
+    }
+
+    private func repositionScoreDisplay() {
         // Priorizar safeArea de la ventana (mejor para Dynamic Island/notch)
         let windowSafeTop: CGFloat = {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -113,19 +143,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }()
         let viewSafeTop = view?.safeAreaInsets.top ?? 0
         let safeTop = max(windowSafeTop, viewSafeTop)
-
-        // Margen adicional para quedar claramente debajo de la Dynamic Island
-        let topMargin: CGFloat = 45
-        let halfHeight = zeroNode.frame.height / 2 // Usar frame para considerar el escalado
-        zeroNode.position = CGPoint(
+        let halfHeight = scoreContainer.calculateAccumulatedFrame().height / 2
+        scoreContainer.position = CGPoint(
             x: frame.midX,
-            y: frame.maxY - safeTop - halfHeight - topMargin
+            y: frame.maxY - safeTop - halfHeight - scoreTopMargin
         )
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
-        repositionScoreImageNode()
+        repositionScoreDisplay()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
@@ -197,6 +224,8 @@ extension GameScene {
         case PhysicsCategory.bird | PhysicsCategory.scoreDetector:
             print("¡Punto! Ave cruzó el hueco")
             AudioManager.shared.playPointSound()
+            score += 1
+            updateScoreDisplay()
             
         default:
             break
@@ -373,6 +402,10 @@ extension GameScene {
         
         // Sonido de punto cuando se reinicia el juego
         AudioManager.shared.playPointSound()
+        
+        // Reiniciar marcador al reiniciar el juego
+        score = 0
+        updateScoreDisplay()
         
         // Resetear estado general
         isGameOver = false

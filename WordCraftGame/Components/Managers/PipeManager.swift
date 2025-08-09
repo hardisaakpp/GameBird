@@ -10,10 +10,11 @@ import SpriteKit
 class PipeManager {
     let scene: SKScene
     let pipeComponent: PipeComponent
-    let spawnInterval: TimeInterval = 1.8
+    var spawnInterval: TimeInterval = 2.0
     private var activePipes = [SKNode]()
     private var spawnAction: SKAction?
     private var lastSpawnTime: TimeInterval = 0
+    private var lastGapCenterY: CGFloat?
     
     init(scene: SKScene) {
         self.scene = scene
@@ -38,7 +39,19 @@ class PipeManager {
     private func spawnPipe() {
         lastSpawnTime = CACurrentMediaTime()
         
-        let pipePair = pipeComponent.createPipePair()
+        // Suavizado del desplazamiento vertical del hueco
+        let targetPair = pipeComponent.createPipePair()
+        if let lastCenter = lastGapCenterY {
+            let currentCenter = targetPair.position.y
+            let maxDelta: CGFloat = 120.0
+            let clampedCenter = min(max(currentCenter, lastCenter - maxDelta), lastCenter + maxDelta)
+            let delta = clampedCenter - currentCenter
+            targetPair.position.y += delta
+            lastGapCenterY = clampedCenter
+        } else {
+            lastGapCenterY = targetPair.position.y
+        }
+        let pipePair = targetPair
         pipePair.name = "pipePair"
         scene.addChild(pipePair)
         activePipes.append(pipePair)
@@ -81,6 +94,7 @@ class PipeManager {
     func restart() {
         stopAllPipes()
         removeAllPipes()
+        lastGapCenterY = nil
         startGeneratingPipes()
     }
 }

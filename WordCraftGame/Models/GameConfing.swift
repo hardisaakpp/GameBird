@@ -13,8 +13,8 @@ import UIKit
 struct GameConfig {
     // MARK: - Física
     struct Physics {
-        static let gravity: CGFloat = -5.0
-        static let birdImpulse: CGFloat = 50.0
+        static let gravity: CGFloat = -4.7
+        static let birdImpulse: CGFloat = 62.0
         static let birdMass: CGFloat = 0.15
         static let linearDamping: CGFloat = 0.5
     }
