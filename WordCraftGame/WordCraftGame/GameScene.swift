@@ -238,9 +238,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 sprite.position = CGPoint(x: frame.midX, y: frame.midY)
                 // Recalcular escala por si cambia el tamaño
                 if sprite.size.width > 0 {
-                    let maxWidth = frame.width * 0.8
-                    let scale = min(1.0, maxWidth / sprite.size.width)
-                    sprite.setScale(scale)
+                    let targetWidth = frame.width * 0.9
+                    let scale = targetWidth / sprite.size.width
+                    let maxUpscale: CGFloat = 2.0
+                    sprite.setScale(min(scale, maxUpscale))
                 }
             }
         }
@@ -567,11 +568,13 @@ extension GameScene {
         }
     }
     
-    private func restartGame() {
+    private func restartGame(playPointSound: Bool = true) {
         restartButton.isHidden = true
         
-        // Sonido de punto cuando se reinicia el juego
-        AudioManager.shared.playPointSound()
+        // Sonido opcional de punto cuando se reinicia el juego
+        if playPointSound {
+            AudioManager.shared.playPointSound()
+        }
         
         // Reiniciar marcador al reiniciar el juego
         score = 0
@@ -618,7 +621,7 @@ extension GameScene {
             
             restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
                 self.restartButton.isHidden = true
-                self.restartGame()
+                self.restartGame(playPointSound: true)
             }
         }
     }
@@ -728,8 +731,8 @@ extension GameScene {
 
     // Nuevo: volver a la pantalla de inicio desde la pausa
     private func showStartScreenFromPause() {
-        // Reiniciar el juego y mostrar la pausa inicial con el mensaje
-        restartGame()
+        // Reiniciar el juego sin sonido de punto y mostrar la pausa inicial con el mensaje
+        restartGame(playPointSound: false)
         startInitialPause()
     }
 }

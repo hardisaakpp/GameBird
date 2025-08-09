@@ -165,7 +165,7 @@ class UIComponent {
 
         overlay.addChild(buttonContainer)
 
-        // Botón de Inicio (mismo estilo)
+        // Botón de Inicio (mismo estilo) -> Renombrado de texto a REINICIAR
         let startButtonContainer = SKNode()
         startButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 90)
         startButtonContainer.name = "startButton"
@@ -177,7 +177,7 @@ class UIComponent {
         startBg.name = "startButton"
         startButtonContainer.addChild(startBg)
 
-        let startShadow = SKLabelNode(text: "INICIO")
+        let startShadow = SKLabelNode(text: "REINICIAR")
         startShadow.fontName = "AvenirNext-Bold"
         startShadow.fontSize = 30
         startShadow.fontColor = .black
@@ -187,7 +187,7 @@ class UIComponent {
         startShadow.name = "startButton"
         startButtonContainer.addChild(startShadow)
 
-        let startLabel = SKLabelNode(text: "INICIO")
+        let startLabel = SKLabelNode(text: "REINICIAR")
         startLabel.fontName = "AvenirNext-Bold"
         startLabel.fontSize = 30
         startLabel.fontColor = .white
@@ -202,11 +202,12 @@ class UIComponent {
         startMessage.name = "startMessage"
         startMessage.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
         startMessage.zPosition = 2
-        // Escalar a un 80% del ancho de la escena como máximo, manteniendo proporción
+        // Aumentar tamaño: ocupar hasta el 90% del ancho y permitir ampliar hasta 2x
         if startMessage.size.width > 0 {
-            let maxWidth = scene.frame.width * 0.8
-            let scale = min(1.0, maxWidth / startMessage.size.width)
-            startMessage.setScale(scale)
+            let targetWidth = scene.frame.width * 0.9
+            let scale = targetWidth / startMessage.size.width
+            let maxUpscale: CGFloat = 2.0
+            startMessage.setScale(min(scale, maxUpscale))
         }
         startMessage.isHidden = true // Solo visible en la pausa inicial
         overlay.addChild(startMessage)
