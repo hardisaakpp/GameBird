@@ -165,6 +165,38 @@ class UIComponent {
 
         overlay.addChild(buttonContainer)
 
+        // Botón de Inicio (mismo estilo)
+        let startButtonContainer = SKNode()
+        startButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 90)
+        startButtonContainer.name = "startButton"
+
+        let startBg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
+        startBg.fillColor = .systemOrange
+        startBg.strokeColor = .white
+        startBg.lineWidth = 3
+        startBg.name = "startButton"
+        startButtonContainer.addChild(startBg)
+
+        let startShadow = SKLabelNode(text: "INICIO")
+        startShadow.fontName = "AvenirNext-Bold"
+        startShadow.fontSize = 30
+        startShadow.fontColor = .black
+        startShadow.position = CGPoint(x: 2, y: -2)
+        startShadow.alpha = 0.3
+        startShadow.verticalAlignmentMode = .center
+        startShadow.name = "startButton"
+        startButtonContainer.addChild(startShadow)
+
+        let startLabel = SKLabelNode(text: "INICIO")
+        startLabel.fontName = "AvenirNext-Bold"
+        startLabel.fontSize = 30
+        startLabel.fontColor = .white
+        startLabel.verticalAlignmentMode = .center
+        startLabel.name = "startButton"
+        startButtonContainer.addChild(startLabel)
+
+        overlay.addChild(startButtonContainer)
+
         // Mensaje de inicio (imagen de Assets: UI-Message)
         let startMessage = SKSpriteNode(imageNamed: "UI-Message")
         startMessage.name = "startMessage"

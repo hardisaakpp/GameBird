@@ -230,6 +230,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if child.name == "resumeButton" {
                 child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY)
             }
+            // Posicionar el botón de Inicio debajo del de reanudar
+            if child.name == "startButton" {
+                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY - 80)
+            }
             if let sprite = child as? SKSpriteNode, sprite.name == "startMessage" {
                 sprite.position = CGPoint(x: frame.midX, y: frame.midY)
                 // Recalcular escala por si cambia el tamaño
@@ -627,13 +631,16 @@ extension GameScene {
             titleLabel.isHidden = false
         }
         if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
-            hintLabel.removeAction(forKey: "blink")
-            hintLabel.alpha = 1.0
-            hintLabel.text = "Toca REANUDAR"
-            hintLabel.isHidden = false
+            // Ocultar el hint en la pantalla de pausa
+            hintLabel.removeAllActions()
+            hintLabel.isHidden = true
         }
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = false
+        }
+        // Mostrar botón Inicio solo en la pausa normal
+        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
+            startButton.isHidden = false
         }
         if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
             startMessage.isHidden = true
@@ -665,6 +672,9 @@ extension GameScene {
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = false
         }
+        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
+            startButton.isHidden = false
+        }
         if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
             startMessage.isHidden = true
         }
@@ -683,6 +693,10 @@ extension GameScene {
         resumeOverlay.isHidden = false
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = true
+        }
+        // Ocultar el botón Inicio en la pantalla de inicio
+        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
+            startButton.isHidden = true
         }
         // Mostrar imagen de mensaje y ocultar textos
         if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
