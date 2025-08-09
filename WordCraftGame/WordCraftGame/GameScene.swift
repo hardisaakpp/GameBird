@@ -194,7 +194,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func updateResumeOverlayLayout() {
         guard let resumeOverlay = resumeOverlay else { return }
         // Ajustar tamaño de capa oscura al tamaño de la escena
-        if let dim = resumeOverlay.children.first(where: { $0 is SKSpriteNode }) as? SKSpriteNode {
+        if let dim = resumeOverlay.children.first(where: { $0 is SKSpriteNode && $0.name == "resumeOverlay" }) as? SKSpriteNode {
             dim.size = frame.size
             dim.position = CGPoint(x: frame.midX, y: frame.midY)
         }
@@ -208,6 +208,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             if child.name == "resumeButton" {
                 child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY)
+            }
+            if let sprite = child as? SKSpriteNode, sprite.name == "startMessage" {
+                sprite.position = CGPoint(x: frame.midX, y: frame.midY)
+                // Recalcular escala por si cambia el tamaño
+                if sprite.size.width > 0 {
+                    let maxWidth = frame.width * 0.8
+                    let scale = min(1.0, maxWidth / sprite.size.width)
+                    sprite.setScale(scale)
+                }
             }
         }
     }
@@ -569,14 +578,19 @@ extension GameScene {
         // Configurar textos del overlay para pausa normal
         if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
             titleLabel.text = "PAUSA"
+            titleLabel.isHidden = false
         }
         if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
             hintLabel.removeAction(forKey: "blink")
             hintLabel.alpha = 1.0
             hintLabel.text = "Toca REANUDAR"
+            hintLabel.isHidden = false
         }
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = false
+        }
+        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
+            startMessage.isHidden = true
         }
     }
 
@@ -605,6 +619,9 @@ extension GameScene {
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = false
         }
+        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
+            startMessage.isHidden = true
+        }
         resumeOverlay.isHidden = true
         if !isGameOver { pauseButton?.isHidden = false }
     }
@@ -621,19 +638,19 @@ extension GameScene {
         if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
             resumeButton.isHidden = true
         }
-        // Textos motivacionales para inicio
+        // Mostrar imagen de mensaje y ocultar textos
+        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
+            startMessage.isHidden = false
+        }
         if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
-            titleLabel.text = "¡Listo para volar!"
+            titleLabel.isHidden = true
         }
         if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
-            hintLabel.text = "Toca para jugar"
-            let blink = SKAction.repeatForever(SKAction.sequence([
-                SKAction.fadeAlpha(to: 0.35, duration: 0.6),
-                SKAction.fadeAlpha(to: 1.0, duration: 0.6)
-            ]))
-            hintLabel.run(blink, withKey: "blink")
+            hintLabel.removeAllActions()
+            hintLabel.isHidden = true
         }
         pauseButton?.isHidden = false
+        updateResumeOverlayLayout()
     }
 }
 

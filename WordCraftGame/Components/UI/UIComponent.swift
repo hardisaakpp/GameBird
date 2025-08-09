@@ -165,6 +165,20 @@ class UIComponent {
 
         overlay.addChild(buttonContainer)
 
+        // Mensaje de inicio (imagen de Assets: UI-Message)
+        let startMessage = SKSpriteNode(imageNamed: "UI-Message")
+        startMessage.name = "startMessage"
+        startMessage.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        startMessage.zPosition = 2
+        // Escalar a un 80% del ancho de la escena como máximo, manteniendo proporción
+        if startMessage.size.width > 0 {
+            let maxWidth = scene.frame.width * 0.8
+            let scale = min(1.0, maxWidth / startMessage.size.width)
+            startMessage.setScale(scale)
+        }
+        startMessage.isHidden = true // Solo visible en la pausa inicial
+        overlay.addChild(startMessage)
+
         return overlay
     }
 }
