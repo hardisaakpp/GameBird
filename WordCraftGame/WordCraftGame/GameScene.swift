@@ -33,6 +33,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let scoreTopMargin: CGFloat = 45
     private let pauseButtonMargin: CGFloat = 16
     private let pauseButtonExtraOffsetX: CGFloat = 72
+    // Offsets de layout para overlay de pausa
+    private let overlayTitleOffsetY: CGFloat = 90
+    private let overlayButtonOffsetY: CGFloat = -10
+    private let overlayHintOffsetY: CGFloat = -120
     
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -194,16 +198,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             dim.size = frame.size
             dim.position = CGPoint(x: frame.midX, y: frame.midY)
         }
-        // Centrar título, hint y botón
+        // Centrar título, hint y botón con mayor separación vertical
         resumeOverlay.children.forEach { child in
             if let label = child as? SKLabelNode, label.name == "resumeTitle" {
-                label.position = CGPoint(x: frame.midX, y: frame.midY + 40)
+                label.position = CGPoint(x: frame.midX, y: frame.midY + overlayTitleOffsetY)
             }
             if let label = child as? SKLabelNode, label.name == "resumeHint" {
-                label.position = CGPoint(x: frame.midX, y: frame.midY - 48)
+                label.position = CGPoint(x: frame.midX, y: frame.midY + overlayHintOffsetY)
             }
             if child.name == "resumeButton" {
-                child.position = CGPoint(x: frame.midX, y: frame.midY - 10)
+                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY)
             }
         }
     }
@@ -587,8 +591,9 @@ extension GameScene {
         groundComponent?.startMovement()
         backgroundComponent?.startMovement()
         if resumingFromInitial {
-            // Retrasar el primer tubo para que no aparezca de inmediato
-            let delay = pipeManager?.spawnInterval ?? 1.8
+            // Retrasar ligeramente el primer tubo para empezar rápido
+            let base = pipeManager?.spawnInterval ?? GameConfig.Timing.pipeSpawnInterval
+            let delay = base * Double(GameConfig.Timing.initialSpawnDelayFactor)
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
                 self?.pipeManager?.startGeneratingPipes()
             }

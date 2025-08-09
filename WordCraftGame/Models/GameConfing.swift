@@ -55,5 +55,6 @@ struct GameConfig {
     struct Timing {
         static let pipeSpawnInterval: TimeInterval = 1.8
         static let colorFlashDuration: TimeInterval = 0.15 // Nueva: duración parpadeo
+        static let initialSpawnDelayFactor: CGFloat = 0.4 // fracción del spawnInterval para el primer tubo tras tocar
     }
 }

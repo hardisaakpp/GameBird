@@ -116,7 +116,7 @@ class UIComponent {
         // Título
         let title = SKLabelNode(text: "PAUSA")
         title.fontName = "AvenirNext-Bold"
-        title.fontSize = 38
+        title.fontSize = 40
         title.fontColor = .white
         title.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 40)
         title.verticalAlignmentMode = .center
@@ -126,7 +126,7 @@ class UIComponent {
         // Texto de indicación para inicio
         let hint = SKLabelNode(text: "Toca para comenzar")
         hint.fontName = "AvenirNext-Medium"
-        hint.fontSize = 20
+        hint.fontSize = 22
         hint.fontColor = .white.withAlphaComponent(0.9)
         hint.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 48)
         hint.verticalAlignmentMode = .center
