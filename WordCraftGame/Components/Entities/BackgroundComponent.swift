@@ -143,8 +143,30 @@ class BackgroundComponent {
         let textureName = BackgroundConstants.textureName
         let newTexture = SKTexture(imageNamed: textureName)
         newTexture.filteringMode = .linear
+
+        // Fade crossfade entre texturas para transición suave
+        let duration: TimeInterval = 0.5
         for node in backgroundNodes {
-            node.texture = newTexture
+            // Añadir overlay temporal para crossfade si ya tiene textura
+            if node.texture != nil {
+                let overlay = SKSpriteNode(texture: newTexture, size: node.size)
+                overlay.position = .zero
+                overlay.anchorPoint = node.anchorPoint
+                overlay.alpha = 0.0
+                overlay.zPosition = node.zPosition + 0.5
+                node.addChild(overlay)
+                overlay.run(SKAction.sequence([
+                    SKAction.fadeAlpha(to: 1.0, duration: duration),
+                    SKAction.run { [weak node] in node?.texture = newTexture },
+                    SKAction.removeFromParent()
+                ]))
+            } else {
+                node.texture = newTexture
+            }
+        }
+        // Avisar al pájaro para cambiar de color si aplica
+        if let scene = scene as? GameScene {
+            scene.updateBirdAppearanceForDayNight()
         }
     }
 }

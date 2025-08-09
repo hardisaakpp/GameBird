@@ -9,12 +9,25 @@ import SpriteKit
 
 class BirdComponent {
     let bird: SKSpriteNode
-    private let textures: [SKTexture]
+    private var dayTextures: [SKTexture]
+    private var nightTextures: [SKTexture]
+    private var currentTextures: [SKTexture]
+    private let initialPosition: CGPoint
     
     // Usar valor directamente desde GameConfig
     init(textures: [SKTexture], position: CGPoint) {
-        self.textures = textures
-        self.bird = SKSpriteNode(texture: textures.first)
+        // textures recibido se ignora en favor de texturas por modo día/noche
+        self.dayTextures = [
+            SKTexture(imageNamed: "YellowBird-Midflap"),
+            SKTexture(imageNamed: "YellowBird-Downflap")
+        ]
+        self.nightTextures = [
+            SKTexture(imageNamed: "BlueBird-Midflap"),
+            SKTexture(imageNamed: "BlueBird-Downflap")
+        ]
+        self.currentTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
+        self.bird = SKSpriteNode(texture: currentTextures.first)
+        self.initialPosition = position
         configureBird(position: position)
     }
     
@@ -37,8 +50,8 @@ class BirdComponent {
     }
     
     private func startFlapping() {
-        let flapAnimation = SKAction.animate(with: textures, timePerFrame: 0.2)
-        bird.run(SKAction.repeatForever(flapAnimation))
+        let flapAnimation = SKAction.animate(with: currentTextures, timePerFrame: 0.2)
+        bird.run(SKAction.repeatForever(flapAnimation), withKey: "flap")
     }
     
     func applyImpulse() {
@@ -63,11 +76,11 @@ class BirdComponent {
         bird.physicsBody?.velocity = .zero
         bird.physicsBody?.angularVelocity = 0
         bird.zRotation = 0
-        bird.position = CGPoint(
-            x: -bird.parent!.frame.width / 4,
-            y: bird.parent!.frame.midY
-        )
+        bird.position = initialPosition
         bird.setScale(2.0) // Asegurar tamaño original
+        // Actualizar a texturas por franja horaria actual
+        updateTexturesForCurrentTime()
+        restartFlapAnimation()
         
         // Restaurar propiedades físicas originales después de una colisión
         if let physicsBody = bird.physicsBody {
@@ -76,5 +89,18 @@ class BirdComponent {
             physicsBody.linearDamping = GameConfig.Physics.linearDamping
             physicsBody.angularVelocity = 0
         }
+    }
+
+    // MARK: - Day/Night switching
+    func updateTexturesForCurrentTime() {
+        let newTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
+        guard newTextures.first != currentTextures.first else { return }
+        currentTextures = newTextures
+        bird.texture = currentTextures.first
+    }
+    
+    func restartFlapAnimation() {
+        bird.removeAction(forKey: "flap")
+        startFlapping()
     }
 }

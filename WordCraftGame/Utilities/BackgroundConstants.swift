@@ -33,3 +33,7 @@ private func isNightTime(date: Date = Date(), calendar: Calendar = Calendar.curr
     if totalMinutes <= nightEnd { return true }   // 00:00 .. 05:50
     return false
 }
+
+extension BackgroundConstants {
+    static func isNightNow() -> Bool { isNightTime() }
+}
