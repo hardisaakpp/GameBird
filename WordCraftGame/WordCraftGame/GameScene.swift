@@ -242,6 +242,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Manejo de pausa
         if isPausedGame {
             if isInitialPauseActive {
+                // Reproducir sonido al iniciar desde la pantalla principal (message)
+                AudioManager.shared.playSwooshSound()
                 // Cualquier toque reanuda el juego al inicio
                 resumeGame()
                 return
