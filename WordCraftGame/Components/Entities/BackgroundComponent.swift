@@ -4,6 +4,7 @@ class BackgroundComponent {
     private let scene: SKScene
     var backgroundContainer: SKNode!
     private var backgroundNodes: [Background] = []
+    private var dayNightTimer: Timer?
     
     init(scene: SKScene) {
         self.scene = scene
@@ -24,6 +25,7 @@ class BackgroundComponent {
         }
         
         startInfiniteMovement()
+        startDayNightAutoUpdate()
         return backgroundContainer
     }
     
@@ -124,5 +126,25 @@ class BackgroundComponent {
         backgroundContainer = createBackground()
         backgroundContainer.position = currentPosition
         scene.addChild(backgroundContainer)
+    }
+
+    // MARK: - Day/Night
+    private func startDayNightAutoUpdate() {
+        dayNightTimer?.invalidate()
+        // Chequear cada minuto para cambios de franja
+        dayNightTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            self?.applyCurrentBackgroundTexture()
+        }
+        // Aplicar inmediatamente por si cambia al entrar
+        applyCurrentBackgroundTexture()
+    }
+
+    private func applyCurrentBackgroundTexture() {
+        let textureName = BackgroundConstants.textureName
+        let newTexture = SKTexture(imageNamed: textureName)
+        newTexture.filteringMode = .linear
+        for node in backgroundNodes {
+            node.texture = newTexture
+        }
     }
 }
