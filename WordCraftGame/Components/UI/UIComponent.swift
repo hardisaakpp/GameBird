@@ -61,12 +61,12 @@ class UIComponent {
         container.zPosition = GameConfig.ZPosition.UI
 
         // Aumentar objetivo táctil (área invisible)
-        let hitArea = SKSpriteNode(color: .clear, size: CGSize(width: 64, height: 64))
+        let hitArea = SKSpriteNode(color: .clear, size: CGSize(width: 56, height: 56))
         hitArea.name = "pauseButton"
         container.addChild(hitArea)
 
         // Fondo circular (más grande y con alto contraste)
-        let radius: CGFloat = 36
+        let radius: CGFloat = 32
         // Sombra suave para contraste
         let shadow = SKShapeNode(circleOfRadius: radius + 3)
         shadow.fillColor = UIColor.black.withAlphaComponent(0.35)
@@ -83,19 +83,19 @@ class UIComponent {
         container.addChild(circle)
 
         // Icono de pausa (dos barras)
-        let barWidth: CGFloat = 9
-        let barHeight: CGFloat = 28
+        let barWidth: CGFloat = 8
+        let barHeight: CGFloat = 24
         let leftBar = SKShapeNode(rectOf: CGSize(width: barWidth, height: barHeight), cornerRadius: 2)
         leftBar.fillColor = .black
         leftBar.strokeColor = .clear
-        leftBar.position = CGPoint(x: -12, y: 0)
+        leftBar.position = CGPoint(x: -10, y: 0)
         leftBar.name = "pauseButton"
         container.addChild(leftBar)
 
         let rightBar = SKShapeNode(rectOf: CGSize(width: barWidth, height: barHeight), cornerRadius: 2)
         rightBar.fillColor = .black
         rightBar.strokeColor = .clear
-        rightBar.position = CGPoint(x: 12, y: 0)
+        rightBar.position = CGPoint(x: 10, y: 0)
         rightBar.name = "pauseButton"
         container.addChild(rightBar)
 

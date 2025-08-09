@@ -31,6 +31,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let scoreDigitScale: CGFloat = 2.0
     private let scoreTopMargin: CGFloat = 45
     private let pauseButtonMargin: CGFloat = 16
+    private let pauseButtonExtraOffsetX: CGFloat = 72
     
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -85,9 +86,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             position: CGPoint(x: -frame.size.width / 4, y: frame.midY)
         )
         addChild(birdComponent.bird)
-        
-        pipeManager = PipeManager(scene: self)
-        pipeManager.startGeneratingPipes()
     }
     
     private func setupUI() {
@@ -97,7 +95,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Botón de pausa (arriba derecha)
         pauseButton = UIComponent.createPauseButton(in: self)
-        pauseButton.setScale(1.1)
+        pauseButton.setScale(0.9)
         addChild(pauseButton)
         repositionPauseButton()
 
@@ -182,7 +180,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Usar tamaño mínimo visible si el frame aún no está calculado
         let buttonWidth = max(pauseButton?.frame.width ?? 72, 72)
         let buttonHeight = max(pauseButton?.frame.height ?? 72, 72)
-        let x = frame.minX + viewSafeLeft + buttonWidth / 2 + pauseButtonMargin
+        let x = frame.minX + viewSafeLeft + buttonWidth / 2 + pauseButtonMargin + pauseButtonExtraOffsetX
         let y = frame.maxY - safeTop - buttonHeight / 2 - pauseButtonMargin
         pauseButton?.position = CGPoint(x: x, y: y)
     }

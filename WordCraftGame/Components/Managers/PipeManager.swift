@@ -15,6 +15,7 @@ class PipeManager {
     private var spawnAction: SKAction?
     private var lastSpawnTime: TimeInterval = 0
     private var lastGapCenterY: CGFloat?
+    private var timeToNextSpawn: TimeInterval = 0
     
     init(scene: SKScene) {
         self.scene = scene
@@ -25,6 +26,7 @@ class PipeManager {
         // Limpiar acción previa si existe
         stopAllPipes()
         
+        // En inicio, generamos inmediatamente y luego esperamos
         let createPipe = SKAction.run { [weak self] in
             self?.spawnPipe()
         }
@@ -39,6 +41,15 @@ class PipeManager {
     func pause() {
         // Pausar generación y movimiento de tubos existentes
         scene.removeAction(forKey: "pipeGeneration")
+        // Calcular tiempo restante para el próximo spawn manteniendo la fase
+        let now = CACurrentMediaTime()
+        let elapsed = now - lastSpawnTime
+        if elapsed >= 0 {
+            let remainder = spawnInterval - (elapsed.truncatingRemainder(dividingBy: spawnInterval))
+            timeToNextSpawn = max(0, min(spawnInterval, remainder))
+        } else {
+            timeToNextSpawn = spawnInterval
+        }
         activePipes.forEach { $0.isPaused = true }
     }
 
@@ -46,16 +57,16 @@ class PipeManager {
         // Reanudar movimiento de tubos existentes
         activePipes.forEach { $0.isPaused = false }
         
-        // Reanudar generación si no está activa
-        if scene.action(forKey: "pipeGeneration") == nil {
-            let createPipe = SKAction.run { [weak self] in
-                self?.spawnPipe()
-            }
-            let wait = SKAction.wait(forDuration: spawnInterval)
-            let sequence = SKAction.sequence([createPipe, wait])
-            spawnAction = SKAction.repeatForever(sequence)
-            scene.run(spawnAction!, withKey: "pipeGeneration")
+        // Reanudar generación respetando el tiempo restante para el próximo spawn
+        guard scene.action(forKey: "pipeGeneration") == nil else { return }
+        let initialWait = SKAction.wait(forDuration: timeToNextSpawn)
+        let createPipe = SKAction.run { [weak self] in
+            self?.spawnPipe()
         }
+        let wait = SKAction.wait(forDuration: spawnInterval)
+        let repeatSeq = SKAction.repeatForever(SKAction.sequence([wait, createPipe]))
+        let startSequence = SKAction.sequence([initialWait, createPipe, repeatSeq])
+        scene.run(startSequence, withKey: "pipeGeneration")
     }
     
     private func spawnPipe() {
