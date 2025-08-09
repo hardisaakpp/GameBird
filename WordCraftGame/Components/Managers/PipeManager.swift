@@ -35,6 +35,28 @@ class PipeManager {
         
         scene.run(spawnAction!, withKey: "pipeGeneration")
     }
+
+    func pause() {
+        // Pausar generación y movimiento de tubos existentes
+        scene.removeAction(forKey: "pipeGeneration")
+        activePipes.forEach { $0.isPaused = true }
+    }
+
+    func resume() {
+        // Reanudar movimiento de tubos existentes
+        activePipes.forEach { $0.isPaused = false }
+        
+        // Reanudar generación si no está activa
+        if scene.action(forKey: "pipeGeneration") == nil {
+            let createPipe = SKAction.run { [weak self] in
+                self?.spawnPipe()
+            }
+            let wait = SKAction.wait(forDuration: spawnInterval)
+            let sequence = SKAction.sequence([createPipe, wait])
+            spawnAction = SKAction.repeatForever(sequence)
+            scene.run(spawnAction!, withKey: "pipeGeneration")
+        }
+    }
     
     private func spawnPipe() {
         lastSpawnTime = CACurrentMediaTime()

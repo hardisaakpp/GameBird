@@ -4,6 +4,7 @@ import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
+    private var isPausedGame = false
     
     // MARK: - Constantes de Configuración
     let backgroundSpeed: CGFloat = 30.0 // Fondo lento
@@ -22,11 +23,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
+    private var pauseButton: SKNode!
+    private var resumeOverlay: SKNode!
     // Marcador
     private var score: Int = 0
     private var scoreContainer: SKNode = SKNode()
     private let scoreDigitScale: CGFloat = 2.0
     private let scoreTopMargin: CGFloat = 45
+    private let pauseButtonMargin: CGFloat = 16
     
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -91,6 +95,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartButton.isHidden = true // Inicialmente oculto
         addChild(restartButton)
 
+        // Botón de pausa (arriba derecha)
+        pauseButton = UIComponent.createPauseButton(in: self)
+        pauseButton.setScale(1.1)
+        addChild(pauseButton)
+        repositionPauseButton()
+
+        // Overlay de reanudación
+        resumeOverlay = UIComponent.createResumeOverlay(in: self)
+        resumeOverlay.isHidden = true
+        addChild(resumeOverlay)
+
         setupScoreDisplay()
     }
 
@@ -150,23 +165,91 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
     }
 
+    private func repositionPauseButton() {
+        guard let view = view else { return }
+        // Calcular safe areas
+        let windowSafeTop: CGFloat = {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                return keyWindow.safeAreaInsets.top
+            }
+            return 0
+        }()
+        let viewSafeLeft = view.safeAreaInsets.left
+        let safeTop = max(windowSafeTop, view.safeAreaInsets.top)
+
+        // Posicionar en esquina superior izquierda
+        // Usar tamaño mínimo visible si el frame aún no está calculado
+        let buttonWidth = max(pauseButton?.frame.width ?? 72, 72)
+        let buttonHeight = max(pauseButton?.frame.height ?? 72, 72)
+        let x = frame.minX + viewSafeLeft + buttonWidth / 2 + pauseButtonMargin
+        let y = frame.maxY - safeTop - buttonHeight / 2 - pauseButtonMargin
+        pauseButton?.position = CGPoint(x: x, y: y)
+    }
+
+    private func updateResumeOverlayLayout() {
+        guard let resumeOverlay = resumeOverlay else { return }
+        // Ajustar tamaño de capa oscura al tamaño de la escena
+        if let dim = resumeOverlay.children.first(where: { $0 is SKSpriteNode }) as? SKSpriteNode {
+            dim.size = frame.size
+            dim.position = CGPoint(x: frame.midX, y: frame.midY)
+        }
+        // Centrar título y botón
+        resumeOverlay.children.forEach { child in
+            if let label = child as? SKLabelNode, label.text == "PAUSA" {
+                label.position = CGPoint(x: frame.midX, y: frame.midY + 40)
+            }
+            if child.name == "resumeButton" {
+                child.position = CGPoint(x: frame.midX, y: frame.midY - 10)
+            }
+        }
+    }
+
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         repositionScoreDisplay()
+        repositionPauseButton()
+        updateResumeOverlayLayout()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
+        let touchLocation = touch.location(in: self)
         
         // Optimización: Procesar inmediatamente sin verificar ubicación
         if isGameOver {
             handleRestart(touches)
+            return
+        }
+
+        // Manejo de pausa
+        if isPausedGame {
+            if let resumeOverlay = resumeOverlay,
+               resumeOverlay.contains(touchLocation),
+               nodes(at: touchLocation).contains(where: { $0.name == "resumeButton" }) {
+                let buttonContainer = resumeOverlay.children.first(where: { $0.name == "resumeButton" })
+                let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                (buttonContainer ?? resumeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                    self?.resumeGame()
+                }
+            }
+            return
         } else {
-            // Optimización: Ejecutar acciones en paralelo
-            DispatchQueue.main.async {
-                self.birdComponent.applyImpulse()
-                AudioManager.shared.playWingSound()
+            // Si toca el botón de pausa
+            if nodes(at: touchLocation).contains(where: { $0.name == "pauseButton" }) {
+                let scaleDown = SKAction.scale(to: 0.9, duration: 0.05)
+                let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                pauseButton.run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                    self?.pauseGame()
+                }
+            } else {
+                // Optimización: Ejecutar acciones en paralelo
+                DispatchQueue.main.async {
+                    self.birdComponent.applyImpulse()
+                    AudioManager.shared.playWingSound()
+                }
             }
         }
     }
@@ -236,6 +319,7 @@ extension GameScene {
         // Evitar múltiples colisiones
         guard !isGameOver else { return }
         isGameOver = true
+        pauseButton?.isHidden = true
         
         // Detener la generación de nuevos tubos pero mantener los existentes
         pipeManager?.stopAllPipes()
@@ -282,6 +366,7 @@ extension GameScene {
         
         print("¡Game Over final!")
         isGameOver = true
+        pauseButton?.isHidden = true
         
         // Detener la generación de nuevos tubos
         pipeManager?.stopAllPipes()
@@ -367,6 +452,7 @@ extension GameScene {
         
         // Mostrar y animar botón
         restartButton.isHidden = false
+        pauseButton?.isHidden = true
         restartButton.run(SKAction.sequence([
             SKAction.fadeIn(withDuration: 0.3),
             SKAction.scale(to: 1.1, duration: 0.2),
@@ -431,6 +517,7 @@ extension GameScene {
         hideRestartButton()
         backgroundComponent.reset()
         birdComponent.bird.physicsBody?.isDynamic = true
+        pauseButton?.isHidden = false
     }
     
     private func handleRestart(_ touches: Set<UITouch>) {
@@ -450,5 +537,37 @@ extension GameScene {
                 self.restartGame()
             }
         }
+    }
+
+    // MARK: - Pausa/Reanudar
+    private func pauseGame() {
+        guard !isGameOver, !isPausedGame else { return }
+        isPausedGame = true
+        // Pausar físicas y acciones
+        physicsWorld.speed = 0
+        // Pausar scrolls/componentes explícitamente si usan acciones propias
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        pipeManager?.pause()
+
+        // UI
+        resumeOverlay.isHidden = false
+        updateResumeOverlayLayout()
+        pauseButton?.isHidden = true
+    }
+
+    private func resumeGame() {
+        guard isPausedGame else { return }
+        isPausedGame = false
+
+        // Reanudar físicas y acciones
+        physicsWorld.speed = 1.0
+        groundComponent?.startMovement()
+        backgroundComponent?.startMovement()
+        pipeManager?.resume()
+
+        // UI
+        resumeOverlay.isHidden = true
+        if !isGameOver { pauseButton?.isHidden = false }
     }
 }

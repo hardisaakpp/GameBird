@@ -54,4 +54,107 @@ class UIComponent {
         
         return buttonContainer
     }
+
+    static func createPauseButton(in scene: SKScene) -> SKNode {
+        let container = SKNode()
+        container.name = "pauseButton"
+        container.zPosition = GameConfig.ZPosition.UI
+
+        // Aumentar objetivo táctil (área invisible)
+        let hitArea = SKSpriteNode(color: .clear, size: CGSize(width: 64, height: 64))
+        hitArea.name = "pauseButton"
+        container.addChild(hitArea)
+
+        // Fondo circular (más grande y con alto contraste)
+        let radius: CGFloat = 36
+        // Sombra suave para contraste
+        let shadow = SKShapeNode(circleOfRadius: radius + 3)
+        shadow.fillColor = UIColor.black.withAlphaComponent(0.35)
+        shadow.strokeColor = .clear
+        shadow.position = CGPoint(x: 0, y: -2)
+        shadow.name = "pauseButton"
+        container.addChild(shadow)
+
+        let circle = SKShapeNode(circleOfRadius: radius)
+        circle.fillColor = .white
+        circle.strokeColor = .black
+        circle.lineWidth = 4
+        circle.name = "pauseButton"
+        container.addChild(circle)
+
+        // Icono de pausa (dos barras)
+        let barWidth: CGFloat = 9
+        let barHeight: CGFloat = 28
+        let leftBar = SKShapeNode(rectOf: CGSize(width: barWidth, height: barHeight), cornerRadius: 2)
+        leftBar.fillColor = .black
+        leftBar.strokeColor = .clear
+        leftBar.position = CGPoint(x: -12, y: 0)
+        leftBar.name = "pauseButton"
+        container.addChild(leftBar)
+
+        let rightBar = SKShapeNode(rectOf: CGSize(width: barWidth, height: barHeight), cornerRadius: 2)
+        rightBar.fillColor = .black
+        rightBar.strokeColor = .clear
+        rightBar.position = CGPoint(x: 12, y: 0)
+        rightBar.name = "pauseButton"
+        container.addChild(rightBar)
+
+        return container
+    }
+
+    static func createResumeOverlay(in scene: SKScene) -> SKNode {
+        let overlay = SKNode()
+        overlay.zPosition = GameConfig.ZPosition.UI + 1
+        overlay.name = "resumeOverlay"
+
+        // Capa semitransparente
+        let dim = SKSpriteNode(color: .black.withAlphaComponent(0.65), size: scene.frame.size)
+        dim.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        dim.name = "resumeOverlay"
+        overlay.addChild(dim)
+
+        // Título
+        let title = SKLabelNode(text: "PAUSA")
+        title.fontName = "AvenirNext-Bold"
+        title.fontSize = 38
+        title.fontColor = .white
+        title.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 40)
+        title.verticalAlignmentMode = .center
+        title.name = "resumeOverlay"
+        overlay.addChild(title)
+
+        // Botón de reanudar
+        let buttonContainer = SKNode()
+        buttonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 10)
+        buttonContainer.name = "resumeButton"
+
+        let bg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
+        bg.fillColor = .systemGreen
+        bg.strokeColor = .white
+        bg.lineWidth = 3
+        bg.name = "resumeButton"
+        buttonContainer.addChild(bg)
+
+        let labelShadow = SKLabelNode(text: "REANUDAR")
+        labelShadow.fontName = "AvenirNext-Bold"
+        labelShadow.fontSize = 30
+        labelShadow.fontColor = .black
+        labelShadow.position = CGPoint(x: 2, y: -2)
+        labelShadow.alpha = 0.3
+        labelShadow.verticalAlignmentMode = .center
+        labelShadow.name = "resumeButton"
+        buttonContainer.addChild(labelShadow)
+
+        let label = SKLabelNode(text: "REANUDAR")
+        label.fontName = "AvenirNext-Bold"
+        label.fontSize = 30
+        label.fontColor = .white
+        label.verticalAlignmentMode = .center
+        label.name = "resumeButton"
+        buttonContainer.addChild(label)
+
+        overlay.addChild(buttonContainer)
+
+        return overlay
+    }
 }
