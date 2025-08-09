@@ -26,6 +26,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var restartButton: SKNode!
     private var pauseButton: SKNode!
     private var resumeOverlay: SKNode!
+    private var gameOverImage: SKSpriteNode? // Imagen de Game Over
+    private var gameOverDim: SKSpriteNode?   // Sombreado de fondo para Game Over
     // Marcador
     private var score: Int = 0
     private var scoreContainer: SKNode = SKNode()
@@ -109,6 +111,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         resumeOverlay = UIComponent.createResumeOverlay(in: self)
         resumeOverlay.isHidden = true
         addChild(resumeOverlay)
+
+        // Sombreado de fondo para Game Over (similar a la pausa)
+        let dimGO = SKSpriteNode(color: .black, size: frame.size)
+        dimGO.alpha = 0.0 // se animará hasta 0.65
+        dimGO.position = CGPoint(x: frame.midX, y: frame.midY)
+        dimGO.zPosition = GameConfig.ZPosition.UI - 1
+        dimGO.isHidden = true
+        dimGO.name = "gameOverDim"
+        gameOverDim = dimGO
+        addChild(dimGO)
+
+        // Imagen de Game Over (asset: UI-GameOver)
+        let img = SKSpriteNode(imageNamed: "UI-GameOver")
+        img.name = "gameOverImage"
+        img.zPosition = GameConfig.ZPosition.UI
+        img.isHidden = true
+        gameOverImage = img
+        addChild(img)
+        updateGameOverImageLayout()
 
         setupScoreDisplay()
     }
@@ -221,11 +242,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
+    private func updateGameOverImageLayout() {
+        guard let _ = gameOverImage else { return }
+        // Posicionar centrada, un poco arriba del botón REINICIAR
+        let offsetY: CGFloat = 110
+        gameOverImage?.position = CGPoint(x: frame.midX, y: frame.midY + offsetY)
+        // Escalar para que ocupe hasta el 90% del ancho de la escena y permitir ampliar por encima de 1x (máx 2x)
+        if let width = gameOverImage?.size.width, width > 0 {
+            let targetWidth = frame.width * 0.9
+            let scale = targetWidth / width
+            let maxUpscale: CGFloat = 2.0
+            gameOverImage?.setScale(min(scale, maxUpscale))
+        }
+        // Ajustar sombreado al tamaño de la escena
+        if let dim = gameOverDim {
+            dim.size = frame.size
+            dim.position = CGPoint(x: frame.midX, y: frame.midY)
+        }
+    }
+
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         repositionScoreDisplay()
         repositionPauseButton()
         updateResumeOverlayLayout()
+        updateGameOverImageLayout()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
@@ -465,16 +506,24 @@ extension GameScene {
     }
     
     func showRestartButton() {
-        // Animación de elementos del juego
-        let dimAction = SKAction.customAction(withDuration: 0.1) { node, _ in
-            if let sprite = node as? SKSpriteNode {
-                sprite.color = .darkGray
-            }
+        // Mostrar sombreado Game Over con transparencia similar a pausa (0.65)
+        if let dim = gameOverDim {
+            dim.isHidden = false
+            dim.removeAllActions()
+            dim.alpha = 0.0
+            dim.run(SKAction.fadeAlpha(to: 0.65, duration: 0.2))
         }
         
-        // Aplicar a elementos principales (excepto botón)
-        children.filter { $0.name != "restartButton" }.forEach {
-            $0.run(dimAction)
+        // Mostrar imagen Game Over
+        if let img = gameOverImage {
+            img.isHidden = false
+            img.alpha = 0.0
+            let fadeIn = SKAction.fadeIn(withDuration: 0.25)
+            let pop = SKAction.sequence([
+                SKAction.scale(by: 1.05, duration: 0.15),
+                SKAction.scale(by: 1.0/1.05, duration: 0.1)
+            ])
+            img.run(SKAction.group([fadeIn, pop]))
         }
         
         // Mostrar y animar botón
@@ -486,28 +535,19 @@ extension GameScene {
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
     }
-    
+
     private func hideRestartButton() {
-        // Restaurar elementos del juego
-        let restoreAction = SKAction.customAction(withDuration: 0.1) { node, _ in
-            if let sprite = node as? SKSpriteNode {
-                sprite.colorBlendFactor = 0.0
-            }
+        // Ocultar imagen y sombreado Game Over
+        if let img = gameOverImage {
+            img.removeAllActions()
+            img.isHidden = true
+            img.alpha = 1.0
         }
-        children.forEach { $0.run(restoreAction) }
-    }
-    
-    func stopAllGameElements() {
-        physicsWorld.speed = 0
-        birdComponent.bird.physicsBody?.isDynamic = false
-        
-        groundComponent?.stopMovement()
-        backgroundComponent?.stopMovement()
-        pipeManager?.stopAllPipes()
-        
-        // Mostrar botón y habilitar interacción
-        showRestartButton()
-        isUserInteractionEnabled = true // Permitir tocar el botón
+        if let dim = gameOverDim {
+            dim.removeAllActions()
+            dim.isHidden = true
+            dim.alpha = 0.65
+        }
     }
     
     private func restartGame() {
