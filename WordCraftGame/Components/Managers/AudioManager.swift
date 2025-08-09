@@ -15,7 +15,7 @@ class AudioManager {
     private var audioPlayers: [String: AVAudioPlayer] = [:]
     private var isSoundEnabled = true
     private var isPreloaded = false
-    private let maxConcurrentSounds = 2 // Reducido para mejor rendimiento
+    private let maxConcurrentSounds = SoundConstants.Audio.maxConcurrent
     private var activeSounds: Set<String> = []
     private var lastPlayTime: [String: TimeInterval] = [:] // Evitar spam de sonidos
     private let minPlayInterval: TimeInterval = 0.1 // Intervalo mínimo entre sonidos

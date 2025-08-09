@@ -56,6 +56,19 @@ class PipeComponent {
         pipePair.addChild(upperPipe)
         pipePair.addChild(lowerPipe)
         
+        // Detector de puntuación: un nodo estrecho entre los tubos
+        let detectorWidth: CGFloat = 10
+        let detectorHeight: CGFloat = scene.frame.height
+        let scoreDetector = SKNode()
+        scoreDetector.name = "scoreDetector"
+        scoreDetector.position = CGPoint(x: startingX, y: scene.frame.midY)
+        scoreDetector.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: detectorWidth, height: detectorHeight))
+        scoreDetector.physicsBody?.isDynamic = false
+        scoreDetector.physicsBody?.categoryBitMask = PhysicsCategory.scoreDetector
+        scoreDetector.physicsBody?.contactTestBitMask = PhysicsCategory.bird
+        scoreDetector.physicsBody?.collisionBitMask = 0
+        pipePair.addChild(scoreDetector)
+        
         // Animación de movimiento
         let moveAndRemove = createMoveAndRemoveAction(
             for: scene,

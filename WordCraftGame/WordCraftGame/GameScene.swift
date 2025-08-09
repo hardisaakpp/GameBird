@@ -136,12 +136,20 @@ extension GameScene {
         case PhysicsCategory.bird | PhysicsCategory.pipe:
             print("¡Colisión con tubo! El pájaro cae...")
             AudioManager.shared.playHitSound()
+            // Reproducir "die" justo después del impacto
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                AudioManager.shared.playDieSound()
+            }
             handlePipeCollision()
             
         case PhysicsCategory.bird | PhysicsCategory.ground:
             print("¡Game Over! Pájaro tocó el suelo")
-            AudioManager.shared.playDieSound()
+            AudioManager.shared.playHitSound()
             triggerGameOver()
+
+        case PhysicsCategory.bird | PhysicsCategory.scoreDetector:
+            print("¡Punto! Ave cruzó el hueco")
+            AudioManager.shared.playPointSound()
             
         default:
             break
@@ -239,9 +247,6 @@ extension GameScene {
     }
     
     private func addImpactEffect() {
-        // Sonido de impacto/efecto
-        AudioManager.shared.playSwooshSound()
-        
         // Efecto de vibración/sacudida de la pantalla
         let shakeAction = SKAction.sequence([
             SKAction.moveBy(x: -5, y: 0, duration: 0.05),

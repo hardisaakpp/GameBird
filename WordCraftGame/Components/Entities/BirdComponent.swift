@@ -32,7 +32,7 @@ class BirdComponent {
         physicsBody.allowsRotation = false
         physicsBody.categoryBitMask = PhysicsCategory.bird
         physicsBody.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.top | PhysicsCategory.pipe
-        physicsBody.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe
+        physicsBody.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe | PhysicsCategory.scoreDetector
         bird.physicsBody = physicsBody
     }
     
