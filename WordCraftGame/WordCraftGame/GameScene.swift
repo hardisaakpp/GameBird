@@ -294,15 +294,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 return
             }
             if let resumeOverlay = resumeOverlay,
-               resumeOverlay.contains(touchLocation),
-               nodes(at: touchLocation).contains(where: { $0.name == "resumeButton" }) {
-                let buttonContainer = resumeOverlay.children.first(where: { $0.name == "resumeButton" })
-                let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
-                let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
-                // Sonido al pulsar REANUDAR
-                AudioManager.shared.playSwooshSound()
-                (buttonContainer ?? resumeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
-                    self?.resumeGame()
+               resumeOverlay.contains(touchLocation) {
+                if nodes(at: touchLocation).contains(where: { $0.name == "resumeButton" }) {
+                    let buttonContainer = resumeOverlay.children.first(where: { $0.name == "resumeButton" })
+                    let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                    let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                    // Sonido al pulsar REANUDAR
+                    AudioManager.shared.playSwooshSound()
+                    (buttonContainer ?? resumeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                        self?.resumeGame()
+                    }
+                    return
+                }
+                // Manejar botón INICIO en la pausa: volver a la pantalla de inicio (pausa inicial)
+                if nodes(at: touchLocation).contains(where: { $0.name == "startButton" }) {
+                    let startContainer = resumeOverlay.children.first(where: { $0.name == "startButton" })
+                    let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                    let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                    AudioManager.shared.playSwooshSound()
+                    (startContainer ?? resumeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                        self?.showStartScreenFromPause()
+                    }
+                    return
                 }
             }
             return
@@ -711,6 +724,13 @@ extension GameScene {
         }
         pauseButton?.isHidden = false
         updateResumeOverlayLayout()
+    }
+
+    // Nuevo: volver a la pantalla de inicio desde la pausa
+    private func showStartScreenFromPause() {
+        // Reiniciar el juego y mostrar la pausa inicial con el mensaje
+        restartGame()
+        startInitialPause()
     }
 }
 
