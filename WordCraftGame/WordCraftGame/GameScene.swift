@@ -41,6 +41,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let overlayButtonOffsetY: CGFloat = -10
     private let overlayHintOffsetY: CGFloat = -120
     
+    // Mostrar puntaje final sobre la imagen `score.png`
+    private var finalScoreContainer: SKNode = SKNode()
+    // Porción del ancho del tablero usada para los dígitos (45%)
+    private let finalScoreMaxWidthRatio: CGFloat = 0.45
+    // Desplazamiento vertical relativo dentro del tablero para centrar mejor los dígitos
+    private let finalScoreYOffsetRatio: CGFloat = 0.06
+
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
         super.didMove(to: view)
@@ -140,6 +147,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverScoreImage = scoreImg
         addChild(scoreImg)
         updateGameOverScoreLayout()
+
+        // Contenedor para los dígitos del puntaje final sobre el tablero (como hermano en la escena)
+        finalScoreContainer.name = "finalScoreContainer"
+        finalScoreContainer.zPosition = GameConfig.ZPosition.UI + 0.1 // Encima del tablero
+        finalScoreContainer.isHidden = true
+        addChild(finalScoreContainer)
 
         setupScoreDisplay()
     }
@@ -305,6 +318,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let centerY = restartButton.position.y
         let targetCenterOffsetBelow = buttonHalfH + scoreHalfH + gapBelow
         scoreImg.position = CGPoint(x: frame.midX, y: centerY - targetCenterOffsetBelow)
+
+        // Actualizar posición/escala de los dígitos del puntaje final para el nuevo tamaño
+        updateFinalScoreDisplay()
+    }
+
+    private func updateFinalScoreDisplay() {
+        guard let scoreBoard = gameOverScoreImage else { return }
+
+        // Posición vertical dentro del tablero (ligeramente arriba del centro), como hermano en la escena
+        let boardFrame = scoreBoard.calculateAccumulatedFrame()
+        let offsetY = boardFrame.height * finalScoreYOffsetRatio
+        finalScoreContainer.position = CGPoint(x: scoreBoard.position.x, y: scoreBoard.position.y + offsetY)
+        finalScoreContainer.removeAllChildren()
+
+        let scoreString = String(score)
+        var digitNodes: [SKSpriteNode] = []
+        for ch in scoreString {
+            let texture = SKTexture(imageNamed: String(ch))
+            let node = SKSpriteNode(texture: texture)
+            digitNodes.append(node)
+        }
+        // Evitar división entre cero
+        let baseTotalWidth = digitNodes.reduce(CGFloat(0)) { $0 + $1.size.width }
+        guard baseTotalWidth > 0 else { return }
+
+        // Calcular escala para que quepa dentro de un % del ancho del tablero (usando tamaño acumulado para incluir escala del tablero)
+        let targetWidth = boardFrame.width * finalScoreMaxWidthRatio
+        let scale = max(0.2, min(2.0, targetWidth / baseTotalWidth))
+
+        // Centrar
+        let totalScaledWidth = baseTotalWidth * scale
+        var currentX = -totalScaledWidth / 2.0
+        for node in digitNodes {
+            let nodeWidth = node.size.width * scale
+            node.setScale(scale)
+            node.position = CGPoint(x: currentX + nodeWidth / 2.0, y: 0)
+            finalScoreContainer.addChild(node)
+            currentX += nodeWidth
+        }
+        // Visibilidad se controla al mostrar/ocultar Game Over
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
@@ -314,6 +367,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateResumeOverlayLayout()
         updateGameOverImageLayout()
         updateGameOverScoreLayout()
+        // Ajustar dígitos si cambia el tamaño de la escena
+        updateFinalScoreDisplay()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
@@ -605,6 +660,12 @@ extension GameScene {
                 SKAction.scale(by: 1.0/1.05, duration: 0.1)
             ])
             scoreImg.run(SKAction.group([fadeIn, pop]))
+            
+            // Actualizar y mostrar los dígitos del puntaje final sobre el tablero
+            updateFinalScoreDisplay()
+            finalScoreContainer.isHidden = false
+            finalScoreContainer.alpha = 0.0
+            finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.25))
         }
     }
 
@@ -626,6 +687,10 @@ extension GameScene {
             scoreImg.isHidden = true
             scoreImg.alpha = 1.0
         }
+        // Ocultar dígitos del puntaje final
+        finalScoreContainer.removeAllActions()
+        finalScoreContainer.isHidden = true
+        finalScoreContainer.alpha = 1.0
     }
     
     private func restartGame(playPointSound: Bool = true) {
