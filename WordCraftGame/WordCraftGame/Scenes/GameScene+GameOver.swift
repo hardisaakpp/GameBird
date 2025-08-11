@@ -33,6 +33,9 @@ extension GameScene {
     }
     
     func showRestartButton() {
+        // Ocultar el marcador principal en la pantalla de Game Over
+        scoreContainer.isHidden = true
+        
         // Mostrar sombreado Game Over con transparencia similar a pausa (0.65)
         if let dim = gameOverDim {
             dim.isHidden = false
@@ -85,6 +88,9 @@ extension GameScene {
     }
 
     func hideRestartButton() {
+        // Mostrar nuevamente el marcador principal
+        scoreContainer.isHidden = false
+        
         // Ocultar imagen y sombreado Game Over
         if let img = gameOverImage {
             img.removeAllActions()

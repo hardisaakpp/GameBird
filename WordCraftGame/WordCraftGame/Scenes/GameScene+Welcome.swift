@@ -26,27 +26,21 @@ extension GameScene {
         overlay.zPosition = GameConfig.ZPosition.UI + 2  // Por encima de otros overlays
         overlay.name = "welcomeOverlay"
         
-        // Capa semitransparente
-        let dim = SKSpriteNode(color: .black.withAlphaComponent(0.7), size: self.frame.size)
-        dim.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
-        dim.name = "welcomeDim"
-        overlay.addChild(dim)
-        
         // Título principal
         let title = SKLabelNode(text: "¡BIENVENIDO!")
         title.fontName = "AvenirNext-Bold"
         title.fontSize = 48
-        title.fontColor = .white
+        title.fontColor = .systemIndigo
         title.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
         title.verticalAlignmentMode = .center
         title.name = "welcomeTitle"
         overlay.addChild(title)
         
         // Subtítulo
-        let subtitle = SKLabelNode(text: "WordCraft Game")
+        let subtitle = SKLabelNode(text: "Fluttor")
         subtitle.fontName = "AvenirNext-Medium"
         subtitle.fontSize = 28
-        subtitle.fontColor = .systemYellow
+        subtitle.fontColor = .systemTeal
         subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         subtitle.verticalAlignmentMode = .center
         subtitle.name = "welcomeSubtitle"
@@ -56,7 +50,7 @@ extension GameScene {
         let description = SKLabelNode(text: "Ayuda al pájaro a volar")
         description.fontName = "AvenirNext-Regular"
         description.fontSize = 22
-        description.fontColor = .white.withAlphaComponent(0.9)
+        description.fontColor = .systemPurple
         description.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
         description.verticalAlignmentMode = .center
         description.name = "welcomeDescription"
@@ -65,7 +59,7 @@ extension GameScene {
         let description2 = SKLabelNode(text: "evitando las tuberías")
         description2.fontName = "AvenirNext-Regular"
         description2.fontSize = 22
-        description2.fontColor = .white.withAlphaComponent(0.9)
+        description2.fontColor = .systemPurple
         description2.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
         description2.verticalAlignmentMode = .center
         description2.name = "welcomeDescription2"
@@ -107,7 +101,7 @@ extension GameScene {
         let tapHint = SKLabelNode(text: "Toca COMENZAR para ver las instrucciones")
         tapHint.fontName = "AvenirNext-Medium"
         tapHint.fontSize = 18
-        tapHint.fontColor = .white.withAlphaComponent(0.7)
+        tapHint.fontColor = .systemOrange
         tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
         tapHint.verticalAlignmentMode = .center
         tapHint.name = "welcomeTapHint"
@@ -134,6 +128,9 @@ extension GameScene {
         backgroundComponent?.stopMovement()
         pipeManager?.stopAllPipes()
         
+        // Ocultar el marcador en la pantalla de bienvenida
+        scoreContainer.isHidden = true
+        
         // Crear y mostrar el overlay de bienvenida
         welcomeOverlay = createWelcomeOverlay()
         addChild(welcomeOverlay)
@@ -144,6 +141,9 @@ extension GameScene {
     
     func hideWelcomeScreen() {
         isWelcomeScreenActive = false
+        
+        // Mostrar nuevamente el marcador
+        scoreContainer.isHidden = false
         
         // Animación de salida
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
@@ -161,12 +161,6 @@ extension GameScene {
     
     func updateWelcomeOverlayLayout() {
         guard let overlay = welcomeOverlay else { return }
-        
-        // Actualizar posición del overlay si cambia el tamaño de la escena
-        if let dim = overlay.children.first(where: { $0.name == "welcomeDim" }) as? SKSpriteNode {
-            dim.size = self.frame.size
-            dim.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
-        }
         
         // Actualizar posiciones de todos los elementos usando las constantes de layout
         let title = overlay.children.first(where: { $0.name == "welcomeTitle" }) as? SKLabelNode
