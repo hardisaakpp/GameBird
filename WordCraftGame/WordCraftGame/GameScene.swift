@@ -45,11 +45,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Porción del ancho del tablero usada para los dígitos (45%)
     let finalScoreMaxWidthRatio: CGFloat = 0.45
     // Desplazamiento vertical relativo dentro del tablero para centrar mejor los dígitos
-    let finalScoreYOffsetRatio: CGFloat = 0.06
+    let finalScoreYOffsetRatio: CGFloat = 0.11
     // Padding horizontal derecho como fracción del ancho del tablero para alinear a la derecha
-    let finalScoreRightPaddingRatio: CGFloat = 0.11
+    let finalScoreRightPaddingRatio: CGFloat = 0.13
     // Nuevo: factor para reducir el tamaño de los dígitos del puntaje final
-    let finalScoreScaleFactor: CGFloat = 1.0 / 3.0
+    let finalScoreScaleFactor: CGFloat = 1.0 / 2.1
     // Cache de texturas de dígitos y memo de layout final
     var digitTextures: [Character: SKTexture] = [:]
     var lastFinalScoreRendered: Int = -1
