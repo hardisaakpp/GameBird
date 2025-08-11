@@ -3,6 +3,24 @@ import SpriteKit
 // MARK: - Pantalla de Bienvenida
 extension GameScene {
     
+    // MARK: - Constantes de Espaciado
+    private struct WelcomeLayout {
+        // Espaciado vertical entre elementos
+        static let titleToSubtitle: CGFloat = 80      // Espacio entre título principal y subtítulo (aumentado de 60)
+        static let subtitleToDescription: CGFloat = 70 // Espacio entre subtítulo y primera descripción (aumentado de 50)
+        static let descriptionToDescription: CGFloat = 25 // Espacio entre las dos líneas de descripción (aumentado de 15)
+        static let descriptionToButton: CGFloat = 70   // Espacio entre descripción y botón (aumentado de 50)
+        static let buttonToHint: CGFloat = 60          // Espacio entre botón y texto de ayuda (aumentado de 40)
+        
+        // Posiciones base desde el centro
+        static let titleOffset: CGFloat = 160          // Título principal desde el centro (aumentado de 140)
+        static let subtitleOffset: CGFloat = 80        // Subtítulo desde el centro (mantenido)
+        static let descriptionOffset: CGFloat = 10     // Primera descripción desde el centro (reducido de 30)
+        static let description2Offset: CGFloat = -15   // Segunda descripción desde el centro (reducido de 15)
+        static let buttonOffset: CGFloat = -85         // Botón desde el centro (reducido de -35)
+        static let hintOffset: CGFloat = -145          // Texto de ayuda desde el centro (reducido de -75)
+    }
+    
     func createWelcomeOverlay() -> SKNode {
         let overlay = SKNode()
         overlay.zPosition = GameConfig.ZPosition.UI + 2  // Por encima de otros overlays
@@ -19,7 +37,7 @@ extension GameScene {
         title.fontName = "AvenirNext-Bold"
         title.fontSize = 48
         title.fontColor = .white
-        title.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 120)
+        title.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
         title.verticalAlignmentMode = .center
         title.name = "welcomeTitle"
         overlay.addChild(title)
@@ -29,7 +47,7 @@ extension GameScene {
         subtitle.fontName = "AvenirNext-Medium"
         subtitle.fontSize = 28
         subtitle.fontColor = .systemYellow
-        subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 70)
+        subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         subtitle.verticalAlignmentMode = .center
         subtitle.name = "welcomeSubtitle"
         overlay.addChild(subtitle)
@@ -39,7 +57,7 @@ extension GameScene {
         description.fontName = "AvenirNext-Regular"
         description.fontSize = 22
         description.fontColor = .white.withAlphaComponent(0.9)
-        description.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 20)
+        description.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
         description.verticalAlignmentMode = .center
         description.name = "welcomeDescription"
         overlay.addChild(description)
@@ -48,14 +66,14 @@ extension GameScene {
         description2.fontName = "AvenirNext-Regular"
         description2.fontSize = 22
         description2.fontColor = .white.withAlphaComponent(0.9)
-        description2.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 10)
+        description2.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
         description2.verticalAlignmentMode = .center
         description2.name = "welcomeDescription2"
         overlay.addChild(description2)
         
         // Botón de comenzar
         let startButtonContainer = SKNode()
-        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 80)
+        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
         startButtonContainer.name = "welcomeStartButton"
         
         let startBg = SKShapeNode(rectOf: CGSize(width: 280, height: 70), cornerRadius: 20)
@@ -90,7 +108,7 @@ extension GameScene {
         tapHint.fontName = "AvenirNext-Medium"
         tapHint.fontSize = 18
         tapHint.fontColor = .white.withAlphaComponent(0.7)
-        tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 140)
+        tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
         tapHint.verticalAlignmentMode = .center
         tapHint.name = "welcomeTapHint"
         overlay.addChild(tapHint)
@@ -150,23 +168,23 @@ extension GameScene {
             dim.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         }
         
-        // Actualizar posiciones de todos los elementos
+        // Actualizar posiciones de todos los elementos usando las constantes de layout
         let title = overlay.children.first(where: { $0.name == "welcomeTitle" }) as? SKLabelNode
-        title?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 120)
+        title?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
         
         let subtitle = overlay.children.first(where: { $0.name == "welcomeSubtitle" }) as? SKLabelNode
-        subtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 70)
+        subtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         
         let description = overlay.children.first(where: { $0.name == "welcomeDescription" }) as? SKLabelNode
-        description?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 20)
+        description?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
         
         let description2 = overlay.children.first(where: { $0.name == "welcomeDescription2" }) as? SKLabelNode
-        description2?.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 10)
+        description2?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
         
         let startButton = overlay.children.first(where: { $0.name == "welcomeStartButton" })
-        startButton?.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 80)
+        startButton?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
         
         let tapHint = overlay.children.first(where: { $0.name == "welcomeTapHint" }) as? SKLabelNode
-        tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 140)
+        tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
     }
 }
