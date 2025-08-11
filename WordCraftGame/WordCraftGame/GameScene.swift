@@ -612,8 +612,15 @@ extension GameScene {
         let touchLocation = touch.location(in: self)
         
         if restartButton.contains(touchLocation) {
-            // Sonido de botón presionado
-            AudioManager.shared.playSwooshSound()
+            let isNightMode = BackgroundConstants.isNightNow()
+            
+            // Sonido de botón presionado - swoosh.wav para modo noche
+            if isNightMode {
+                AudioManager.shared.playSwooshSound()
+            } else {
+                // Para modo día, también usar swoosh (o se puede cambiar por otro sonido)
+                AudioManager.shared.playSwooshSound()
+            }
             
             // Feedback visual
             let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
@@ -621,7 +628,8 @@ extension GameScene {
             
             restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
                 self.restartButton.isHidden = true
-                self.restartGame(playPointSound: true)
+                // En modo noche, no reproducir point.wav al reiniciar
+                self.restartGame(playPointSound: !isNightMode)
             }
         }
     }
