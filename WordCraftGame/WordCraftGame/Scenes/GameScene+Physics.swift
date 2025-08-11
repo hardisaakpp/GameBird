@@ -54,6 +54,9 @@ extension GameScene {
         isGameOver = true
         pauseButton?.isHidden = true
         
+        // Registrar el resultado del juego
+        ScoreManager.shared.recordGameResult(score: score)
+        
         // Detener la generación de nuevos tubos pero mantener los existentes
         pipeManager?.stopAllPipes()
         

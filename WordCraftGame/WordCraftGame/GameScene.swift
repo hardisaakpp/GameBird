@@ -54,4 +54,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var digitTextures: [Character: SKTexture] = [:]
     var lastFinalScoreRendered: Int = -1
     var lastFinalBoardWidth: CGFloat = -1
+    
+    // MARK: - High Score Properties
+    var highScoreContainer: SKNode?
+    var highScoreDigitsContainer: SKNode?
 }

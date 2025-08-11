@@ -78,6 +78,9 @@ extension GameScene {
             finalScoreContainer.isHidden = false
             finalScoreContainer.alpha = 0.0
             finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.25))
+            
+            // Mostrar el mejor puntaje
+            showHighScoreDisplay()
         }
     }
 
@@ -103,6 +106,13 @@ extension GameScene {
         finalScoreContainer.removeAllActions()
         finalScoreContainer.isHidden = true
         finalScoreContainer.alpha = 1.0
+        
+        // Ocultar high score
+        if let highScoreContainer = highScoreContainer {
+            highScoreContainer.removeAllActions()
+            highScoreContainer.isHidden = true
+            highScoreContainer.alpha = 1.0
+        }
     }
 
     func updateFinalScoreDisplay() {
@@ -161,5 +171,77 @@ extension GameScene {
 
         lastFinalScoreRendered = score
         lastFinalBoardWidth = boardFrame.width
+    }
+    
+    // MARK: - High Score Display
+    func showHighScoreDisplay() {
+        // Crear contenedor para el mejor puntaje si no existe
+        if highScoreContainer == nil {
+            createHighScoreContainer()
+        }
+        
+        // Actualizar el mejor puntaje
+        updateHighScoreDisplay()
+        
+        // Mostrar con animación
+        if let highScoreContainer = highScoreContainer {
+            highScoreContainer.isHidden = false
+            highScoreContainer.alpha = 0.0
+            highScoreContainer.run(SKAction.fadeIn(withDuration: 0.3))
+        }
+    }
+    
+    private func createHighScoreContainer() {
+        guard let scoreBoard = gameOverScoreImage else { return }
+        
+        let boardFrame = scoreBoard.calculateAccumulatedFrame()
+        let offsetY = boardFrame.height * -0.22 // Posición más abajo que el puntaje actual
+        let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
+        let targetX = boardFrame.maxX - rightPadding - 25 // Mover 80 puntos a la izquierda
+        
+        highScoreContainer = SKNode()
+        highScoreContainer?.position = CGPoint(x: targetX, y: scoreBoard.position.y + offsetY)
+        highScoreContainer?.zPosition = GameConfig.ZPosition.UI
+        
+        // Agregar contenedor para dígitos del mejor puntaje
+        highScoreDigitsContainer = SKNode()
+        highScoreDigitsContainer?.position = CGPoint(x: 0, y: 0)
+        highScoreContainer?.addChild(highScoreDigitsContainer!)
+        
+        addChild(highScoreContainer!)
+    }
+    
+    private func updateHighScoreDisplay() {
+        guard let highScoreDigitsContainer = highScoreDigitsContainer else { return }
+        
+        // Limpiar dígitos anteriores
+        highScoreDigitsContainer.removeAllChildren()
+        
+        let highScore = ScoreManager.shared.highScore
+        let highScoreString = String(highScore)
+        
+        var digitNodes: [SKSpriteNode] = []
+        for ch in highScoreString {
+            let texture = digitTextures[ch] ?? SKTexture(imageNamed: String(ch))
+            if digitTextures[ch] == nil { digitTextures[ch] = texture }
+            let node = SKSpriteNode(texture: texture)
+            digitNodes.append(node)
+        }
+        
+        // Calcular escala (mismo tamaño que el puntaje actual)
+        let baseTotalWidth = digitNodes.reduce(CGFloat(0)) { $0 + $1.size.width }
+        guard baseTotalWidth > 0 else { return }
+        
+        let scale = finalScoreScaleFactor // Mismo tamaño que el puntaje actual
+        
+        // Posicionar dígitos
+        var currentX: CGFloat = 0
+        for node in digitNodes {
+            let nodeWidth = node.size.width * scale
+            node.setScale(scale)
+            node.position = CGPoint(x: currentX + nodeWidth / 2.0, y: 0)
+            highScoreDigitsContainer.addChild(node)
+            currentX += nodeWidth
+        }
     }
 }
