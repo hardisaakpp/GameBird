@@ -24,6 +24,11 @@ class BackgroundComponent {
             backgroundContainer.addChild(backgroundNode)
         }
         
+        // Verificar y corregir posicionamiento inicial
+        DispatchQueue.main.async { [weak self] in
+            self?.ensureSeamlessCoverage()
+        }
+        
         startInfiniteMovement()
         startDayNightAutoUpdate()
         return backgroundContainer
@@ -57,8 +62,51 @@ class BackgroundComponent {
                     node != backgroundNode ? node.position.x + node.size.width/2 : nil
                 }.max() ?? scene.frame.width/2
                 
-                // Reposicionar este nodo inmediatamente después del más a la derecha
-                backgroundNode.position.x = rightmostPosition + nodeWidth/2
+                // Reposicionar este nodo exactamente donde debe estar para evitar gaps
+                // Usar un overlap más agresivo para asegurar cobertura completa
+                let aggressiveOverlap: CGFloat = 5.0
+                backgroundNode.position.x = rightmostPosition + aggressiveOverlap
+            }
+        }
+        
+        // Verificación adicional: asegurar que no haya gaps visibles
+        ensureSeamlessCoverage()
+    }
+    
+    private func ensureSeamlessCoverage() {
+        // Ordenar nodos por posición X
+        let sortedNodes = backgroundNodes.sorted { $0.position.x < $1.position.x }
+        
+        // Verificar que el primer nodo cubra completamente el lado izquierdo
+        if let firstNode = sortedNodes.first {
+            let firstNodeLeftEdge = firstNode.position.x - firstNode.size.width/2
+            if firstNodeLeftEdge > -scene.frame.width/2 {
+                // Mover el primer nodo para cubrir completamente el lado izquierdo
+                firstNode.position.x = -scene.frame.width/2 + firstNode.size.width/2
+            }
+        }
+        
+        // Verificar que el último nodo cubra completamente el lado derecho
+        if let lastNode = sortedNodes.last {
+            let lastNodeRightEdge = lastNode.position.x + lastNode.size.width/2
+            if lastNodeRightEdge < scene.frame.width/2 {
+                // Mover el último nodo para cubrir completamente el lado derecho
+                lastNode.position.x = scene.frame.width/2 - lastNode.size.width/2
+            }
+        }
+        
+        // Verificar que no haya gaps entre nodos consecutivos
+        for i in 0..<sortedNodes.count - 1 {
+            let currentNode = sortedNodes[i]
+            let nextNode = sortedNodes[i + 1]
+            
+            let currentRightEdge = currentNode.position.x + currentNode.size.width/2
+            let nextLeftEdge = nextNode.position.x - nextNode.size.width/2
+            
+            // Si hay un gap, cerrarlo moviendo el siguiente nodo
+            if nextLeftEdge > currentRightEdge {
+                let gap = nextLeftEdge - currentRightEdge
+                nextNode.position.x -= gap
             }
         }
     }
@@ -97,8 +145,10 @@ class BackgroundComponent {
     
     private func positionBackgroundNode(_ node: Background, index: Int) {
         let nodeWidth = node.size.width
+        // Posicionar las imágenes con overlap para asegurar cobertura completa
+        let overlap: CGFloat = 10.0 // Overlap más agresivo para eliminar gaps
         node.position = CGPoint(
-            x: CGFloat(index) * nodeWidth - nodeWidth/2,
+            x: CGFloat(index) * (nodeWidth - overlap),
             y: scene.frame.midY
         )
     }
