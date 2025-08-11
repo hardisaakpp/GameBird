@@ -116,10 +116,13 @@ extension GameScene {
             finalScoreContainer.isHidden = false
         }
 
-        // Posición vertical dentro del tablero (ligeramente arriba del centro), como hermano en la escena
+        // Posición: alinear vertical con pequeño offset y acercar a borde derecho del tablero
         let boardFrame = scoreBoard.calculateAccumulatedFrame()
         let offsetY = boardFrame.height * finalScoreYOffsetRatio
-        finalScoreContainer.position = CGPoint(x: scoreBoard.position.x, y: scoreBoard.position.y + offsetY)
+        let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
+        // Punto X en el borde derecho menos padding, convertido al sistema del padre (la escena)
+        let targetX = boardFrame.maxX - rightPadding
+        finalScoreContainer.position = CGPoint(x: targetX, y: scoreBoard.position.y + offsetY)
 
         // Si no cambió el puntaje ni el ancho del tablero, no reconstruir los hijos
         if lastFinalScoreRendered == score && abs(lastFinalBoardWidth - boardFrame.width) < 0.5 && !finalScoreContainer.children.isEmpty {
@@ -142,11 +145,12 @@ extension GameScene {
 
         // Calcular escala para que quepa dentro de un % del ancho del tablero (usando tamaño acumulado para incluir escala del tablero)
         let targetWidth = boardFrame.width * finalScoreMaxWidthRatio
-        let scale = max(0.2, min(2.0, targetWidth / baseTotalWidth))
+        let baseScale = max(0.2, min(2.0, targetWidth / baseTotalWidth))
+        let scale = baseScale * finalScoreScaleFactor
 
-        // Centrar
+        // Alinear a la derecha: calcular ancho total escalado y ubicar desde el borde derecho hacia la izquierda
         let totalScaledWidth = baseTotalWidth * scale
-        var currentX = -totalScaledWidth / 2.0
+        var currentX = -totalScaledWidth // contenedor se coloca en el borde derecho; empezamos desde -ancho
         for node in digitNodes {
             let nodeWidth = node.size.width * scale
             node.setScale(scale)
