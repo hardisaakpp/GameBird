@@ -47,6 +47,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let finalScoreMaxWidthRatio: CGFloat = 0.45
     // Desplazamiento vertical relativo dentro del tablero para centrar mejor los dígitos
     private let finalScoreYOffsetRatio: CGFloat = 0.06
+    // Cache de texturas de dígitos y memo de layout final
+    private var digitTextures: [Character: SKTexture] = [:]
+    private var lastFinalScoreRendered: Int = -1
+    private var lastFinalBoardWidth: CGFloat = -1
 
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
@@ -74,6 +78,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Prueba de carga de sonidos
         SoundTest.testSoundLoading()
+
+        // Cache de dígitos (0-9) para evitar recrear texturas
+        preloadDigitTextures()
 
         // Reposicionar tras el primer ciclo de layout para asegurar safeAreaInsets correctos
         DispatchQueue.main.async { [weak self] in
@@ -150,11 +157,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Contenedor para los dígitos del puntaje final sobre el tablero (como hermano en la escena)
         finalScoreContainer.name = "finalScoreContainer"
-        finalScoreContainer.zPosition = GameConfig.ZPosition.UI + 0.1 // Encima del tablero
+        finalScoreContainer.zPosition = GameConfig.ZPosition.UI - 0.05 // Sobre el tablero, debajo de otros UI
         finalScoreContainer.isHidden = true
         addChild(finalScoreContainer)
 
         setupScoreDisplay()
+    }
+
+    // Precarga de texturas de números 0-9
+    private func preloadDigitTextures() {
+        for c in "0123456789" {
+            if digitTextures[c] == nil {
+                digitTextures[c] = SKTexture(imageNamed: String(c))
+            }
+        }
     }
 
     // MARK: - Marcador (Score)
@@ -172,10 +188,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let scoreString = String(score)
         var digitNodes: [SKSpriteNode] = []
 
-        // Crear nodos por dígito (usa Assets.xcassets/Numbers/{0-9})
-        for char in scoreString {
-            let digitName = String(char)
-            let texture = SKTexture(imageNamed: digitName)
+        // Crear nodos por dígito (usa Assets.xcassets/Numbers/{0-9}) con cache
+        for ch in scoreString {
+            let texture = digitTextures[ch] ?? SKTexture(imageNamed: String(ch))
+            if digitTextures[ch] == nil { digitTextures[ch] = texture }
             let node = SKSpriteNode(texture: texture)
             node.setScale(scoreDigitScale)
             digitNodes.append(node)
@@ -326,16 +342,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func updateFinalScoreDisplay() {
         guard let scoreBoard = gameOverScoreImage else { return }
 
+        // Si el tablero no está en escena o está oculto, ocultar los dígitos
+        if scoreBoard.parent == nil || scoreBoard.isHidden {
+            finalScoreContainer.isHidden = true
+            return
+        } else {
+            finalScoreContainer.isHidden = false
+        }
+
         // Posición vertical dentro del tablero (ligeramente arriba del centro), como hermano en la escena
         let boardFrame = scoreBoard.calculateAccumulatedFrame()
         let offsetY = boardFrame.height * finalScoreYOffsetRatio
         finalScoreContainer.position = CGPoint(x: scoreBoard.position.x, y: scoreBoard.position.y + offsetY)
+
+        // Si no cambió el puntaje ni el ancho del tablero, no reconstruir los hijos
+        if lastFinalScoreRendered == score && abs(lastFinalBoardWidth - boardFrame.width) < 0.5 && !finalScoreContainer.children.isEmpty {
+            return
+        }
+
         finalScoreContainer.removeAllChildren()
 
         let scoreString = String(score)
         var digitNodes: [SKSpriteNode] = []
         for ch in scoreString {
-            let texture = SKTexture(imageNamed: String(ch))
+            let texture = digitTextures[ch] ?? SKTexture(imageNamed: String(ch))
+            if digitTextures[ch] == nil { digitTextures[ch] = texture }
             let node = SKSpriteNode(texture: texture)
             digitNodes.append(node)
         }
@@ -357,7 +388,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             finalScoreContainer.addChild(node)
             currentX += nodeWidth
         }
-        // Visibilidad se controla al mostrar/ocultar Game Over
+
+        lastFinalScoreRendered = score
+        lastFinalBoardWidth = boardFrame.width
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
