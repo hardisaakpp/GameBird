@@ -1,27 +1,19 @@
 import SpriteKit
 import UIKit
-import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     private var isPausedGame = false
     private var isInitialPauseActive = false
     
-    // MARK: - Constantes de Configuración
-    let backgroundSpeed: CGFloat = 30.0 // Fondo lento
-    let groundSpeed: CGFloat = 150.0    // Suelo rápido
-    
     // MARK: - Propiedades del Escenario
     let birdTexture1 = SKTexture(imageNamed: "redbird-midflap")
     let birdTexture2 = SKTexture(imageNamed: "redbird-downflap")
-    let groundTexture = SKTexture(imageNamed: "base")
-    let backgroundTexture = SKTexture(imageNamed: "background-day")
     
     // Componentes
     private var birdComponent: BirdComponent!         // Pájaros
     private var groundComponent: GroundComponent!         // Suelo
     private var backgroundComponent: BackgroundComponent!   // Fondo
-    private var pipeComponent: PipeComponent!
     private var pipeManager: PipeManager!
     private var restartButton: SKNode!
     private var pauseButton: SKNode!
@@ -52,6 +44,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var lastFinalScoreRendered: Int = -1
     private var lastFinalBoardWidth: CGFloat = -1
 
+    // Estado del overlay de pausa/inicio
+    private enum OverlayMode { case hidden, initial, paused }
+    private func configureResumeOverlay(for mode: OverlayMode) {
+        guard let overlay = resumeOverlay else { return }
+        let resumeButton = overlay.children.first(where: { $0.name == "resumeButton" })
+        let startButton = overlay.children.first(where: { $0.name == "startButton" })
+        let startMessage = overlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode
+        let titleLabel = overlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode
+        let hintLabel = overlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode
+        
+        switch mode {
+        case .hidden:
+            overlay.isHidden = true
+        case .initial:
+            overlay.isHidden = false
+            resumeButton?.isHidden = true
+            startButton?.isHidden = true
+            startMessage?.isHidden = false
+            titleLabel?.isHidden = true
+            hintLabel?.removeAllActions()
+            hintLabel?.isHidden = true
+        case .paused:
+            overlay.isHidden = false
+            titleLabel?.text = "PAUSA"
+            titleLabel?.isHidden = false
+            hintLabel?.removeAllActions()
+            hintLabel?.isHidden = true
+            resumeButton?.isHidden = false
+            startButton?.isHidden = false
+            startMessage?.isHidden = true
+        }
+        updateResumeOverlayLayout()
+    }
+
     // MARK: - Ciclo de Vida de la Escena (Optimizada)
     override func didMove(to view: SKView) {
         super.didMove(to: view)
@@ -76,8 +102,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Precarga de sonidos para mejor rendimiento
         AudioManager.shared.preloadSounds()
         
-        // Prueba de carga de sonidos
+        // Prueba de carga de sonidos (solo en DEBUG)
+        #if DEBUG
         SoundTest.testSoundLoading()
+        #endif
 
         // Cache de dígitos (0-9) para evitar recrear texturas
         preloadDigitTextures()
@@ -87,7 +115,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self?.repositionScoreDisplay()
         }
     }
-    
+
+    // Helper: safe area superior (max entre ventana y vista)
+    private func topSafeAreaInset() -> CGFloat {
+        let windowTop: CGFloat = {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                return keyWindow.safeAreaInsets.top
+            }
+            return 0
+        }()
+        let viewTop = view?.safeAreaInsets.top ?? 0
+        return max(windowTop, viewTop)
+    }
+
     private func setupGameWorld() {
         PhysicsManager.configureWorld(for: self, gravity: GameConfig.Physics.gravity)
         PhysicsManager.createBoundary(for: self,
@@ -212,16 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func repositionScoreDisplay() {
-        // Priorizar safeArea de la ventana (mejor para Dynamic Island/notch)
-        let windowSafeTop: CGFloat = {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                return keyWindow.safeAreaInsets.top
-            }
-            return 0
-        }()
-        let viewSafeTop = view?.safeAreaInsets.top ?? 0
-        let safeTop = max(windowSafeTop, viewSafeTop)
+        let safeTop = topSafeAreaInset()
         let halfHeight = scoreContainer.calculateAccumulatedFrame().height / 2
         scoreContainer.position = CGPoint(
             x: frame.midX,
@@ -232,15 +264,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func repositionPauseButton() {
         guard let view = view else { return }
         // Calcular safe areas
-        let windowSafeTop: CGFloat = {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                return keyWindow.safeAreaInsets.top
-            }
-            return 0
-        }()
         let viewSafeLeft = view.safeAreaInsets.left
-        let safeTop = max(windowSafeTop, view.safeAreaInsets.top)
+        let safeTop = topSafeAreaInset()
 
         // Posicionar en esquina superior izquierda
         // Usar tamaño mínimo visible si el frame aún no está calculado
@@ -534,6 +559,19 @@ extension GameScene {
     private func handlePipeCollision() {
         // Evitar múltiples colisiones
         guard !isGameOver else { return }
+        enterGameOverState()
+    }
+    
+    private func triggerGameOver() {
+        // Solo ejecutar si no se ha ejecutado ya
+        guard !isGameOver else { return }
+        
+        print("¡Game Over final!")
+        enterGameOverState()
+    }
+
+    // Nuevo: método común para entrar al estado de Game Over (dedup)
+    private func enterGameOverState() {
         isGameOver = true
         pauseButton?.isHidden = true
         
@@ -546,18 +584,11 @@ extension GameScene {
         
         // Configurar el pájaro para que caiga dramáticamente
         if let birdPhysics = birdComponent.bird.physicsBody {
-            // Reducir la masa para una caída más dramática
             birdPhysics.mass = 0.1
-            
-            // Aplicar un impulso hacia abajo y ligeramente hacia atrás
             let fallImpulse = CGVector(dx: -50, dy: -200)
             birdPhysics.applyImpulse(fallImpulse)
-            
-            // Permitir rotación para efecto dramático
             birdPhysics.allowsRotation = true
-            birdPhysics.angularVelocity = -3.0 // Rotación hacia atrás
-            
-            // Reducir la fricción para que caiga más rápido
+            birdPhysics.angularVelocity = -3.0
             birdPhysics.linearDamping = 0.1
         }
         
@@ -568,61 +599,13 @@ extension GameScene {
         addImpactEffect()
         
         // Mostrar el botón de reinicio con un temporizador de seguridad
-        // Esto asegura que siempre aparezca, independientemente de si toca el suelo
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if self.isGameOver && self.restartButton.isHidden {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            if let self = self, self.isGameOver && self.restartButton.isHidden {
                 self.showRestartButton()
             }
         }
     }
-    
-    private func triggerGameOver() {
-        // Solo ejecutar si no se ha ejecutado ya
-        guard !isGameOver else { return }
-        
-        print("¡Game Over final!")
-        isGameOver = true
-        pauseButton?.isHidden = true
-        
-        // Detener la generación de nuevos tubos
-        pipeManager?.stopAllPipes()
-        
-        // Detener movimiento del fondo y suelo
-        groundComponent?.stopMovement()
-        backgroundComponent?.stopMovement()
-        
-        // Configurar el pájaro para que caiga dramáticamente
-        if let birdPhysics = birdComponent.bird.physicsBody {
-            // Reducir la masa para una caída más dramática
-            birdPhysics.mass = 0.1
-            
-            // Aplicar un impulso hacia abajo y ligeramente hacia atrás
-            let fallImpulse = CGVector(dx: -50, dy: -200)
-            birdPhysics.applyImpulse(fallImpulse)
-            
-            // Permitir rotación para efecto dramático
-            birdPhysics.allowsRotation = true
-            birdPhysics.angularVelocity = -3.0 // Rotación hacia atrás
-            
-            // Reducir la fricción para que caiga más rápido
-            birdPhysics.linearDamping = 0.1
-        }
-        
-        // Cambiar el color de fondo para indicar el impacto
-        backgroundComponent?.changeBackgroundColor(to: .red)
-        
-        // Efecto visual de impacto
-        addImpactEffect()
-        
-        // Mostrar el botón de reinicio con un temporizador de seguridad
-        // Esto asegura que siempre aparezca, independientemente de si toca el suelo
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if self.isGameOver && self.restartButton.isHidden {
-                self.showRestartButton()
-            }
-        }
-    }
-    
+
     private func addImpactEffect() {
         // Efecto de vibración/sacudida de la pantalla
         let shakeAction = SKAction.sequence([
@@ -743,42 +726,29 @@ extension GameScene {
         physicsWorld.speed = 1.0
         removeAllActions()
         
-        // Limpiar elementos antiguos
-        children.forEach { node in
-            if node.name == "pipe" || node.name == "scoreDetector" {
-                node.removeFromParent()
-            }
-        }
+        // Limpiar elementos antiguos (delegado al PipeManager)
+        pipeManager.removeAllPipes()
         
         // Reiniciar componentes
         birdComponent.reset()
         groundComponent.reset()
         backgroundComponent.reset()
         backgroundComponent.resetBackgroundColor()
-        pipeManager.removeAllPipes() // Limpieza adicional
         pipeManager.restart()
         
         // Restaurar UI
         hideRestartButton()
-        backgroundComponent.reset()
         birdComponent.bird.physicsBody?.isDynamic = true
         pauseButton?.isHidden = false
     }
-    
+
     private func handleRestart(_ touches: Set<UITouch>) {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
         if restartButton.contains(touchLocation) {
-            let isNightMode = BackgroundConstants.isNightNow()
-            
-            // Sonido de botón presionado - swoosh.wav para modo noche
-            if isNightMode {
-                AudioManager.shared.playSwooshSound()
-            } else {
-                // Para modo día, también usar swoosh (o se puede cambiar por otro sonido)
-                AudioManager.shared.playSwooshSound()
-            }
+            // Sonido de botón presionado
+            AudioManager.shared.playSwooshSound()
             
             // Feedback visual
             let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
@@ -787,6 +757,7 @@ extension GameScene {
             restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
                 self.restartButton.isHidden = true
                 // En modo noche, no reproducir point.wav al reiniciar
+                let isNightMode = BackgroundConstants.isNightNow()
                 self.restartGame(playPointSound: !isNightMode)
             }
         }
@@ -804,29 +775,8 @@ extension GameScene {
         pipeManager?.pause()
 
         // UI
-        resumeOverlay.isHidden = false
-        updateResumeOverlayLayout()
+        configureResumeOverlay(for: .paused)
         pauseButton?.isHidden = true
-        // Configurar textos del overlay para pausa normal
-        if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
-            titleLabel.text = "PAUSA"
-            titleLabel.isHidden = false
-        }
-        if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
-            // Ocultar el hint en la pantalla de pausa
-            hintLabel.removeAllActions()
-            hintLabel.isHidden = true
-        }
-        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
-            resumeButton.isHidden = false
-        }
-        // Mostrar botón Inicio solo en la pausa normal
-        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
-            startButton.isHidden = false
-        }
-        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
-            startMessage.isHidden = true
-        }
     }
 
     private func resumeGame() {
@@ -850,17 +800,8 @@ extension GameScene {
             pipeManager?.resume()
         }
 
-        // UI: si venía de pausa inicial, vuelve a mostrar el botón para próximas pausas
-        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
-            resumeButton.isHidden = false
-        }
-        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
-            startButton.isHidden = false
-        }
-        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
-            startMessage.isHidden = true
-        }
-        resumeOverlay.isHidden = true
+        // UI
+        configureResumeOverlay(for: .hidden)
         if !isGameOver { pauseButton?.isHidden = false }
     }
 
@@ -871,28 +812,9 @@ extension GameScene {
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
         pipeManager?.stopAllPipes()
-        // Mostrar overlay en la pausa inicial; ocultar el botón de reanudar
-        resumeOverlay.isHidden = false
-        if let resumeButton = resumeOverlay.children.first(where: { $0.name == "resumeButton" }) {
-            resumeButton.isHidden = true
-        }
-        // Ocultar el botón Inicio en la pantalla de inicio
-        if let startButton = resumeOverlay.children.first(where: { $0.name == "startButton" }) {
-            startButton.isHidden = true
-        }
-        // Mostrar imagen de mensaje y ocultar textos
-        if let startMessage = resumeOverlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode {
-            startMessage.isHidden = false
-        }
-        if let titleLabel = resumeOverlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode {
-            titleLabel.isHidden = true
-        }
-        if let hintLabel = resumeOverlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode {
-            hintLabel.removeAllActions()
-            hintLabel.isHidden = true
-        }
+        // UI de pausa inicial
+        configureResumeOverlay(for: .initial)
         pauseButton?.isHidden = false
-        updateResumeOverlayLayout()
     }
 
     // Nuevo: volver a la pantalla de inicio desde la pausa
