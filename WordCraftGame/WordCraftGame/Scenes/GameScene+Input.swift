@@ -12,6 +12,25 @@ extension GameScene {
             return
         }
 
+        // Manejo de pantalla de bienvenida
+        if isWelcomeScreenActive {
+            if let welcomeOverlay = welcomeOverlay,
+               welcomeOverlay.contains(touchLocation) {
+                if nodes(at: touchLocation).contains(where: { $0.name == "welcomeStartButton" }) {
+                    let buttonContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeStartButton" })
+                    let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                    let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                    // Sonido al pulsar COMENZAR
+                    AudioManager.shared.playSwooshSound()
+                    (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                        self?.hideWelcomeScreen()
+                    }
+                    return
+                }
+            }
+            return
+        }
+        
         // Manejo de pausa
         if isPausedGame {
             if isInitialPauseActive {

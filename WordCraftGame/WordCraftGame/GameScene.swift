@@ -6,6 +6,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     var isPausedGame = false
     var isInitialPauseActive = false
+    var isWelcomeScreenActive = false  // Nuevo estado para la pantalla de bienvenida
     
     // MARK: - Propiedades del Escenario
     let birdTexture1 = SKTexture(imageNamed: "redbird-midflap")
@@ -21,6 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var restartButton: SKNode!
     var pauseButton: SKNode!
     var resumeOverlay: SKNode!
+    var welcomeOverlay: SKNode!  // Nuevo overlay para la pantalla de bienvenida
     var gameOverImage: SKSpriteNode? // Imagen de Game Over
     var gameOverDim: SKSpriteNode?   // Sombreado de fondo para Game Over
     var gameOverScoreImage: SKSpriteNode? // Imagen "score" debajo del botón reiniciar

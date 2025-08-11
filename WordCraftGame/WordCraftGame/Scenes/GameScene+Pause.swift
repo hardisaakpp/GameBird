@@ -90,8 +90,8 @@ extension GameScene {
     }
 
     func showStartScreenFromPause() {
-        // Reiniciar el juego sin sonido de punto y mostrar la pausa inicial con el mensaje
+        // Reiniciar el juego sin sonido de punto y mostrar la pantalla de bienvenida
         restartGame(playPointSound: false)
-        startInitialPause()
+        showWelcomeScreen()
     }
 }

@@ -20,8 +20,8 @@ extension GameScene {
         
         // Configuración de los elementos del juego
         pipeManager = PipeManager(scene: self)
-        // Inicio en pausa hasta que el usuario toque la pantalla
-        startInitialPause()
+        // Inicio con pantalla de bienvenida
+        showWelcomeScreen()
         
         // Precarga de sonidos para mejor rendimiento
         AudioManager.shared.preloadSounds()
@@ -45,6 +45,7 @@ extension GameScene {
         repositionScoreDisplay()
         repositionPauseButton()
         updateResumeOverlayLayout()
+        updateWelcomeOverlayLayout()
         updateGameOverImageLayout()
         updateGameOverScoreLayout()
         // Ajustar dígitos si cambia el tamaño de la escena
