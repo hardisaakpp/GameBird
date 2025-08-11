@@ -71,7 +71,7 @@ extension GameScene {
         startButtonContainer.name = "welcomeStartButton"
         
         let startBg = SKShapeNode(rectOf: CGSize(width: 280, height: 70), cornerRadius: 20)
-        startBg.fillColor = .systemBlue  // Azul para comenzar - acción principal de inicio
+        startBg.fillColor = .systemOrange  // Naranja energético para comenzar - más llamativo
         startBg.strokeColor = .white
         startBg.lineWidth = 4
         startBg.name = "welcomeStartButton"

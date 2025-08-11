@@ -139,7 +139,7 @@ class UIComponent {
         buttonContainer.name = "resumeButton"
 
         let bg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
-        bg.fillColor = .systemBlue  // Azul para reanudar - acción positiva
+        bg.fillColor = .systemGreen  // Verde para reanudar - acción positiva de continuar
         bg.strokeColor = .white
         bg.lineWidth = 3
         bg.name = "resumeButton"
@@ -171,7 +171,7 @@ class UIComponent {
         startButtonContainer.name = "startButton"
 
         let startBg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
-        startBg.fillColor = .systemGreen  // Verde para reiniciar desde pausa - acción de inicio
+        startBg.fillColor = .systemRed  // Rojo para reiniciar desde pausa - consistente con game over
         startBg.strokeColor = .white
         startBg.lineWidth = 3
         startBg.name = "startButton"

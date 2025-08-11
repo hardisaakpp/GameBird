@@ -51,9 +51,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		81684DF42D456EDF000558C9 /* WordCraftGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordCraftGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordCraftGameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordCraftGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81684DF42D456EDF000558C9 /* Fluttor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluttor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81684E0D2D456EE7000558C9 /* FluttorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluttorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81684E172D456EE7000558C9 /* FluttorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluttorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		81DFF7B42D4EC0FE0000F7EE /* ModelsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		81DFF7B52D4EC0FE0000F7EE /* ComponentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ComponentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -146,9 +146,9 @@
 		81684DF52D456EDF000558C9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				81684DF42D456EDF000558C9 /* WordCraftGame.app */,
-				81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */,
-				81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */,
+				81684DF42D456EDF000558C9 /* Fluttor.app */,
+				81684E0D2D456EE7000558C9 /* FluttorTests.xctest */,
+				81684E172D456EE7000558C9 /* FluttorUITests.xctest */,
 				81DFF7B42D4EC0FE0000F7EE /* ModelsTests.xctest */,
 				81DFF7B52D4EC0FE0000F7EE /* ComponentsTests.xctest */,
 			);
@@ -158,9 +158,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		81684DF32D456EDF000558C9 /* WordCraftGame */ = {
+		81684DF32D456EDF000558C9 /* Fluttor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGame" */;
+			buildConfigurationList = 81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "Fluttor" */;
 			buildPhases = (
 				81684DF02D456EDF000558C9 /* Sources */,
 				81684DF12D456EDF000558C9 /* Frameworks */,
@@ -177,16 +177,16 @@
 				81DFF7A72D4EC00A0000F7EE /* Components */,
 				81EEC6352D46CE0B007C4880 /* Utilities */,
 			);
-			name = WordCraftGame;
+			name = Fluttor;
 			packageProductDependencies = (
 			);
 			productName = WordCraftGame;
-			productReference = 81684DF42D456EDF000558C9 /* WordCraftGame.app */;
+			productReference = 81684DF42D456EDF000558C9 /* Fluttor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		81684E0C2D456EE7000558C9 /* WordCraftGameTests */ = {
+		81684E0C2D456EE7000558C9 /* FluttorTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameTests" */;
+			buildConfigurationList = 81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "FluttorTests" */;
 			buildPhases = (
 				81684E092D456EE7000558C9 /* Sources */,
 				81684E0A2D456EE7000558C9 /* Frameworks */,
@@ -200,16 +200,16 @@
 			fileSystemSynchronizedGroups = (
 				81684E102D456EE7000558C9 /* WordCraftGameTests */,
 			);
-			name = WordCraftGameTests;
+			name = FluttorTests;
 			packageProductDependencies = (
 			);
 			productName = WordCraftGameTests;
-			productReference = 81684E0D2D456EE7000558C9 /* WordCraftGameTests.xctest */;
+			productReference = 81684E0D2D456EE7000558C9 /* FluttorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		81684E162D456EE7000558C9 /* WordCraftGameUITests */ = {
+		81684E162D456EE7000558C9 /* FluttorUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameUITests" */;
+			buildConfigurationList = 81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "FluttorUITests" */;
 			buildPhases = (
 				81684E132D456EE7000558C9 /* Sources */,
 				81684E142D456EE7000558C9 /* Frameworks */,
@@ -223,11 +223,11 @@
 			fileSystemSynchronizedGroups = (
 				81684E1A2D456EE7000558C9 /* WordCraftGameUITests */,
 			);
-			name = WordCraftGameUITests;
+			name = FluttorUITests;
 			packageProductDependencies = (
 			);
 			productName = WordCraftGameUITests;
-			productReference = 81684E172D456EE7000558C9 /* WordCraftGameUITests.xctest */;
+			productReference = 81684E172D456EE7000558C9 /* FluttorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		81DFF75A2D4EBE100000F7EE /* ModelsTests */ = {
@@ -301,7 +301,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "WordCraftGame" */;
+			buildConfigurationList = 81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "Fluttor" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -315,9 +315,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				81684DF32D456EDF000558C9 /* WordCraftGame */,
-				81684E0C2D456EE7000558C9 /* WordCraftGameTests */,
-				81684E162D456EE7000558C9 /* WordCraftGameUITests */,
+				81684DF32D456EDF000558C9 /* Fluttor */,
+				81684E0C2D456EE7000558C9 /* FluttorTests */,
+				81684E162D456EE7000558C9 /* FluttorUITests */,
 				81DFF75A2D4EBE100000F7EE /* ModelsTests */,
 				81DFF7872D4EBE370000F7EE /* ComponentsTests */,
 			);
@@ -403,22 +403,22 @@
 /* Begin PBXTargetDependency section */
 		81684E0F2D456EE7000558C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			target = 81684DF32D456EDF000558C9 /* Fluttor */;
 			targetProxy = 81684E0E2D456EE7000558C9 /* PBXContainerItemProxy */;
 		};
 		81684E192D456EE7000558C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			target = 81684DF32D456EDF000558C9 /* Fluttor */;
 			targetProxy = 81684E182D456EE7000558C9 /* PBXContainerItemProxy */;
 		};
 		81DFF7602D4EBE100000F7EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			target = 81684DF32D456EDF000558C9 /* Fluttor */;
 			targetProxy = 81DFF75F2D4EBE100000F7EE /* PBXContainerItemProxy */;
 		};
 		81DFF78D2D4EBE370000F7EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 81684DF32D456EDF000558C9 /* WordCraftGame */;
+			target = 81684DF32D456EDF000558C9 /* Fluttor */;
 			targetProxy = 81DFF78C2D4EBE370000F7EE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -613,7 +613,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Debug;
 		};
@@ -631,7 +631,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Release;
 		};
@@ -679,7 +679,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Debug;
 		};
@@ -695,7 +695,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Release;
 		};
@@ -711,7 +711,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Debug;
 		};
@@ -727,14 +727,14 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WordCraftGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WordCraftGame";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fluttor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fluttor";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "WordCraftGame" */ = {
+		81684DEF2D456EDF000558C9 /* Build configuration list for PBXProject "Fluttor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				81684E1F2D456EE7000558C9 /* Debug */,
@@ -743,7 +743,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGame" */ = {
+		81684E212D456EE7000558C9 /* Build configuration list for PBXNativeTarget "Fluttor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				81684E222D456EE7000558C9 /* Debug */,
@@ -752,7 +752,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameTests" */ = {
+		81684E242D456EE7000558C9 /* Build configuration list for PBXNativeTarget "FluttorTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				81684E252D456EE7000558C9 /* Debug */,
@@ -761,7 +761,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "WordCraftGameUITests" */ = {
+		81684E272D456EE7000558C9 /* Build configuration list for PBXNativeTarget "FluttorUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				81684E282D456EE7000558C9 /* Debug */,
