@@ -71,7 +71,7 @@ extension GameScene {
         startButtonContainer.name = "welcomeStartButton"
         
         let startBg = SKShapeNode(rectOf: CGSize(width: 280, height: 70), cornerRadius: 20)
-        startBg.fillColor = .systemGreen
+        startBg.fillColor = .systemBlue  // Azul para comenzar - acción principal de inicio
         startBg.strokeColor = .white
         startBg.lineWidth = 4
         startBg.name = "welcomeStartButton"
@@ -101,7 +101,7 @@ extension GameScene {
         let tapHint = SKLabelNode(text: "Toca COMENZAR para ver las instrucciones")
         tapHint.fontName = "AvenirNext-Medium"
         tapHint.fontSize = 18
-        tapHint.fontColor = .systemOrange
+        tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
         tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
         tapHint.verticalAlignmentMode = .center
         tapHint.name = "welcomeTapHint"
