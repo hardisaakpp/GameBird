@@ -4,26 +4,26 @@ class UIComponent {
         let buttonContainer = SKNode()
         buttonContainer.zPosition = GameConfig.ZPosition.UI
         
-        // Fondo del botón
+        // Fondo del botón (mismo tamaño que los otros: 240x64, radio 18)
         let buttonBackground = SKShapeNode(
-            rect: CGRect(x: -110, y: -30, width: 220, height: 60),
-            cornerRadius: 15
+            rectOf: CGSize(width: 240, height: 64),
+            cornerRadius: 18
         )
         buttonBackground.fillColor = .systemBlue
         buttonBackground.strokeColor = .white
         buttonBackground.lineWidth = 3
         
-        // Elementos de texto
+        // Elementos de texto (misma fuente/tamaño que los otros: 30pt)
         let textShadow = SKLabelNode(text: "REINICIAR")
         textShadow.fontName = "AvenirNext-Bold"
-        textShadow.fontSize = 28
+        textShadow.fontSize = 30
         textShadow.fontColor = .black
         textShadow.position = CGPoint(x: 2, y: -2)
         textShadow.alpha = 0.3
         
         let buttonLabel = SKLabelNode(text: "REINICIAR")
         buttonLabel.fontName = "AvenirNext-Bold"
-        buttonLabel.fontSize = 28
+        buttonLabel.fontSize = 30
         buttonLabel.fontColor = .white
         
         // Configuración común con tipo explícito
