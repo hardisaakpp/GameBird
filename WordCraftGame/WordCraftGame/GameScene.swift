@@ -28,6 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var resumeOverlay: SKNode!
     private var gameOverImage: SKSpriteNode? // Imagen de Game Over
     private var gameOverDim: SKSpriteNode?   // Sombreado de fondo para Game Over
+    private var gameOverScoreImage: SKSpriteNode? // Imagen "score" debajo del botón reiniciar
     // Marcador
     private var score: Int = 0
     private var scoreContainer: SKNode = SKNode()
@@ -130,6 +131,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverImage = img
         addChild(img)
         updateGameOverImageLayout()
+        
+        // Imagen de marcador "score.png" debajo del botón Reiniciar
+        let scoreImg = SKSpriteNode(imageNamed: "score")
+        scoreImg.name = "gameOverScore"
+        scoreImg.zPosition = GameConfig.ZPosition.UI - 0.1 // Debajo del botón
+        scoreImg.isHidden = true
+        gameOverScoreImage = scoreImg
+        addChild(scoreImg)
+        updateGameOverScoreLayout()
 
         setupScoreDisplay()
     }
@@ -266,12 +276,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
+    private func updateGameOverScoreLayout() {
+        guard let scoreImg = gameOverScoreImage else { return }
+        
+        // Escalar para que no exceda 65% del ancho de la escena (y permitir ampliación hasta 2x)
+        if scoreImg.size.width > 0 {
+            let targetWidth = frame.width * 0.65
+            let scale = targetWidth / scoreImg.size.width
+            let maxUpscale: CGFloat = 2.0
+            scoreImg.setScale(min(scale, maxUpscale))
+        }
+        
+        // Calcular una separación equivalente a la que hay entre la imagen "Game Over" y el botón
+        let buttonHalfH = restartButton.calculateAccumulatedFrame().height / 2
+        let scoreHalfH = scoreImg.calculateAccumulatedFrame().height / 2
+        var topHalfH: CGFloat = 0
+        if let go = gameOverImage {
+            topHalfH = go.calculateAccumulatedFrame().height / 2
+        }
+        // Distancia centro-a-centro usada para la imagen superior
+        let topCenterOffset: CGFloat = 110
+        // Margen (borde a borde) real arriba del botón
+        let topGap = topCenterOffset - (buttonHalfH + topHalfH)
+        // Asegurar un margen mínimo cómodo
+        let gapBelow = max(topGap, 24)
+        
+        // Posicionar centrado, por debajo del botón con la misma separación
+        let centerY = restartButton.position.y
+        let targetCenterOffsetBelow = buttonHalfH + scoreHalfH + gapBelow
+        scoreImg.position = CGPoint(x: frame.midX, y: centerY - targetCenterOffsetBelow)
+    }
+
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         repositionScoreDisplay()
         repositionPauseButton()
         updateResumeOverlayLayout()
         updateGameOverImageLayout()
+        updateGameOverScoreLayout()
     }
     
     // MARK: - Métodos de Interacción del Usuario (Optimizada)
@@ -552,6 +594,18 @@ extension GameScene {
             SKAction.scale(to: 1.1, duration: 0.2),
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
+        
+        // Mostrar imagen de marcador "score"
+        if let scoreImg = gameOverScoreImage {
+            scoreImg.isHidden = false
+            scoreImg.alpha = 0.0
+            let fadeIn = SKAction.fadeIn(withDuration: 0.25)
+            let pop = SKAction.sequence([
+                SKAction.scale(by: 1.05, duration: 0.15),
+                SKAction.scale(by: 1.0/1.05, duration: 0.1)
+            ])
+            scoreImg.run(SKAction.group([fadeIn, pop]))
+        }
     }
 
     private func hideRestartButton() {
@@ -565,6 +619,12 @@ extension GameScene {
             dim.removeAllActions()
             dim.isHidden = true
             dim.alpha = 0.65
+        }
+        // Ocultar imagen de marcador
+        if let scoreImg = gameOverScoreImage {
+            scoreImg.removeAllActions()
+            scoreImg.isHidden = true
+            scoreImg.alpha = 1.0
         }
     }
     
