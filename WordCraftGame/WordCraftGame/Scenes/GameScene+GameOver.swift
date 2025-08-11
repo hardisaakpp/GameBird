@@ -195,9 +195,9 @@ extension GameScene {
         guard let scoreBoard = gameOverScoreImage else { return }
         
         let boardFrame = scoreBoard.calculateAccumulatedFrame()
-        let offsetY = boardFrame.height * -0.22 // Posición más abajo que el puntaje actual
+        let offsetY = boardFrame.height * -0.26 // Posición más abajo que el puntaje actual
         let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
-        let targetX = boardFrame.maxX - rightPadding - 25 // Mover 80 puntos a la izquierda
+        let targetX = boardFrame.maxX - rightPadding - 38 // Mover 80 puntos a la izquierda
         
         highScoreContainer = SKNode()
         highScoreContainer?.position = CGPoint(x: targetX, y: scoreBoard.position.y + offsetY)
@@ -228,11 +228,11 @@ extension GameScene {
             digitNodes.append(node)
         }
         
-        // Calcular escala (mismo tamaño que el puntaje actual)
+        // Calcular escala (más grande que el puntaje actual)
         let baseTotalWidth = digitNodes.reduce(CGFloat(0)) { $0 + $1.size.width }
         guard baseTotalWidth > 0 else { return }
         
-        let scale = finalScoreScaleFactor // Mismo tamaño que el puntaje actual
+        let scale = finalScoreScaleFactor * 1.8 // 50% más grande que el puntaje actual
         
         // Posicionar dígitos
         var currentX: CGFloat = 0
