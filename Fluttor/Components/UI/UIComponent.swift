@@ -13,17 +13,17 @@ class UIComponent {
         buttonBackground.strokeColor = .white
         buttonBackground.lineWidth = 3
         
-        // Elementos de texto (misma fuente/tamaño que los otros: 30pt)
+        // Elementos de texto con fuente pixel art
         let textShadow = SKLabelNode(text: "REINICIAR")
-        textShadow.fontName = "AvenirNext-Bold"
-        textShadow.fontSize = 30
+        textShadow.fontName = FontConstants.GameUI.buttonFont
+        textShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         textShadow.fontColor = .black
         textShadow.position = CGPoint(x: 2, y: -2)
         textShadow.alpha = 0.3
         
         let buttonLabel = SKLabelNode(text: "REINICIAR")
-        buttonLabel.fontName = "AvenirNext-Bold"
-        buttonLabel.fontSize = 30
+        buttonLabel.fontName = FontConstants.GameUI.buttonFont
+        buttonLabel.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         buttonLabel.fontColor = .white
         
         // Configuración común con tipo explícito
@@ -113,20 +113,20 @@ class UIComponent {
         dim.name = "resumeOverlay"
         overlay.addChild(dim)
 
-        // Título
+        // Título con fuente pixel art
         let title = SKLabelNode(text: "PAUSA")
-        title.fontName = "AvenirNext-Bold"
-        title.fontSize = 40
+        title.fontName = FontConstants.GameUI.titleFont
+        title.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.titleFontSize, fontName: FontConstants.GameUI.titleFont)
         title.fontColor = .white
         title.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 40)
         title.verticalAlignmentMode = .center
         title.name = "resumeTitle"
         overlay.addChild(title)
 
-        // Texto de indicación para inicio
+        // Texto de indicación para inicio con fuente pixel art
         let hint = SKLabelNode(text: "Toca para comenzar")
-        hint.fontName = "AvenirNext-Medium"
-        hint.fontSize = 22
+        hint.fontName = FontConstants.GameUI.hintFont
+        hint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize, fontName: FontConstants.GameUI.hintFont)
         hint.fontColor = .white.withAlphaComponent(0.9)
         hint.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 48)
         hint.verticalAlignmentMode = .center
@@ -146,8 +146,8 @@ class UIComponent {
         buttonContainer.addChild(bg)
 
         let labelShadow = SKLabelNode(text: "REANUDAR")
-        labelShadow.fontName = "AvenirNext-Bold"
-        labelShadow.fontSize = 30
+        labelShadow.fontName = FontConstants.GameUI.buttonFont
+        labelShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         labelShadow.fontColor = .black
         labelShadow.position = CGPoint(x: 2, y: -2)
         labelShadow.alpha = 0.3
@@ -156,8 +156,8 @@ class UIComponent {
         buttonContainer.addChild(labelShadow)
 
         let label = SKLabelNode(text: "REANUDAR")
-        label.fontName = "AvenirNext-Bold"
-        label.fontSize = 30
+        label.fontName = FontConstants.GameUI.buttonFont
+        label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         label.fontColor = .white
         label.verticalAlignmentMode = .center
         label.name = "resumeButton"
@@ -178,8 +178,8 @@ class UIComponent {
         startButtonContainer.addChild(startBg)
 
         let startShadow = SKLabelNode(text: "REINICIAR")
-        startShadow.fontName = "AvenirNext-Bold"
-        startShadow.fontSize = 30
+        startShadow.fontName = FontConstants.GameUI.buttonFont
+        startShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         startShadow.fontColor = .black
         startShadow.position = CGPoint(x: 2, y: -2)
         startShadow.alpha = 0.3
@@ -188,8 +188,8 @@ class UIComponent {
         startButtonContainer.addChild(startShadow)
 
         let startLabel = SKLabelNode(text: "REINICIAR")
-        startLabel.fontName = "AvenirNext-Bold"
-        startLabel.fontSize = 30
+        startLabel.fontName = FontConstants.GameUI.buttonFont
+        startLabel.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         startLabel.fontColor = .white
         startLabel.verticalAlignmentMode = .center
         startLabel.name = "startButton"

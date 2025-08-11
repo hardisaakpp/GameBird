@@ -27,39 +27,40 @@ extension GameScene {
         overlay.name = "welcomeOverlay"
         
         // Título principal
-        let title = SKLabelNode(text: "¡BIENVENIDO!")
-        title.fontName = "AvenirNext-Bold"
-        title.fontSize = 48
-        title.fontColor = .systemIndigo
+        let title = SKLabelNode(text: "FLUTTOR")
+        title.fontName = FontConstants.GameUI.titleFont
+        title.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.titleFontSize, fontName: FontConstants.GameUI.titleFont)
+        title.fontColor = .white
         title.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
         title.verticalAlignmentMode = .center
         title.name = "welcomeTitle"
         overlay.addChild(title)
         
         // Subtítulo
-        let subtitle = SKLabelNode(text: "Fluttor")
-        subtitle.fontName = "AvenirNext-Medium"
-        subtitle.fontSize = 28
-        subtitle.fontColor = .systemTeal
+        let subtitle = SKLabelNode(text: "¡Aventura Aérea!")
+        subtitle.fontName = FontConstants.GameUI.hintFont
+        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize, fontName: FontConstants.GameUI.hintFont)
+        subtitle.fontColor = .systemYellow
         subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         subtitle.verticalAlignmentMode = .center
         subtitle.name = "welcomeSubtitle"
         overlay.addChild(subtitle)
         
         // Descripción del juego
-        let description = SKLabelNode(text: "Ayuda al pájaro a volar")
-        description.fontName = "AvenirNext-Regular"
-        description.fontSize = 22
-        description.fontColor = .systemPurple
+        let description = SKLabelNode(text: "Guía al pájaro a través de las tuberías")
+        description.fontName = FontConstants.GameUI.hintFont
+        description.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
+        description.fontColor = .white.withAlphaComponent(0.8)
         description.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
         description.verticalAlignmentMode = .center
         description.name = "welcomeDescription"
         overlay.addChild(description)
         
-        let description2 = SKLabelNode(text: "evitando las tuberías")
-        description2.fontName = "AvenirNext-Regular"
-        description2.fontSize = 22
-        description2.fontColor = .systemPurple
+        // Segunda línea de descripción
+        let description2 = SKLabelNode(text: "¡Evita chocar y consigue la mayor puntuación!")
+        description2.fontName = FontConstants.GameUI.hintFont
+        description2.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
+        description2.fontColor = .white.withAlphaComponent(0.8)
         description2.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
         description2.verticalAlignmentMode = .center
         description2.name = "welcomeDescription2"
@@ -78,8 +79,8 @@ extension GameScene {
         startButtonContainer.addChild(startBg)
         
         let startShadow = SKLabelNode(text: "COMENZAR")
-        startShadow.fontName = "AvenirNext-Bold"
-        startShadow.fontSize = 32
+        startShadow.fontName = FontConstants.GameUI.buttonFont
+        startShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize * 1.3, fontName: FontConstants.GameUI.buttonFont)
         startShadow.fontColor = .black
         startShadow.position = CGPoint(x: 2, y: -2)
         startShadow.alpha = 0.3
@@ -88,8 +89,8 @@ extension GameScene {
         startButtonContainer.addChild(startShadow)
         
         let startLabel = SKLabelNode(text: "COMENZAR")
-        startLabel.fontName = "AvenirNext-Bold"
-        startLabel.fontSize = 32
+        startLabel.fontName = FontConstants.GameUI.buttonFont
+        startLabel.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize * 1.3, fontName: FontConstants.GameUI.buttonFont)
         startLabel.fontColor = .white
         startLabel.verticalAlignmentMode = .center
         startLabel.name = "welcomeStartButton"
@@ -99,8 +100,8 @@ extension GameScene {
         
         // Indicación para tocar
         let tapHint = SKLabelNode(text: "Toca COMENZAR para ver las instrucciones")
-        tapHint.fontName = "AvenirNext-Medium"
-        tapHint.fontSize = 18
+        tapHint.fontName = FontConstants.GameUI.hintFont
+        tapHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
         tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
         tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
         tapHint.verticalAlignmentMode = .center
