@@ -182,8 +182,8 @@ class UIComponent {
         restartButton.name = "startButton"
         
         // Ajustar tamaño de la imagen para que sea apropiado
-        let restartTargetWidth: CGFloat = 120  // Ancho objetivo del botón
-        let restartTargetHeight: CGFloat = 120  // Alto objetivo del botón
+        let restartTargetWidth: CGFloat = 150  // Ancho objetivo del botón
+        let restartTargetHeight: CGFloat = 150  // Alto objetivo del botón
         
         if restartButton.size.width > 0 {
             let scaleX = restartTargetWidth / restartButton.size.width

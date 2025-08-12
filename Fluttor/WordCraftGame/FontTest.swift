@@ -89,7 +89,7 @@ extension GameScene {
         let fonts = ["Impact", "Courier-Bold", "Monaco", "Arial-BoldMT"]
         var yOffset: CGFloat = 0
         
-        for (index, fontName) in fonts.enumerated() {
+        for (_, fontName) in fonts.enumerated() {
             if UIFont(name: fontName, size: 20) != nil {
                 let label = SKLabelNode(text: "Prueba: \(fontName)")
                 label.fontName = fontName
