@@ -26,80 +26,75 @@ extension GameScene {
         overlay.zPosition = GameConfig.ZPosition.UI + 2  // Por encima de otros overlays
         overlay.name = "welcomeOverlay"
         
-        // Título principal
-        let title = SKLabelNode(text: "FLUTTOR")
-        title.fontName = FontConstants.GameUI.titleFont
-        title.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.titleFontSize, fontName: FontConstants.GameUI.titleFont)
-        title.fontColor = .white
-        title.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
-        title.verticalAlignmentMode = .center
-        title.name = "welcomeTitle"
-        overlay.addChild(title)
+        // Título principal - Ahora usando imagen FluttoRTittle.png
+        let titleImage = SKSpriteNode(imageNamed: "FluttoRTittle")
+        titleImage.name = "welcomeTitle"
+        
+        // Ajustar tamaño de la imagen para que sea apropiado - AUMENTADO AL TRIPLE
+        let titleTargetWidth: CGFloat = 900  // Ancho objetivo del título (antes 300, ahora 3x)
+        let titleTargetHeight: CGFloat = 360  // Alto objetivo del título (antes 120, ahora 3x)
+        
+        if titleImage.size.width > 0 {
+            let scaleX = titleTargetWidth / titleImage.size.width
+            let scaleY = titleTargetHeight / titleImage.size.height
+            let scale = min(scaleX, scaleY)  // Mantener proporción
+            titleImage.setScale(scale)
+        }
+        
+        titleImage.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
+        overlay.addChild(titleImage)
         
         // Subtítulo
         let subtitle = SKLabelNode(text: "¡Aventura Aérea!")
         subtitle.fontName = FontConstants.GameUI.hintFont
-        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize, fontName: FontConstants.GameUI.hintFont)
+        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 1.5, fontName: FontConstants.GameUI.hintFont)  // Aumentado 50%
         subtitle.fontColor = .systemYellow
         subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         subtitle.verticalAlignmentMode = .center
         subtitle.name = "welcomeSubtitle"
         overlay.addChild(subtitle)
         
-        // Descripción del juego
-        let description = SKLabelNode(text: "Guía al pájaro a través de las tuberías")
-        description.fontName = FontConstants.GameUI.hintFont
-        description.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
-        description.fontColor = .white.withAlphaComponent(0.8)
-        description.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
-        description.verticalAlignmentMode = .center
-        description.name = "welcomeDescription"
-        overlay.addChild(description)
-        
-        // Segunda línea de descripción
-        let description2 = SKLabelNode(text: "¡Evita chocar y consigue la mayor puntuación!")
-        description2.fontName = FontConstants.GameUI.hintFont
-        description2.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
-        description2.fontColor = .white.withAlphaComponent(0.8)
-        description2.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
-        description2.verticalAlignmentMode = .center
-        description2.name = "welcomeDescription2"
-        overlay.addChild(description2)
-        
-        // Botón de comenzar
+        // Botón de comenzar - Ahora usando imagen Play.png
         let startButtonContainer = SKNode()
-        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
+        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset + 60)  // Movido 60 puntos más arriba
         startButtonContainer.name = "welcomeStartButton"
         
-        let startBg = SKShapeNode(rectOf: CGSize(width: 280, height: 70), cornerRadius: 20)
-        startBg.fillColor = .systemOrange  // Naranja energético para comenzar - más llamativo
-        startBg.strokeColor = .white
-        startBg.lineWidth = 4
-        startBg.name = "welcomeStartButton"
-        startButtonContainer.addChild(startBg)
+        // Usar la imagen Play.png en lugar del botón de texto
+        let playButton = SKSpriteNode(imageNamed: "Play")
+        playButton.name = "welcomeStartButton"
         
-        let startShadow = SKLabelNode(text: "COMENZAR")
-        startShadow.fontName = FontConstants.GameUI.buttonFont
-        startShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize * 1.3, fontName: FontConstants.GameUI.buttonFont)
-        startShadow.fontColor = .black
-        startShadow.position = CGPoint(x: 2, y: -2)
-        startShadow.alpha = 0.3
-        startShadow.verticalAlignmentMode = .center
-        startShadow.name = "welcomeStartButton"
-        startButtonContainer.addChild(startShadow)
+        // Ajustar tamaño de la imagen para que sea apropiado - AUMENTADO AL DOBLE
+        let targetWidth: CGFloat = 160  // Ancho objetivo del botón (antes 120)
+        let targetHeight: CGFloat = 160  // Alto objetivo del botón (antes 120)
         
-        let startLabel = SKLabelNode(text: "COMENZAR")
-        startLabel.fontName = FontConstants.GameUI.buttonFont
-        startLabel.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize * 1.3, fontName: FontConstants.GameUI.buttonFont)
-        startLabel.fontColor = .white
-        startLabel.verticalAlignmentMode = .center
-        startLabel.name = "welcomeStartButton"
-        startButtonContainer.addChild(startLabel)
+        if playButton.size.width > 0 {
+            let scaleX = targetWidth / playButton.size.width
+            let scaleY = targetHeight / playButton.size.height
+            let scale = min(scaleX, scaleY)  // Mantener proporción
+            playButton.setScale(scale)
+        }
+        
+        // Agregar efecto de sombra para mejor visibilidad
+        let shadow = SKSpriteNode(imageNamed: "Play")
+        shadow.name = "welcomeStartButton"
+        shadow.setScale(playButton.xScale)
+        shadow.position = CGPoint(x: 3, y: -3)
+        shadow.alpha = 0.3
+        shadow.color = .black
+        shadow.colorBlendFactor = 1.0
+        
+        startButtonContainer.addChild(shadow)
+        startButtonContainer.addChild(playButton)
+        
+        // Agregar área táctil invisible para mantener la funcionalidad - AUMENTADA AL DOBLE
+        let touchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
+        touchArea.name = "welcomeStartButton"
+        startButtonContainer.addChild(touchArea)
         
         overlay.addChild(startButtonContainer)
         
-        // Indicación para tocar
-        let tapHint = SKLabelNode(text: "Toca COMENZAR para ver las instrucciones")
+        // Indicación para tocar - Actualizada para el botón de imagen
+        let tapHint = SKLabelNode(text: "Toca el botón PLAY para comenzar")
         tapHint.fontName = FontConstants.GameUI.hintFont
         tapHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
         tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
