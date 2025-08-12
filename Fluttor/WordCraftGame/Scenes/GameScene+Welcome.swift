@@ -41,7 +41,7 @@ extension GameScene {
             titleImage.setScale(scale)
         }
         
-        titleImage.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
+        titleImage.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset + 80)  // Movido 80 puntos más arriba
         overlay.addChild(titleImage)
         
         // Subtítulo
@@ -90,6 +90,24 @@ extension GameScene {
         let touchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
         touchArea.name = "welcomeStartButton"
         startButtonContainer.addChild(touchArea)
+        
+        // Agregar efecto de vibración al botón Play
+        let shakeAction = SKAction.sequence([
+            SKAction.moveBy(x: -2, y: 0, duration: 0.05),
+            SKAction.moveBy(x: 4, y: 0, duration: 0.05),
+            SKAction.moveBy(x: -4, y: 0, duration: 0.05),
+            SKAction.moveBy(x: 2, y: 0, duration: 0.05)
+        ])
+        
+        let shakeSequence = SKAction.sequence([
+            SKAction.wait(forDuration: 1.0),  // Esperar 1 segundo antes de empezar
+            SKAction.repeatForever(SKAction.sequence([
+                shakeAction,
+                SKAction.wait(forDuration: 2.0)  // Pausa de 2 segundos entre vibraciones
+            ]))
+        ])
+        
+        playButton.run(shakeSequence)
         
         overlay.addChild(startButtonContainer)
         

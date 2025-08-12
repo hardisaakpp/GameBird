@@ -24,8 +24,9 @@ El proyecto ahora tiene una organización profesional de todos sus recursos grá
 - **pipe-red2.imageset/** - Tubería roja (parte inferior)
 
 #### **🎯 UI y Elementos de Interfaz:**
-- **FluttoRTittle.imageset/** - **NUEVO** Título principal del juego (imagen)
+- **FluttoRTittle.imageset/** - Título principal del juego (imagen)
 - **Play.imageset/** - Botón de play para la pantalla de inicio
+- **Restart.imageset/** - **NUEVO** Botón de reiniciar para la pantalla de pausa
 - **UI-GameOver.imageset/** - Pantalla de game over
 - **UI-Message.imageset/** - Mensaje de instrucciones
 - **score.imageset/** - Tablero de puntuación

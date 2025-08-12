@@ -133,35 +133,42 @@ class UIComponent {
         hint.name = "resumeHint"
         overlay.addChild(hint)
 
-        // Botón de reanudar
+        // Botón de reanudar - Ahora usando imagen Play.png
         let buttonContainer = SKNode()
         buttonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 10)
         buttonContainer.name = "resumeButton"
 
-        let bg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
-        bg.fillColor = .systemGreen  // Verde para reanudar - acción positiva de continuar
-        bg.strokeColor = .white
-        bg.lineWidth = 3
-        bg.name = "resumeButton"
-        buttonContainer.addChild(bg)
-
-        let labelShadow = SKLabelNode(text: "REANUDAR")
-        labelShadow.fontName = FontConstants.GameUI.buttonFont
-        labelShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        labelShadow.fontColor = .black
-        labelShadow.position = CGPoint(x: 2, y: -2)
-        labelShadow.alpha = 0.3
-        labelShadow.verticalAlignmentMode = .center
-        labelShadow.name = "resumeButton"
-        buttonContainer.addChild(labelShadow)
-
-        let label = SKLabelNode(text: "REANUDAR")
-        label.fontName = FontConstants.GameUI.buttonFont
-        label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        label.fontColor = .white
-        label.verticalAlignmentMode = .center
-        label.name = "resumeButton"
-        buttonContainer.addChild(label)
+        // Usar la imagen Play.png en lugar del botón de texto
+        let playButton = SKSpriteNode(imageNamed: "Play")
+        playButton.name = "resumeButton"
+        
+        // Ajustar tamaño de la imagen para que sea apropiado
+        let targetWidth: CGFloat = 120  // Ancho objetivo del botón
+        let targetHeight: CGFloat = 120  // Alto objetivo del botón
+        
+        if playButton.size.width > 0 {
+            let scaleX = targetWidth / playButton.size.width
+            let scaleY = targetHeight / playButton.size.height
+            let scale = min(scaleX, scaleY)  // Mantener proporción
+            playButton.setScale(scale)
+        }
+        
+        // Agregar efecto de sombra para mejor visibilidad
+        let shadow = SKSpriteNode(imageNamed: "Play")
+        shadow.name = "resumeButton"
+        shadow.setScale(playButton.xScale)
+        shadow.position = CGPoint(x: 2, y: -2)
+        shadow.alpha = 0.3
+        shadow.color = .black
+        shadow.colorBlendFactor = 1.0
+        
+        buttonContainer.addChild(shadow)
+        buttonContainer.addChild(playButton)
+        
+        // Agregar área táctil invisible para mantener la funcionalidad
+        let touchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
+        touchArea.name = "resumeButton"
+        buttonContainer.addChild(touchArea)
 
         overlay.addChild(buttonContainer)
 
@@ -170,30 +177,37 @@ class UIComponent {
         startButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 90)
         startButtonContainer.name = "startButton"
 
-        let startBg = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
-        startBg.fillColor = .systemRed  // Rojo para reiniciar desde pausa - consistente con game over
-        startBg.strokeColor = .white
-        startBg.lineWidth = 3
-        startBg.name = "startButton"
-        startButtonContainer.addChild(startBg)
-
-        let startShadow = SKLabelNode(text: "REINICIAR")
-        startShadow.fontName = FontConstants.GameUI.buttonFont
-        startShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        startShadow.fontColor = .black
-        startShadow.position = CGPoint(x: 2, y: -2)
-        startShadow.alpha = 0.3
-        startShadow.verticalAlignmentMode = .center
-        startShadow.name = "startButton"
-        startButtonContainer.addChild(startShadow)
-
-        let startLabel = SKLabelNode(text: "REINICIAR")
-        startLabel.fontName = FontConstants.GameUI.buttonFont
-        startLabel.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        startLabel.fontColor = .white
-        startLabel.verticalAlignmentMode = .center
-        startLabel.name = "startButton"
-        startButtonContainer.addChild(startLabel)
+        // Usar la imagen restart.png en lugar del botón de texto
+        let restartButton = SKSpriteNode(imageNamed: "Restart")
+        restartButton.name = "startButton"
+        
+        // Ajustar tamaño de la imagen para que sea apropiado
+        let restartTargetWidth: CGFloat = 120  // Ancho objetivo del botón
+        let restartTargetHeight: CGFloat = 120  // Alto objetivo del botón
+        
+        if restartButton.size.width > 0 {
+            let scaleX = restartTargetWidth / restartButton.size.width
+            let scaleY = restartTargetHeight / restartButton.size.height
+            let scale = min(scaleX, scaleY)  // Mantener proporción
+            restartButton.setScale(scale)
+        }
+        
+        // Agregar efecto de sombra para mejor visibilidad
+        let restartShadow = SKSpriteNode(imageNamed: "Restart")
+        restartShadow.name = "startButton"
+        restartShadow.setScale(restartButton.xScale)
+        restartShadow.position = CGPoint(x: 2, y: -2)
+        restartShadow.alpha = 0.3
+        restartShadow.color = .black
+        restartShadow.colorBlendFactor = 1.0
+        
+        startButtonContainer.addChild(restartShadow)
+        startButtonContainer.addChild(restartButton)
+        
+        // Agregar área táctil invisible para mantener la funcionalidad
+        let restartTouchArea = SKSpriteNode(color: .clear, size: CGSize(width: restartTargetWidth, height: restartTargetHeight))
+        restartTouchArea.name = "startButton"
+        startButtonContainer.addChild(restartTouchArea)
 
         overlay.addChild(startButtonContainer)
 
