@@ -121,6 +121,25 @@ extension GameScene {
         tapHint.name = "welcomeTapHint"
         overlay.addChild(tapHint)
         
+        // Créditos del juego en el pie de página
+        let creditsTitle = SKLabelNode(text: "Desarrollado por Isaac Ortiz")
+        creditsTitle.fontName = FontConstants.GameUI.hintFont
+        creditsTitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.8, fontName: FontConstants.GameUI.hintFont)
+        creditsTitle.fontColor = .systemGray
+        creditsTitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 40)
+        creditsTitle.verticalAlignmentMode = .center
+        creditsTitle.name = "welcomeCreditsTitle"
+        overlay.addChild(creditsTitle)
+        
+        let creditsSubtitle = SKLabelNode(text: "Fluttor v1.0 • SpriteKit • Swift • iOS")
+        creditsSubtitle.fontName = FontConstants.GameUI.hintFont
+        creditsSubtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.7, fontName: FontConstants.GameUI.hintFont)
+        creditsSubtitle.fontColor = .systemGray2
+        creditsSubtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 70)
+        creditsSubtitle.verticalAlignmentMode = .center
+        creditsSubtitle.name = "welcomeCreditsSubtitle"
+        overlay.addChild(creditsSubtitle)
+        
         // Animación de entrada
         overlay.alpha = 0.0
         overlay.setScale(0.8)
@@ -194,5 +213,11 @@ extension GameScene {
         
         let tapHint = overlay.children.first(where: { $0.name == "welcomeTapHint" }) as? SKLabelNode
         tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
+        
+        let creditsTitle = overlay.children.first(where: { $0.name == "welcomeCreditsTitle" }) as? SKLabelNode
+        creditsTitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 40)
+        
+        let creditsSubtitle = overlay.children.first(where: { $0.name == "welcomeCreditsSubtitle" }) as? SKLabelNode
+        creditsSubtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 70)
     }
 }

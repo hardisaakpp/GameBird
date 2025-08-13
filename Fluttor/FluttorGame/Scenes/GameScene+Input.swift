@@ -27,9 +27,13 @@ extension GameScene {
                     }
                     return
                 }
+                
+
             }
             return
         }
+        
+
         
         // Manejo de pausa
         if isPausedGame {
