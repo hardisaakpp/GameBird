@@ -59,19 +59,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		81684DF62D456EDF000558C9 /* WordCraftGame */ = {
+		81684DF62D456EDF000558C9 /* FluttorGame */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordCraftGame;
+			path = FluttorGame;
 			sourceTree = "<group>";
 		};
-		81684E102D456EE7000558C9 /* WordCraftGameTests */ = {
+		81684E102D456EE7000558C9 /* FluttorGameTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordCraftGameTests;
+			path = FluttorGameTests;
 			sourceTree = "<group>";
 		};
-		81684E1A2D456EE7000558C9 /* WordCraftGameUITests */ = {
+		81684E1A2D456EE7000558C9 /* FluttorGameUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordCraftGameUITests;
+			path = FluttorGameUITests;
 			sourceTree = "<group>";
 		};
 		81DFF7A62D4EC0020000F7EE /* Models */ = {
@@ -136,9 +136,9 @@
 				81DFF7A72D4EC00A0000F7EE /* Components */,
 				81DFF7A62D4EC0020000F7EE /* Models */,
 				81EEC6352D46CE0B007C4880 /* Utilities */,
-				81684DF62D456EDF000558C9 /* WordCraftGame */,
-				81684E102D456EE7000558C9 /* WordCraftGameTests */,
-				81684E1A2D456EE7000558C9 /* WordCraftGameUITests */,
+				81684DF62D456EDF000558C9 /* FluttorGame */,
+				81684E102D456EE7000558C9 /* FluttorGameTests */,
+				81684E1A2D456EE7000558C9 /* FluttorGameUITests */,
 				81684DF52D456EDF000558C9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -172,7 +172,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				81684DF62D456EDF000558C9 /* WordCraftGame */,
+				81684DF62D456EDF000558C9 /* FluttorGame */,
 				81DFF7A62D4EC0020000F7EE /* Models */,
 				81DFF7A72D4EC00A0000F7EE /* Components */,
 				81EEC6352D46CE0B007C4880 /* Utilities */,
@@ -198,7 +198,7 @@
 				81684E0F2D456EE7000558C9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				81684E102D456EE7000558C9 /* WordCraftGameTests */,
+				81684E102D456EE7000558C9 /* FluttorGameTests */,
 			);
 			name = FluttorTests;
 			packageProductDependencies = (
@@ -221,7 +221,7 @@
 				81684E192D456EE7000558C9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				81684E1A2D456EE7000558C9 /* WordCraftGameUITests */,
+				81684E1A2D456EE7000558C9 /* FluttorGameUITests */,
 			);
 			name = FluttorUITests;
 			packageProductDependencies = (
