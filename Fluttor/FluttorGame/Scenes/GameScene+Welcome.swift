@@ -6,19 +6,19 @@ extension GameScene {
     // MARK: - Constantes de Espaciado
     private struct WelcomeLayout {
         // Espaciado vertical entre elementos
-        static let titleToSubtitle: CGFloat = 80      // Espacio entre título principal y subtítulo (aumentado de 60)
-        static let subtitleToDescription: CGFloat = 70 // Espacio entre subtítulo y primera descripción (aumentado de 50)
-        static let descriptionToDescription: CGFloat = 25 // Espacio entre las dos líneas de descripción (aumentado de 15)
-        static let descriptionToButton: CGFloat = 70   // Espacio entre descripción y botón (aumentado de 50)
-        static let buttonToHint: CGFloat = 60          // Espacio entre botón y texto de ayuda (aumentado de 40)
+        static let titleToSubtitle: CGFloat = 80      // Espacio entre título principal y subtítulo
+        static let subtitleToNameInput: CGFloat = 70  // Espacio entre subtítulo y campo de nombre (aumentado)
+        static let nameInputToHint: CGFloat = 40      // Espacio entre campo de nombre e instrucción
+        static let hintToButton: CGFloat = 50         // Espacio entre instrucción y botón (nuevo)
+        static let buttonToPlayHint: CGFloat = 60     // Espacio entre botón y texto de ayuda final
         
         // Posiciones base desde el centro
-        static let titleOffset: CGFloat = 160          // Título principal desde el centro (aumentado de 140)
-        static let subtitleOffset: CGFloat = 80        // Subtítulo desde el centro (mantenido)
-        static let descriptionOffset: CGFloat = 10     // Primera descripción desde el centro (reducido de 30)
-        static let description2Offset: CGFloat = -15   // Segunda descripción desde el centro (reducido de 15)
-        static let buttonOffset: CGFloat = -85         // Botón desde el centro (reducido de -35)
-        static let hintOffset: CGFloat = -145          // Texto de ayuda desde el centro (reducido de -75)
+        static let titleOffset: CGFloat = 160          // Título principal desde el centro
+        static let subtitleOffset: CGFloat = 80        // Subtítulo desde el centro
+        static let nameInputOffset: CGFloat = 10       // Campo de nombre desde el centro (ajustado)
+        static let nameHintOffset: CGFloat = -30       // Instrucción del nombre desde el centro (nuevo)
+        static let buttonOffset: CGFloat = -80         // Botón desde el centro (ajustado)
+        static let playHintOffset: CGFloat = -140      // Texto de ayuda final desde el centro (ajustado)
     }
     
     func createWelcomeOverlay() -> SKNode {
@@ -54,9 +54,24 @@ extension GameScene {
         subtitle.name = "welcomeSubtitle"
         overlay.addChild(subtitle)
         
+        // Campo de entrada de nombre
+        let nameInputComponent = TextInputComponent(size: CGSize(width: 300, height: 50))
+        nameInputComponent.setText(Player.current.name)
+        nameInputComponent.addToParent(overlay, at: CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameInputOffset))
+        
+        // Instrucción para el campo de nombre
+        let nameHint = SKLabelNode(text: "Toca el campo para ingresar tu nombre")
+        nameHint.fontName = FontConstants.GameUI.hintFont
+        nameHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.8, fontName: FontConstants.GameUI.hintFont)
+        nameHint.fontColor = .systemGray
+        nameHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameHintOffset)
+        nameHint.verticalAlignmentMode = .center
+        nameHint.name = "welcomeNameHint"
+        overlay.addChild(nameHint)
+        
         // Botón de comenzar - Ahora usando imagen Play.png
         let startButtonContainer = SKNode()
-        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset + 60)  // Movido 60 puntos más arriba
+        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
         startButtonContainer.name = "welcomeStartButton"
         
         // Usar la imagen Play.png en lugar del botón de texto
@@ -116,17 +131,17 @@ extension GameScene {
         tapHint.fontName = FontConstants.GameUI.hintFont
         tapHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
         tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
-        tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
+        tapHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.playHintOffset)
         tapHint.verticalAlignmentMode = .center
         tapHint.name = "welcomeTapHint"
         overlay.addChild(tapHint)
         
-        // Créditos del juego en el pie de página
+        // Créditos del juego en la parte inferior de la pantalla
         let creditsTitle = SKLabelNode(text: "Desarrollado por Isaac Ortiz")
         creditsTitle.fontName = FontConstants.GameUI.hintFont
         creditsTitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.8, fontName: FontConstants.GameUI.hintFont)
         creditsTitle.fontColor = .systemGray
-        creditsTitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 40)
+        creditsTitle.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 90)  // 100 puntos desde el borde inferior
         creditsTitle.verticalAlignmentMode = .center
         creditsTitle.name = "welcomeCreditsTitle"
         overlay.addChild(creditsTitle)
@@ -135,7 +150,7 @@ extension GameScene {
         creditsSubtitle.fontName = FontConstants.GameUI.hintFont
         creditsSubtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.7, fontName: FontConstants.GameUI.hintFont)
         creditsSubtitle.fontColor = .systemGray2
-        creditsSubtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 70)
+        creditsSubtitle.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 60)  // 70 puntos desde el borde inferior
         creditsSubtitle.verticalAlignmentMode = .center
         creditsSubtitle.name = "welcomeCreditsSubtitle"
         overlay.addChild(creditsSubtitle)
@@ -175,6 +190,15 @@ extension GameScene {
     func hideWelcomeScreen() {
         isWelcomeScreenActive = false
         
+        // Guardar el nombre del jugador antes de ocultar la pantalla
+        if let nameInputBackground = welcomeOverlay?.children.first(where: { $0.name == "textInputBackground" }) {
+            // Buscar el label del texto ingresado
+            if let textLabel = nameInputBackground.children.first(where: { $0.name == "textInputLabel" }) as? SKLabelNode,
+               let text = textLabel.text, !text.isEmpty {
+                Player.current = Player(name: text)
+            }
+        }
+        
         // Mostrar nuevamente el marcador
         scoreContainer.isHidden = false
         
@@ -202,22 +226,30 @@ extension GameScene {
         let subtitle = overlay.children.first(where: { $0.name == "welcomeSubtitle" }) as? SKLabelNode
         subtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         
-        let description = overlay.children.first(where: { $0.name == "welcomeDescription" }) as? SKLabelNode
-        description?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.descriptionOffset)
-        
-        let description2 = overlay.children.first(where: { $0.name == "welcomeDescription2" }) as? SKLabelNode
-        description2?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.description2Offset)
-        
         let startButton = overlay.children.first(where: { $0.name == "welcomeStartButton" })
         startButton?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
         
         let tapHint = overlay.children.first(where: { $0.name == "welcomeTapHint" }) as? SKLabelNode
-        tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset)
+        tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.playHintOffset)
         
         let creditsTitle = overlay.children.first(where: { $0.name == "welcomeCreditsTitle" }) as? SKLabelNode
-        creditsTitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 40)
+        creditsTitle?.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 90)
         
         let creditsSubtitle = overlay.children.first(where: { $0.name == "welcomeCreditsSubtitle" }) as? SKLabelNode
-        creditsSubtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.hintOffset - 70)
+        creditsSubtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 60)
+    }
+    
+    func updatePlayerName(_ name: String) {
+        // Actualizar el nombre del jugador en el marcador
+        if let playerNameLabel = scoreContainer.children.first(where: { $0.name == "playerNameLabel" }) as? SKLabelNode {
+            playerNameLabel.text = name
+        }
+        
+        // Actualizar el nombre en el campo de entrada si la pantalla de bienvenida está activa
+        if let nameInputBackground = welcomeOverlay?.children.first(where: { $0.name == "textInputBackground" }) {
+            if let textLabel = nameInputBackground.children.first(where: { $0.name == "textInputLabel" }) as? SKLabelNode {
+                textLabel.text = name
+            }
+        }
     }
 }

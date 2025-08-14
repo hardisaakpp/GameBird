@@ -14,6 +14,16 @@ extension GameScene {
         score = 0
         scoreContainer.zPosition = 200
         addChild(scoreContainer)
+        
+        // Agregar nombre del jugador
+        let playerNameLabel = SKLabelNode(text: Player.current.name)
+        playerNameLabel.fontName = FontConstants.GameUI.hintFont
+        playerNameLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playerNameLabel.fontColor = .systemYellow
+        playerNameLabel.position = CGPoint(x: 0, y: 30)
+        playerNameLabel.name = "playerNameLabel"
+        scoreContainer.addChild(playerNameLabel)
+        
         updateScoreDisplay()
         repositionScoreDisplay()
     }

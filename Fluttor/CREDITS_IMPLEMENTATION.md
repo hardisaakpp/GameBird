@@ -2,13 +2,13 @@
 
 ## Descripción General
 
-Los créditos del juego han sido implementados de manera simple y elegante como **subtítulos en el pie de página** de la pantalla de bienvenida. Esta implementación es mucho más directa y no requiere botones adicionales ni overlays complejos.
+Los créditos del juego han sido implementados de manera simple y elegante como **subtítulos en la parte inferior de la pantalla** de bienvenida. Esta implementación es mucho más directa y no requiere botones adicionales ni overlays complejos.
 
 ## Ubicación
 
 **Pantalla de Bienvenida** (`GameScene+Welcome.swift`)
-- Los créditos se muestran como **subtítulos en el pie de página**
-- Se ubican debajo del texto de ayuda "Toca el botón PLAY para comenzar"
+- Los créditos se muestran como **subtítulos en la parte inferior de la pantalla**
+- Se ubican en el pie de página, separados del contenido principal
 - **No requieren interacción del usuario** - son informativos únicamente
 
 ## Componentes Implementados
@@ -44,8 +44,8 @@ Los créditos del juego han sido implementados de manera simple y elegante como 
 - **Subtítulo**: `FontConstants.GameUI.hintFont` × 0.7
 
 ### Posicionamiento
-- **Título**: `WelcomeLayout.hintOffset - 40`
-- **Subtítulo**: `WelcomeLayout.hintOffset - 70`
+- **Título**: `self.frame.minY + 100` (100 puntos desde el borde inferior)
+- **Subtítulo**: `self.frame.minY + 70` (70 puntos desde el borde inferior)
 
 ## Personalización
 

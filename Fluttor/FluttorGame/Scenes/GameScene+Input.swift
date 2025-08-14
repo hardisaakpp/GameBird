@@ -16,6 +16,26 @@ extension GameScene {
         if isWelcomeScreenActive {
             if let welcomeOverlay = welcomeOverlay,
                welcomeOverlay.contains(touchLocation) {
+                
+                // Verificar si se tocó el campo de texto
+                if let nameInputBackground = welcomeOverlay.children.first(where: { $0.name == "textInputBackground" }) {
+                    if nameInputBackground.frame.contains(touchLocation) {
+                        // Activar el campo de texto y mostrar el teclado del sistema
+                        let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                        let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                        nameInputBackground.run(SKAction.sequence([scaleDown, scaleUp]))
+                        
+                        // Mostrar el alert de entrada de texto
+                        if let viewController = self.view?.window?.rootViewController as? GameViewController {
+                            viewController.showTextInputAlert { [weak self] name in
+                                // Actualizar el nombre en la escena
+                                self?.updatePlayerName(name)
+                            }
+                        }
+                        return
+                    }
+                }
+                
                 if nodes(at: touchLocation).contains(where: { $0.name == "welcomeStartButton" }) {
                     let buttonContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeStartButton" })
                     let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
@@ -27,8 +47,6 @@ extension GameScene {
                     }
                     return
                 }
-                
-
             }
             return
         }
