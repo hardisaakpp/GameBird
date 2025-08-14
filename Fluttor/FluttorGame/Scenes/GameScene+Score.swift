@@ -15,12 +15,13 @@ extension GameScene {
         scoreContainer.zPosition = 200
         addChild(scoreContainer)
         
-        // Agregar nombre del jugador
+        // Agregar nombre del jugador al extremo derecho
         let playerNameLabel = SKLabelNode(text: Player.current.name)
         playerNameLabel.fontName = FontConstants.GameUI.hintFont
         playerNameLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
         playerNameLabel.fontColor = .systemYellow
-        playerNameLabel.position = CGPoint(x: 0, y: 30)
+        playerNameLabel.horizontalAlignmentMode = .right
+        playerNameLabel.position = CGPoint(x: 200, y: 0) // Posicionado al extremo derecho
         playerNameLabel.name = "playerNameLabel"
         scoreContainer.addChild(playerNameLabel)
         
@@ -44,7 +45,7 @@ extension GameScene {
         }
 
         // Calcular ancho total para centrar
-        let totalWidth: CGFloat = digitNodes.reduce(0) { $0 + $1.frame.width }
+        let totalWidth: CGFloat = digitNodes.reduce(0.0) { $0 + $1.frame.width }
         var currentX = -totalWidth / 2
 
         // Posicionar dígitos dentro del contenedor
@@ -53,6 +54,16 @@ extension GameScene {
             scoreContainer.addChild(node)
             currentX += node.frame.width
         }
+
+        // Agregar el nombre del jugador nuevamente (se perdió al limpiar)
+        let playerNameLabel = SKLabelNode(text: Player.current.name)
+        playerNameLabel.fontName = FontConstants.GameUI.hintFont
+        playerNameLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playerNameLabel.fontColor = .systemYellow
+        playerNameLabel.horizontalAlignmentMode = .right
+        playerNameLabel.position = CGPoint(x: 200, y: 0)
+        playerNameLabel.name = "playerNameLabel"
+        scoreContainer.addChild(playerNameLabel)
 
         repositionScoreDisplay()
     }
@@ -64,5 +75,12 @@ extension GameScene {
             x: frame.midX,
             y: frame.maxY - safeTop - halfHeight - scoreTopMargin
         )
+    }
+    
+    func updateScorePlayerName(_ name: String) {
+        // Actualizar el nombre del jugador en el marcador
+        if let playerNameLabel = scoreContainer.children.first(where: { $0.name == "playerNameLabel" }) as? SKLabelNode {
+            playerNameLabel.text = name
+        }
     }
 }

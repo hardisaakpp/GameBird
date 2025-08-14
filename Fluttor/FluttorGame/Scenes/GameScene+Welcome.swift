@@ -235,10 +235,8 @@ extension GameScene {
     }
     
     func updatePlayerName(_ name: String) {
-        // Actualizar el nombre del jugador en el marcador
-        if let playerNameLabel = scoreContainer.children.first(where: { $0.name == "playerNameLabel" }) as? SKLabelNode {
-            playerNameLabel.text = name
-        }
+        // Actualizar el nombre del jugador en el marcador usando la función auxiliar
+        updateScorePlayerName(name)
         
         // Actualizar el nombre en el campo de entrada si la pantalla de bienvenida está activa
         if let nameInputBackground = welcomeOverlay?.children.first(where: { $0.name == "textInputBackground" }) {
