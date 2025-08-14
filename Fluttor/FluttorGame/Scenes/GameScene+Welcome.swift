@@ -6,19 +6,17 @@ extension GameScene {
     // MARK: - Constantes de Espaciado
     private struct WelcomeLayout {
         // Espaciado vertical entre elementos
-        static let titleToSubtitle: CGFloat = 80      // Espacio entre título principal y subtítulo
-        static let subtitleToNameInput: CGFloat = 70  // Espacio entre subtítulo y campo de nombre (aumentado)
-        static let nameInputToHint: CGFloat = 40      // Espacio entre campo de nombre e instrucción
-        static let hintToButton: CGFloat = 50         // Espacio entre instrucción y botón (nuevo)
-        static let buttonToPlayHint: CGFloat = 60     // Espacio entre botón y texto de ayuda final
+        static let titleToNameInput: CGFloat = 100     // Espacio entre título principal y campo de nombre (aumentado)
+        static let nameInputToSubtitle: CGFloat = 80   // Espacio entre campo de nombre y subtítulo (aumentado)
+        static let subtitleToButton: CGFloat = 90      // Espacio entre subtítulo y botón (aumentado)
+        static let buttonToPlayHint: CGFloat = 80      // Espacio entre botón y texto de ayuda final (aumentado)
         
         // Posiciones base desde el centro
         static let titleOffset: CGFloat = 160          // Título principal desde el centro
-        static let subtitleOffset: CGFloat = 80        // Subtítulo desde el centro
-        static let nameInputOffset: CGFloat = 10       // Campo de nombre desde el centro (ajustado)
-        static let nameHintOffset: CGFloat = -30       // Instrucción del nombre desde el centro (nuevo)
-        static let buttonOffset: CGFloat = -80         // Botón desde el centro (ajustado)
-        static let playHintOffset: CGFloat = -140      // Texto de ayuda final desde el centro (ajustado)
+        static let nameInputOffset: CGFloat = 60       // Campo de nombre desde el centro (ajustado)
+        static let subtitleOffset: CGFloat = -20       // Subtítulo desde el centro (ajustado)
+        static let buttonOffset: CGFloat = -110        // Botón desde el centro (ajustado)
+        static let playHintOffset: CGFloat = -190      // Texto de ayuda final desde el centro (ajustado)
     }
     
     func createWelcomeOverlay() -> SKNode {
@@ -44,16 +42,6 @@ extension GameScene {
         titleImage.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset + 80)  // Movido 80 puntos más arriba
         overlay.addChild(titleImage)
         
-        // Subtítulo
-        let subtitle = SKLabelNode(text: "¡Aventura Aérea!")
-        subtitle.fontName = FontConstants.GameUI.hintFont
-        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 1.5, fontName: FontConstants.GameUI.hintFont)  // Aumentado 50%
-        subtitle.fontColor = .systemYellow
-        subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
-        subtitle.verticalAlignmentMode = .center
-        subtitle.name = "welcomeSubtitle"
-        overlay.addChild(subtitle)
-        
         // Campo de entrada de nombre
         let nameInputComponent = TextInputComponent(size: CGSize(width: 300, height: 50))
         nameInputComponent.setText(Player.current.name)
@@ -64,10 +52,20 @@ extension GameScene {
         nameHint.fontName = FontConstants.GameUI.hintFont
         nameHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.8, fontName: FontConstants.GameUI.hintFont)
         nameHint.fontColor = .systemGray
-        nameHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameHintOffset)
+        nameHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameInputOffset - 40)
         nameHint.verticalAlignmentMode = .center
         nameHint.name = "welcomeNameHint"
         overlay.addChild(nameHint)
+        
+        // Subtítulo
+        let subtitle = SKLabelNode(text: "¡Aventura Aérea!")
+        subtitle.fontName = FontConstants.GameUI.hintFont
+        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 1.5, fontName: FontConstants.GameUI.hintFont)  // Aumentado 50%
+        subtitle.fontColor = .systemYellow
+        subtitle.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
+        subtitle.verticalAlignmentMode = .center
+        subtitle.name = "welcomeSubtitle"
+        overlay.addChild(subtitle)
         
         // Botón de comenzar - Ahora usando imagen Play.png
         let startButtonContainer = SKNode()
@@ -222,9 +220,6 @@ extension GameScene {
         // Actualizar posiciones de todos los elementos usando las constantes de layout
         let title = overlay.children.first(where: { $0.name == "welcomeTitle" }) as? SKLabelNode
         title?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
-        
-        let subtitle = overlay.children.first(where: { $0.name == "welcomeSubtitle" }) as? SKLabelNode
-        subtitle?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.subtitleOffset)
         
         let startButton = overlay.children.first(where: { $0.name == "welcomeStartButton" })
         startButton?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
