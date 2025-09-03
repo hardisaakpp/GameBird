@@ -1,13 +1,13 @@
-# 🌙 Guía de Integración de la Luna
+# 🌙☀️ Guía de Integración de la Luna y el Sol
 
 ## Descripción
-La luna se ha integrado exitosamente en el juego Fluttor como un elemento visual que aparece automáticamente durante las horas nocturnas.
+La luna y el sol se han integrado exitosamente en el juego Fluttor como elementos visuales que aparecen automáticamente durante las horas nocturnas y diurnas respectivamente.
 
 ## Características Implementadas
 
 ### 1. **Sistema Automático de Día/Noche**
-- La luna aparece automáticamente entre las **18:30 y 05:50**
-- Se oculta durante el día (06:00 a 18:29)
+- **Luna**: Aparece automáticamente entre las **18:30 y 05:50**
+- **Sol**: Aparece automáticamente entre las **06:00 y 18:29**
 - Sincronización automática con el sistema de fondos día/noche
 
 ### 2. **Posicionamiento Inteligente**
@@ -31,7 +31,8 @@ La luna se ha integrado exitosamente en el juego Fluttor como un elemento visual
 - **No interfiere**: Las tuberías pasan por delante sin obstruir la jugabilidad
 
 ### 6. **Interactividad Mágica** ✨
-- **Toque para cambiar a día**: Al tocar la luna, se fuerza el modo día por 5 minutos
+- **Luna**: Al tocar la luna, se fuerza el modo día por 5 minutos
+- **Sol**: Al tocar el sol, se cancela el modo día forzado y vuelve al horario normal
 - **Cooldown**: 2 segundos entre toques para evitar spam
 - **Feedback visual**: Efecto de pulso y brillo al tocar
 - **Duración temporal**: El modo día forzado dura 5 minutos, luego vuelve al horario normal
@@ -43,11 +44,11 @@ Z-Position = 9999  →  UI (botones, overlays)
 Z-Position = 30    →  Pájaro
 Z-Position = 20    →  Tuberías
 Z-Position = 10    →  Suelo
-Z-Position = 5     →  🌙 LUNA (detrás de tuberías, encima del fondo)
+Z-Position = 5     →  🌙 LUNA / ☀️ SOL (detrás de tuberías, encima del fondo)
 Z-Position = 0     →  Fondo
 ```
 
-**Resultado**: La luna aparece como un elemento atmosférico de fondo, creando profundidad visual mientras las tuberías pasan por delante.
+**Resultado**: La luna y el sol aparecen como elementos atmosféricos de fondo, creando profundidad visual mientras las tuberías pasan por delante.
 
 ## ⚠️ Problema Encontrado y Corregido
 
@@ -62,14 +63,16 @@ Z-Position = 0     →  Fondo
 
 ### Nuevos Archivos:
 - `Components/Entities/MoonComponent.swift` - Componente principal de la luna
+- `Components/Entities/SunComponent.swift` - Componente principal del sol
 - `FluttorGame/Assets.xcassets/moon.imageset/` - Asset de la imagen de la luna
+- `FluttorGame/Assets.xcassets/sun.imageset/` - Asset de la imagen del sol
 
 ### Archivos Modificados:
-- `FluttorGame/GameScene.swift` - Agregada propiedad `moonComponent`
-- `FluttorGame/Scenes/GameScene+Setup.swift` - Inicialización del componente
-- `FluttorGame/Scenes/GameScene+DayNight.swift` - Sincronización día/noche + método `forceDayMode()`
-- `FluttorGame/Scenes/GameScene+Lifecycle.swift` - Reposicionamiento automático
-- `FluttorGame/Scenes/GameScene+Input.swift` - **NUEVO**: Detección de toque en la luna
+- `FluttorGame/GameScene.swift` - Agregadas propiedades `moonComponent` y `sunComponent`
+- `FluttorGame/Scenes/GameScene+Setup.swift` - Inicialización de componentes luna y sol
+- `FluttorGame/Scenes/GameScene+DayNight.swift` - Sincronización día/noche + métodos `forceDayMode()` y `forceNightMode()`
+- `FluttorGame/Scenes/GameScene+Lifecycle.swift` - Reposicionamiento automático de luna y sol
+- `FluttorGame/Scenes/GameScene+Input.swift` - **NUEVO**: Detección de toque en luna y sol
 - `Components/Entities/PipeComponent.swift` - **CORREGIDO**: Agregada Z-Position a las tuberías
 - `Utilities/BackgroundConstants.swift` - **NUEVO**: Sistema de modo día forzado + import QuartzCore
 - `Components/Entities/BackgroundComponent.swift` - **MODIFICADO**: Método `applyCurrentBackgroundTexture()` hecho público

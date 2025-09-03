@@ -33,6 +33,10 @@ extension GameScene {
         moonComponent = MoonComponent(scene: self)
         moonComponent.updateForDayNight() // Mostrar/ocultar según hora actual
         
+        // Sun Component
+        sunComponent = SunComponent(scene: self)
+        sunComponent.updateForDayNight() // Mostrar/ocultar según hora actual
+        
         // Bird Component
         birdComponent = BirdComponent(
             textures: [birdTexture1, birdTexture2],

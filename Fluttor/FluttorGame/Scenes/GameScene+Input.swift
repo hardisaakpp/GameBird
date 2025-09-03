@@ -101,6 +101,9 @@ extension GameScene {
             } else if let moonComponent = moonComponent, moonComponent.handleTouch(at: touchLocation) {
                 // La luna fue tocada y manejó el toque
                 // No hacer nada más, la luna ya cambió a modo día
+            } else if let sunComponent = sunComponent, sunComponent.handleTouch(at: touchLocation) {
+                // El sol fue tocado y manejó el toque
+                // No hacer nada más, el sol ya cambió a modo noche
             } else {
                 // Optimización: Ejecutar acciones en paralelo
                 DispatchQueue.main.async {

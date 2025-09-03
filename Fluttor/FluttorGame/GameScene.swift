@@ -17,6 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var groundComponent: GroundComponent!         // Suelo
     var backgroundComponent: BackgroundComponent!   // Fondo
     var moonComponent: MoonComponent!         // Luna
+    var sunComponent: SunComponent!           // Sol
     var pipeManager: PipeManager!
     
     // UI
