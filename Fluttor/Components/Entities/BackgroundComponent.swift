@@ -189,7 +189,7 @@ class BackgroundComponent {
         applyCurrentBackgroundTexture()
     }
 
-    private func applyCurrentBackgroundTexture() {
+    func applyCurrentBackgroundTexture() {
         let textureName = BackgroundConstants.textureName
         let newTexture = SKTexture(imageNamed: textureName)
         newTexture.filteringMode = .linear

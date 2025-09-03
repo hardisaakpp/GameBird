@@ -98,6 +98,9 @@ extension GameScene {
                 pauseButton.run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
                     self?.pauseGame()
                 }
+            } else if let moonComponent = moonComponent, moonComponent.handleTouch(at: touchLocation) {
+                // La luna fue tocada y manejó el toque
+                // No hacer nada más, la luna ya cambió a modo día
             } else {
                 // Optimización: Ejecutar acciones en paralelo
                 DispatchQueue.main.async {

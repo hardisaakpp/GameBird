@@ -10,4 +10,15 @@ extension GameScene {
         // Actualizar visibilidad de la luna
         moonComponent?.updateForDayNight()
     }
+    
+    func forceDayMode() {
+        // Forzar modo día por 5 minutos
+        BackgroundConstants.forceDayMode(duration: 300)
+        
+        // Actualizar inmediatamente todos los componentes
+        updateBirdAppearanceForDayNight()
+        
+        // Actualizar fondo
+        backgroundComponent?.applyCurrentBackgroundTexture()
+    }
 }

@@ -15,6 +15,11 @@ class MoonComponent {
     private let moonSize: CGFloat = 120
     private let moonZPosition: CGFloat = GameConfig.ZPosition.background + 5 // Detrás de las tuberías, pero encima del fondo
     
+    // Interactividad
+    private var isInteractive: Bool = true
+    private var lastTouchTime: TimeInterval = 0
+    private let touchCooldown: TimeInterval = 2.0 // Cooldown de 2 segundos entre toques
+    
     // Posicionamiento
     private let moonOffsetX: CGFloat = 0.35 // 35% desde el borde derecho
     private let moonOffsetY: CGFloat = 0.75 // 75% desde la parte inferior
@@ -98,6 +103,57 @@ class MoonComponent {
     func updateForDayNight() {
         let isNight = BackgroundConstants.isNightNow()
         setVisible(isNight)
+    }
+    
+    // MARK: - Interactividad
+    func handleTouch(at location: CGPoint) -> Bool {
+        guard isInteractive else { return false }
+        
+        // Verificar cooldown
+        let currentTime = CACurrentMediaTime()
+        guard currentTime - lastTouchTime >= touchCooldown else { return false }
+        
+        // Verificar si el toque está dentro del área de la luna
+        let moonFrame = moon.calculateAccumulatedFrame()
+        guard moonFrame.contains(location) else { return false }
+        
+        // Actualizar tiempo del último toque
+        lastTouchTime = currentTime
+        
+        // Cambiar a modo día
+        forceDayMode()
+        
+        // Feedback visual
+        showTouchFeedback()
+        
+        return true
+    }
+    
+    private func forceDayMode() {
+        // Notificar al GameScene para cambiar a modo día
+        if let gameScene = scene as? GameScene {
+            gameScene.forceDayMode()
+        }
+    }
+    
+    private func showTouchFeedback() {
+        // Efecto visual al tocar la luna
+        let originalScale = moon.xScale
+        let pulseUp = SKAction.scale(to: originalScale * 1.2, duration: 0.1)
+        let pulseDown = SKAction.scale(to: originalScale, duration: 0.1)
+        let pulse = SKAction.sequence([pulseUp, pulseDown])
+        
+        // Efecto de brillo
+        let fadeOut = SKAction.fadeAlpha(to: 0.3, duration: 0.1)
+        let fadeIn = SKAction.fadeAlpha(to: 1.0, duration: 0.1)
+        let glow = SKAction.sequence([fadeOut, fadeIn])
+        
+        // Ejecutar efectos en paralelo
+        moon.run(SKAction.group([pulse, glow]))
+    }
+    
+    func setInteractive(_ interactive: Bool) {
+        isInteractive = interactive
     }
     
     // MARK: - Efectos Especiales

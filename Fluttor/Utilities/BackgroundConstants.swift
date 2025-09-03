@@ -7,6 +7,7 @@
 
 import CoreFoundation
 import Foundation
+import QuartzCore
 
 struct BackgroundConstants {
     static var textureName: String {
@@ -23,6 +24,11 @@ struct BackgroundConstants {
 
 // MARK: - Day/Night Helper
 private func isNightTime(date: Date = Date(), calendar: Calendar = Calendar.current) -> Bool {
+    // Si el modo día está forzado, siempre retornar false (día)
+    if BackgroundConstants.isForcedDayMode() {
+        return false
+    }
+    
     let components = calendar.dateComponents([.hour, .minute], from: date)
     guard let hour = components.hour, let minute = components.minute else { return false }
     let totalMinutes = hour * 60 + minute
@@ -36,4 +42,29 @@ private func isNightTime(date: Date = Date(), calendar: Calendar = Calendar.curr
 
 extension BackgroundConstants {
     static func isNightNow() -> Bool { isNightTime() }
+    
+    // MARK: - Modo Día Forzado
+    private static var forcedDayMode: Bool = false
+    private static var forcedDayEndTime: TimeInterval = 0
+    
+    static func forceDayMode(duration: TimeInterval = 300) { // 5 minutos por defecto
+        forcedDayMode = true
+        forcedDayEndTime = CACurrentMediaTime() + duration
+    }
+    
+    static func isForcedDayMode() -> Bool {
+        if forcedDayMode {
+            let currentTime = CACurrentMediaTime()
+            if currentTime >= forcedDayEndTime {
+                forcedDayMode = false
+                return false
+            }
+            return true
+        }
+        return false
+    }
+    
+    static func cancelForcedDayMode() {
+        forcedDayMode = false
+    }
 }

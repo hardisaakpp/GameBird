@@ -30,6 +30,12 @@ La luna se ha integrado exitosamente en el juego Fluttor como un elemento visual
 - **Profundidad visual**: Crea sensación de profundidad en el escenario
 - **No interfiere**: Las tuberías pasan por delante sin obstruir la jugabilidad
 
+### 6. **Interactividad Mágica** ✨
+- **Toque para cambiar a día**: Al tocar la luna, se fuerza el modo día por 5 minutos
+- **Cooldown**: 2 segundos entre toques para evitar spam
+- **Feedback visual**: Efecto de pulso y brillo al tocar
+- **Duración temporal**: El modo día forzado dura 5 minutos, luego vuelve al horario normal
+
 ## Jerarquía de Capas Visuales (Z-Position)
 
 ```
@@ -61,9 +67,12 @@ Z-Position = 0     →  Fondo
 ### Archivos Modificados:
 - `FluttorGame/GameScene.swift` - Agregada propiedad `moonComponent`
 - `FluttorGame/Scenes/GameScene+Setup.swift` - Inicialización del componente
-- `FluttorGame/Scenes/GameScene+DayNight.swift` - Sincronización día/noche
+- `FluttorGame/Scenes/GameScene+DayNight.swift` - Sincronización día/noche + método `forceDayMode()`
 - `FluttorGame/Scenes/GameScene+Lifecycle.swift` - Reposicionamiento automático
+- `FluttorGame/Scenes/GameScene+Input.swift` - **NUEVO**: Detección de toque en la luna
 - `Components/Entities/PipeComponent.swift` - **CORREGIDO**: Agregada Z-Position a las tuberías
+- `Utilities/BackgroundConstants.swift` - **NUEVO**: Sistema de modo día forzado + import QuartzCore
+- `Components/Entities/BackgroundComponent.swift` - **MODIFICADO**: Método `applyCurrentBackgroundTexture()` hecho público
 
 ## Uso en el Código
 
@@ -87,6 +96,22 @@ moonComponent.addGlowEffect()
 
 // Remover efecto de resplandor
 moonComponent.removeGlowEffect()
+
+// Controlar interactividad
+moonComponent.setInteractive(true)  // Habilitar toque
+moonComponent.setInteractive(false) // Deshabilitar toque
+```
+
+### Modo Día Forzado:
+```swift
+// Forzar modo día por 5 minutos
+BackgroundConstants.forceDayMode(duration: 300)
+
+// Verificar si está en modo día forzado
+let isForced = BackgroundConstants.isForcedDayMode()
+
+// Cancelar modo día forzado
+BackgroundConstants.cancelForcedDayMode()
 ```
 
 ## Configuración Personalizable
