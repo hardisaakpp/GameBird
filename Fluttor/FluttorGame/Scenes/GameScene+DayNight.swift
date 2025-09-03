@@ -24,8 +24,19 @@ extension GameScene {
     }
     
     func forceNightMode() {
-        // Cancelar modo día forzado para volver al horario normal
-        BackgroundConstants.cancelForcedDayMode()
+        // Forzar modo noche por 5 minutos
+        BackgroundConstants.forceNightMode(duration: 300)
+        
+        // Actualizar inmediatamente todos los componentes
+        updateBirdAppearanceForDayNight()
+        
+        // Actualizar fondo
+        backgroundComponent?.applyCurrentBackgroundTexture()
+    }
+    
+    func cancelForcedNightMode() {
+        // Cancelar modo noche forzado para volver al horario normal
+        BackgroundConstants.cancelForcedNightMode()
         
         // Actualizar inmediatamente todos los componentes
         updateBirdAppearanceForDayNight()

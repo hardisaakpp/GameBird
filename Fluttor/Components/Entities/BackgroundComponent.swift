@@ -159,6 +159,15 @@ class BackgroundComponent {
         backgroundContainer?.children.forEach { $0.removeAllActions() }
     }
     
+    func stopDayNightTimer() {
+        dayNightTimer?.invalidate()
+        dayNightTimer = nil
+    }
+    
+    deinit {
+        stopDayNightTimer()
+    }
+    
     func startMovement() {
         // Reiniciar el movimiento infinito del fondo
         startInfiniteMovement()
@@ -181,12 +190,43 @@ class BackgroundComponent {
     // MARK: - Day/Night
     private func startDayNightAutoUpdate() {
         dayNightTimer?.invalidate()
-        // Chequear cada minuto para cambios de franja
-        dayNightTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
-            self?.applyCurrentBackgroundTexture()
+        // Chequear cada 30 segundos para cambios de franja (más responsivo)
+        dayNightTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+            self?.checkAndUpdateDayNightMode()
         }
         // Aplicar inmediatamente por si cambia al entrar
         applyCurrentBackgroundTexture()
+    }
+    
+    private func checkAndUpdateDayNightMode() {
+        // Verificar si hay un cambio real en el modo día/noche
+        let currentTextureName = BackgroundConstants.textureName
+        let shouldBeNight = BackgroundConstants.isNightNow()
+        
+        // Crear la textura actual para comparar
+        let currentTexture = SKTexture(imageNamed: currentTextureName)
+        
+        // Solo actualizar si realmente hay un cambio
+        if let firstBackground = backgroundNodes.first,
+           let existingTexture = firstBackground.texture {
+            
+            // Comparar las texturas por su contenido (más confiable)
+            let existingImage = existingTexture.cgImage()
+            let currentImage = currentTexture.cgImage()
+            
+            // Si las imágenes son diferentes, hay un cambio
+            if existingImage != currentImage {
+                print("🌅🌙 Cambio automático detectado: \(shouldBeNight ? "Noche" : "Día")")
+                
+                // Actualizar fondo
+                applyCurrentBackgroundTexture()
+                
+                // Notificar al GameScene para actualizar todos los componentes
+                if let gameScene = scene as? GameScene {
+                    gameScene.updateBirdAppearanceForDayNight()
+                }
+            }
+        }
     }
 
     func applyCurrentBackgroundTexture() {

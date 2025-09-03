@@ -13,6 +13,7 @@ struct PhysicsCategory {
     static let top: UInt32 = 0b0100      // 4
     static let pipe: UInt32 = 0b1000     // 8
     static let scoreDetector: UInt32 = 0b1_0000 // 16
+    static let coin: UInt32 = 0b10_0000  // 32
     
     // Método para debugging
     static func name(for category: UInt32) -> String {
@@ -27,6 +28,8 @@ struct PhysicsCategory {
             return "Pipe"
         case PhysicsCategory.scoreDetector:
             return "ScoreDetector"
+        case PhysicsCategory.coin:
+            return "Coin"
         default:
             return "Unknown"
         }

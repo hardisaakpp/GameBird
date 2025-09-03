@@ -29,6 +29,11 @@ private func isNightTime(date: Date = Date(), calendar: Calendar = Calendar.curr
         return false
     }
     
+    // Si el modo noche está forzado, siempre retornar true (noche)
+    if BackgroundConstants.isForcedNightMode() {
+        return true
+    }
+    
     let components = calendar.dateComponents([.hour, .minute], from: date)
     guard let hour = components.hour, let minute = components.minute else { return false }
     let totalMinutes = hour * 60 + minute
@@ -50,6 +55,8 @@ extension BackgroundConstants {
     static func forceDayMode(duration: TimeInterval = 300) { // 5 minutos por defecto
         forcedDayMode = true
         forcedDayEndTime = CACurrentMediaTime() + duration
+        // Cancelar modo noche forzado si está activo
+        forcedNightMode = false
     }
     
     static func isForcedDayMode() -> Bool {
@@ -66,5 +73,32 @@ extension BackgroundConstants {
     
     static func cancelForcedDayMode() {
         forcedDayMode = false
+    }
+    
+    // MARK: - Modo Noche Forzado
+    private static var forcedNightMode: Bool = false
+    private static var forcedNightEndTime: TimeInterval = 0
+    
+    static func forceNightMode(duration: TimeInterval = 300) { // 5 minutos por defecto
+        forcedNightMode = true
+        forcedNightEndTime = CACurrentMediaTime() + duration
+        // Cancelar modo día forzado si está activo
+        forcedDayMode = false
+    }
+    
+    static func isForcedNightMode() -> Bool {
+        if forcedNightMode {
+            let currentTime = CACurrentMediaTime()
+            if currentTime >= forcedNightEndTime {
+                forcedNightMode = false
+                return false
+            }
+            return true
+        }
+        return false
+    }
+    
+    static func cancelForcedNightMode() {
+        forcedNightMode = false
     }
 }
