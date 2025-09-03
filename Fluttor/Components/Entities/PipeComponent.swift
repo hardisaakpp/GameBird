@@ -21,6 +21,7 @@ class PipeComponent {
     /// Crea un par de tubos y lo configura
     func createPipePair() -> SKNode {
         let pipePair = SKNode()
+        pipePair.zPosition = GameConfig.ZPosition.pipes // Asignar Z-Position correcta
         let scaleFactor: CGFloat = 1.6
         let startingX = scene.frame.maxX + 150
         

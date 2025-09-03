@@ -16,6 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var birdComponent: BirdComponent!         // Pájaros
     var groundComponent: GroundComponent!         // Suelo
     var backgroundComponent: BackgroundComponent!   // Fondo
+    var moonComponent: MoonComponent!         // Luna
     var pipeManager: PipeManager!
     
     // UI

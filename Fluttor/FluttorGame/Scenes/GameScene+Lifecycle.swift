@@ -50,5 +50,7 @@ extension GameScene {
         updateGameOverScoreLayout()
         // Ajustar dígitos si cambia el tamaño de la escena
         updateFinalScoreDisplay()
+        // Reposicionar la luna cuando cambia el tamaño
+        moonComponent?.updatePosition()
     }
 }
