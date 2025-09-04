@@ -21,9 +21,11 @@ class PipeManager {
     
     // Configuración de monedas
     private let coinSpawnChance: Float = 0.7 // 70% de probabilidad de aparecer
+    private let coinSpeedMultiplier: CGFloat = 1.0 // Velocidad normal
     
     // Configuración de fresas
     private let strawberrySpawnChance: Float = 0.3 // 30% de probabilidad de aparecer (más raras)
+    private let strawberrySpeedMultiplier: CGFloat = 1.4 // 40% más rápido que las monedas
     
     init(scene: SKScene) {
         self.scene = scene
@@ -168,9 +170,10 @@ class PipeManager {
         scene.addChild(coin)
         activeCoins.append(coin)
         
-        // Configurar movimiento de la moneda (mismo que los tubos)
+        // Configurar movimiento de la moneda con velocidad específica
         let moveDistance = scene.frame.width + 300 // Distancia extra para asegurar que salga de pantalla
-        let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
+        let coinSpeed = pipeComponent.movementSpeed * coinSpeedMultiplier
+        let moveDuration = TimeInterval(moveDistance / coinSpeed)
         
         coin.run(SKAction.sequence([
             SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
@@ -189,9 +192,10 @@ class PipeManager {
         scene.addChild(strawberry)
         activeStrawberries.append(strawberry)
         
-        // Configurar movimiento de la fresa (mismo que los tubos)
+        // Configurar movimiento de la fresa con velocidad más rápida
         let moveDistance = scene.frame.width + 300 // Distancia extra para asegurar que salga de pantalla
-        let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
+        let strawberrySpeed = pipeComponent.movementSpeed * strawberrySpeedMultiplier
+        let moveDuration = TimeInterval(moveDistance / strawberrySpeed)
         
         strawberry.run(SKAction.sequence([
             SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
