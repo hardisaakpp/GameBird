@@ -39,7 +39,7 @@ class CoinComponent: SKSpriteNode {
     
     private func setupAppearance() {
         // Configurar apariencia visual
-        zPosition = GameConfig.ZPosition.pipes + 1 // Justo encima de los tubos
+        zPosition = GameConfig.ZPosition.background + 5 // Detrás de tuberías y pájaro, pero encima del fondo
         name = "coin"
         
         // Por ahora, sin efectos especiales para visualización básica
