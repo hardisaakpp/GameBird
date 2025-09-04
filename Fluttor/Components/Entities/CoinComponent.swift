@@ -33,8 +33,13 @@ class CoinComponent: SKSpriteNode {
     
     // MARK: - Configuración
     private func setupPhysics() {
-        // Por ahora, sin física para visualización estática
-        // La física se puede agregar después cuando implementemos la recolección
+        // Configurar física para detección de colisión con el pájaro
+        physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
+        physicsBody?.isDynamic = false
+        physicsBody?.categoryBitMask = PhysicsCategory.coin
+        physicsBody?.contactTestBitMask = PhysicsCategory.bird
+        physicsBody?.collisionBitMask = 0 // No colisiona físicamente, solo detecta contacto
+        physicsBody?.usesPreciseCollisionDetection = true
     }
     
     private func setupAppearance() {
@@ -55,6 +60,9 @@ class CoinComponent: SKSpriteNode {
         guard !isCollected else { return 0 }
         
         isCollected = true
+        
+        // Deshabilitar física para evitar múltiples colisiones
+        physicsBody = nil
         
         // Animación de recolección
         let scaleUp = SKAction.scale(to: 1.5, duration: 0.1)

@@ -37,12 +37,7 @@ extension GameScene {
         sunComponent = SunComponent(scene: self)
         sunComponent.updateForDayNight() // Mostrar/ocultar según hora actual
         
-        // Coin Component (estática para visualización)
-        // Posicionar en la esquina superior izquierda para que sea visible pero no interfiera
-        let coinX = -frame.size.width / 2 + 600 // 100 píxeles desde el borde izquierdo
-        let coinY = frame.size.height / 2 - 700  // 100 píxeles desde el borde superior
-        coinComponent = CoinComponent.createCoin(at: CGPoint(x: coinX, y: coinY))
-        addChild(coinComponent)
+        // Coin Component ya no se inicializa aquí - se genera dinámicamente por PipeManager
         
         // Bird Component
         birdComponent = BirdComponent(

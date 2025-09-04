@@ -12,10 +12,14 @@ class PipeManager {
     let pipeComponent: PipeComponent
     var spawnInterval: TimeInterval = 2.0
     private var activePipes = [SKNode]()
+    private var activeCoins = [SKNode]() // Nuevo: rastrear monedas activas
     private var spawnAction: SKAction?
     private var lastSpawnTime: TimeInterval = 0
     private var lastGapCenterY: CGFloat?
     private var timeToNextSpawn: TimeInterval = 0
+    
+    // Configuración de monedas
+    private let coinSpawnChance: Float = 0.7 // 70% de probabilidad de aparecer
     
     init(scene: SKScene) {
         self.scene = scene
@@ -51,11 +55,13 @@ class PipeManager {
             timeToNextSpawn = spawnInterval
         }
         activePipes.forEach { $0.isPaused = true }
+        activeCoins.forEach { $0.isPaused = true }
     }
 
     func resume() {
         // Reanudar movimiento de tubos existentes
         activePipes.forEach { $0.isPaused = false }
+        activeCoins.forEach { $0.isPaused = false }
         
         // Reanudar generación respetando el tiempo restante para el próximo spawn
         guard scene.action(forKey: "pipeGeneration") == nil else { return }
@@ -89,6 +95,9 @@ class PipeManager {
         scene.addChild(pipePair)
         activePipes.append(pipePair)
         
+        // Generar moneda con probabilidad
+        spawnCoinIfNeeded(at: pipePair.position.y)
+        
         let moveDistance = scene.frame.width + pipePair.frame.width
         let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
         
@@ -101,6 +110,31 @@ class PipeManager {
         ]))
     }
     
+    // MARK: - Sistema de Monedas
+    private func spawnCoinIfNeeded(at gapCenterY: CGFloat) {
+        // Verificar probabilidad de spawn
+        let randomValue = Float.random(in: 0...1)
+        guard randomValue <= coinSpawnChance else { return }
+        
+        // Crear moneda
+        let coin = CoinComponent.createCoin(at: CGPoint(x: scene.frame.maxX + 150, y: gapCenterY))
+        coin.name = "coin"
+        scene.addChild(coin)
+        activeCoins.append(coin)
+        
+        // Configurar movimiento de la moneda (mismo que los tubos)
+        let moveDistance = scene.frame.width + 300 // Distancia extra para asegurar que salga de pantalla
+        let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
+        
+        coin.run(SKAction.sequence([
+            SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
+            SKAction.removeFromParent(),
+            SKAction.run { [weak self] in
+                self?.activeCoins.removeAll { $0 == coin }
+            }
+        ]))
+    }
+    
     func stopAllPipes() {
         // Detener la acción de generación
         scene.removeAction(forKey: "pipeGeneration")
@@ -108,6 +142,9 @@ class PipeManager {
         // Detener movimiento de todos los tubos
         spawnAction = nil
         activePipes.forEach { $0.removeAllActions() }
+        
+        // Detener movimiento de todas las monedas
+        activeCoins.forEach { $0.removeAllActions() }
     }
     
     func removeAllPipes() {
@@ -118,9 +155,21 @@ class PipeManager {
         }
         activePipes.removeAll()
         
+        // Eliminar todas las monedas
+        activeCoins.forEach {
+            $0.removeAllActions()
+            $0.removeFromParent()
+        }
+        activeCoins.removeAll()
+        
         // Limpieza adicional por si hubiera tubos huérfanos
         scene.children
             .filter { $0.name == "pipePair" }
+            .forEach { $0.removeFromParent() }
+            
+        // Limpieza adicional por si hubiera monedas huérfanas
+        scene.children
+            .filter { $0.name == "coin" }
             .forEach { $0.removeFromParent() }
     }
     
@@ -129,5 +178,10 @@ class PipeManager {
         removeAllPipes()
         lastGapCenterY = nil
         startGeneratingPipes()
+    }
+    
+    // MARK: - Gestión de Monedas
+    func removeCoin(_ coin: SKNode) {
+        activeCoins.removeAll { $0 == coin }
     }
 }

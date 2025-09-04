@@ -30,6 +30,10 @@ extension GameScene {
             score += 1
             updateScoreDisplay()
             
+        case PhysicsCategory.bird | PhysicsCategory.coin:
+            print("¡Moneda recolectada!")
+            handleCoinCollection(contact: contact)
+            
         default:
             break
         }
@@ -86,5 +90,27 @@ extension GameScene {
                 self.showRestartButton()
             }
         }
+    }
+    
+    // MARK: - Manejo de Recolección de Monedas
+    func handleCoinCollection(contact: SKPhysicsContact) {
+        // Determinar cuál de los dos cuerpos es la moneda
+        let coinBody = contact.bodyA.categoryBitMask == PhysicsCategory.coin ? contact.bodyA : contact.bodyB
+        guard let coinNode = coinBody.node as? CoinComponent else { return }
+        
+        // Recolectar la moneda
+        let coinValue = coinNode.collect()
+        
+        // Notificar al PipeManager para remover de la lista de monedas activas
+        pipeManager?.removeCoin(coinNode)
+        
+        // Agregar puntos al score
+        score += coinValue
+        updateScoreDisplay()
+        
+        // Reproducir sonido de moneda (usaremos el sonido de punto por ahora)
+        AudioManager.shared.playPointSound()
+        
+        print("💰 Moneda recolectada! +\(coinValue) puntos. Score total: \(score)")
     }
 }
