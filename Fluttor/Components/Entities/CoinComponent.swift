@@ -47,7 +47,8 @@ class CoinComponent: SKSpriteNode {
         zPosition = GameConfig.ZPosition.background + 5 // Detrás de tuberías y pájaro, pero encima del fondo
         name = "coin"
         
-        // Por ahora, sin efectos especiales para visualización básica
+        // Agregar efecto de brillo/resplandor
+        addGlowEffect()
     }
     
     private func setupAnimation() {
@@ -79,6 +80,10 @@ class CoinComponent: SKSpriteNode {
         removeAction(forKey: "floating")
         removeAction(forKey: "rotating")
         
+        // Detener animaciones del brillo
+        childNode(withName: "coinGlow")?.removeAction(forKey: "glowPulse")
+        childNode(withName: "coinGlow")?.removeAction(forKey: "glowFade")
+        
         // Animación de recolección
         let scaleUp = SKAction.scale(to: 1.5, duration: 0.1)
         let scaleDown = SKAction.scale(to: 0, duration: 0.2)
@@ -97,10 +102,41 @@ class CoinComponent: SKSpriteNode {
     func stopAnimations() {
         removeAction(forKey: "floating")
         removeAction(forKey: "rotating")
+        
+        // Detener animaciones del brillo
+        childNode(withName: "coinGlow")?.removeAction(forKey: "glowPulse")
+        childNode(withName: "coinGlow")?.removeAction(forKey: "glowFade")
     }
     
     func startAnimations() {
         setupAnimation()
+    }
+    
+    // MARK: - Efectos Visuales
+    private func addGlowEffect() {
+        // Crear un efecto de resplandor dorado
+        let glowSize = CGSize(width: size.width * Constants.glowSizeMultiplier, height: size.height * Constants.glowSizeMultiplier)
+        let glow = SKSpriteNode(color: .systemYellow, size: glowSize)
+        glow.alpha = Constants.glowAlpha
+        glow.zPosition = zPosition - 0.1
+        glow.name = "coinGlow"
+        addChild(glow)
+        
+        // Animación del resplandor pulsante
+        let pulseIn = SKAction.scale(to: 1.2, duration: Constants.glowPulseDuration)
+        let pulseOut = SKAction.scale(to: 0.8, duration: Constants.glowPulseDuration)
+        let pulse = SKAction.repeatForever(SKAction.sequence([pulseIn, pulseOut]))
+        glow.run(pulse, withKey: "glowPulse")
+        
+        // Animación de opacidad para efecto de parpadeo sutil
+        let fadeIn = SKAction.fadeAlpha(to: 0.5, duration: Constants.glowFadeDuration)
+        let fadeOut = SKAction.fadeAlpha(to: 0.2, duration: Constants.glowFadeDuration)
+        let fadePulse = SKAction.repeatForever(SKAction.sequence([fadeIn, fadeOut]))
+        glow.run(fadePulse, withKey: "glowFade")
+    }
+    
+    private func removeGlowEffect() {
+        childNode(withName: "coinGlow")?.removeFromParent()
     }
     
     // MARK: - Métodos estáticos
@@ -124,5 +160,11 @@ extension CoinComponent {
         static let floatDistance: CGFloat = 8.0 // Distancia de flotación vertical
         static let floatDuration: TimeInterval = 1.5 // Duración de cada dirección de flotación
         static let rotationDuration: TimeInterval = 4.0 // Duración de una rotación completa
+        
+        // Efectos de brillo
+        static let glowSizeMultiplier: CGFloat = 1.8 // Tamaño del resplandor relativo a la moneda
+        static let glowAlpha: CGFloat = 0.3 // Opacidad base del resplandor
+        static let glowPulseDuration: TimeInterval = 2.0 // Duración del pulso de brillo
+        static let glowFadeDuration: TimeInterval = 1.5 // Duración del parpadeo de opacidad
     }
 }

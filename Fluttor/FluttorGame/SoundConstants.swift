@@ -15,6 +15,7 @@ struct SoundConstants {
         static let point = "point"
         static let swoosh = "swoosh"
         static let wing = "wing"
+        static let coin = "coin"
     }
     
     // MARK: - Extensiones de archivo (orden de preferencia)

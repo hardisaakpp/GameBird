@@ -45,7 +45,8 @@ class AudioManager {
                 SoundConstants.Files.hit,
                 SoundConstants.Files.die,
                 SoundConstants.Files.point,
-                SoundConstants.Files.swoosh
+                SoundConstants.Files.swoosh,
+                SoundConstants.Files.coin
             ]
             
             for soundFile in soundFiles {
@@ -153,6 +154,10 @@ class AudioManager {
     
     func playSwooshSound() {
         playSound(SoundConstants.Files.swoosh)
+    }
+    
+    func playCoinSound() {
+        playSound(SoundConstants.Files.coin)
     }
     
     // MARK: - Control de audio

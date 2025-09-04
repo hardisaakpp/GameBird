@@ -108,8 +108,8 @@ extension GameScene {
         score += coinValue
         updateScoreDisplay()
         
-        // Reproducir sonido de moneda (usaremos el sonido de punto por ahora)
-        AudioManager.shared.playPointSound()
+        // Reproducir sonido de moneda
+        AudioManager.shared.playCoinSound()
         
         print("💰 Moneda recolectada! +\(coinValue) puntos. Score total: \(score)")
     }
