@@ -17,8 +17,13 @@ class BirdComponent {
     // MARK: - Sistema de Crecimiento
     private var growthLevel: Int = 0
     private let baseScale: CGFloat = 2.0
-    private let growthIncrement: CGFloat = 0.15 // Incremento por cada fresa
-    private let maxGrowthLevel: Int = 5 // Máximo 5 niveles de crecimiento
+    private let baseGrowthIncrement: CGFloat = 0.15 // Incremento base por cada fresa
+    private let maxGrowthLevel: Int = 10 // Máximo 10 niveles de crecimiento
+    private let slowGrowthStartLevel: Int = 6 // A partir del nivel 6, crecimiento más lento
+    
+    // MARK: - Sistema de Peso
+    private let baseMass: CGFloat = GameConfig.Physics.birdMass
+    private let weightIncrement: CGFloat = 0.02 // Incremento muy sutil de peso por cada fresa
     
     // Usar valor directamente desde GameConfig
     init(textures: [SKTexture], position: CGPoint) {
@@ -93,7 +98,7 @@ class BirdComponent {
         
         // Restaurar propiedades físicas originales después de una colisión
         if let physicsBody = bird.physicsBody {
-            physicsBody.mass = GameConfig.Physics.birdMass
+            physicsBody.mass = baseMass // Usar el peso base
             physicsBody.allowsRotation = false
             physicsBody.linearDamping = GameConfig.Physics.linearDamping
             physicsBody.angularVelocity = 0
@@ -118,7 +123,7 @@ class BirdComponent {
         guard growthLevel < maxGrowthLevel else { return }
         
         growthLevel += 1
-        let newScale = baseScale + (CGFloat(growthLevel) * growthIncrement)
+        let newScale = getCurrentScale()
         
         // Animación suave de crecimiento sin interrumpir la física
         let growAnimation = SKAction.scale(to: newScale, duration: 0.3)
@@ -129,7 +134,10 @@ class BirdComponent {
             self?.updatePhysicsForNewSize()
         }
         
-        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel), Escala: \(newScale)")
+        let newMass = getCurrentMass()
+        let currentIncrement = getGrowthIncrement(for: growthLevel)
+        let growthType = growthLevel < slowGrowthStartLevel ? "Normal" : "Lento"
+        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType)), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
     }
     
     private func updatePhysicsForNewSize() {
@@ -141,10 +149,10 @@ class BirdComponent {
         let currentAngularVelocity = currentPhysicsBody.angularVelocity
         let isDynamic = currentPhysicsBody.isDynamic
         
-        // Crear nuevo physicsBody con el tamaño actualizado
+        // Crear nuevo physicsBody con el tamaño y peso actualizados
         let newRadius = bird.size.height / 2
         let newPhysicsBody = SKPhysicsBody(circleOfRadius: newRadius)
-        newPhysicsBody.mass = GameConfig.Physics.birdMass
+        newPhysicsBody.mass = getCurrentMass() // Usar el peso actual basado en el crecimiento
         newPhysicsBody.linearDamping = GameConfig.Physics.linearDamping
         newPhysicsBody.allowsRotation = false
         newPhysicsBody.categoryBitMask = PhysicsCategory.bird
@@ -165,7 +173,29 @@ class BirdComponent {
     }
     
     func getCurrentScale() -> CGFloat {
-        return baseScale + (CGFloat(growthLevel) * growthIncrement)
+        guard growthLevel > 0 else { return baseScale }
+        
+        var totalIncrement: CGFloat = 0.0
+        for level in 1...growthLevel {
+            totalIncrement += getGrowthIncrement(for: level)
+        }
+        return baseScale + totalIncrement
+    }
+    
+    func getCurrentMass() -> CGFloat {
+        return baseMass + (CGFloat(growthLevel) * weightIncrement)
+    }
+    
+    private func getGrowthIncrement(for level: Int) -> CGFloat {
+        if level < slowGrowthStartLevel {
+            // Niveles 1-5: Crecimiento normal
+            return baseGrowthIncrement
+        } else {
+            // Niveles 6-10: Crecimiento gradualmente más lento
+            let slowLevel = level - slowGrowthStartLevel + 1 // 1, 2, 3, 4, 5
+            let reductionFactor = CGFloat(slowLevel) * 0.02 // 0.02, 0.04, 0.06, 0.08, 0.10
+            return max(baseGrowthIncrement - reductionFactor, 0.05) // Mínimo 0.05
+        }
     }
     
     func resetGrowth() {
