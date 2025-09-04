@@ -14,6 +14,12 @@ class BirdComponent {
     private var currentTextures: [SKTexture]
     private let initialPosition: CGPoint
     
+    // MARK: - Sistema de Crecimiento
+    private var growthLevel: Int = 0
+    private let baseScale: CGFloat = 2.0
+    private let growthIncrement: CGFloat = 0.15 // Incremento por cada fresa
+    private let maxGrowthLevel: Int = 5 // Máximo 5 niveles de crecimiento
+    
     // Usar valor directamente desde GameConfig
     init(textures: [SKTexture], position: CGPoint) {
         // textures recibido se ignora en favor de texturas por modo día/noche
@@ -63,10 +69,10 @@ class BirdComponent {
         bird.physicsBody?.angularVelocity = 0
         bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: GameConfig.Physics.birdImpulse))
         
-        let originalScale: CGFloat = 2.0
+        let currentScale = getCurrentScale()
         let jumpScale = SKAction.sequence([
-            SKAction.scale(to: originalScale * 1.1, duration: 0.1), // Escalar 10% más
-            SKAction.scale(to: originalScale, duration: 0.2) // Volver al tamaño original
+            SKAction.scale(to: currentScale * 1.1, duration: 0.1), // Escalar 10% más
+            SKAction.scale(to: currentScale, duration: 0.2) // Volver al tamaño actual
         ])
         bird.run(jumpScale)
     }
@@ -77,7 +83,10 @@ class BirdComponent {
         bird.physicsBody?.angularVelocity = 0
         bird.zRotation = 0
         bird.position = initialPosition
-        bird.setScale(2.0) // Asegurar tamaño original
+        
+        // Resetear crecimiento y tamaño
+        resetGrowth()
+        
         // Actualizar a texturas por franja horaria actual
         updateTexturesForCurrentTime()
         restartFlapAnimation()
@@ -102,5 +111,66 @@ class BirdComponent {
     func restartFlapAnimation() {
         bird.removeAction(forKey: "flap")
         startFlapping()
+    }
+    
+    // MARK: - Sistema de Crecimiento
+    func growFromStrawberry() {
+        guard growthLevel < maxGrowthLevel else { return }
+        
+        growthLevel += 1
+        let newScale = baseScale + (CGFloat(growthLevel) * growthIncrement)
+        
+        // Animación suave de crecimiento sin interrumpir la física
+        let growAnimation = SKAction.scale(to: newScale, duration: 0.3)
+        bird.run(growAnimation)
+        
+        // Actualizar física de forma más suave después de la animación
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.updatePhysicsForNewSize()
+        }
+        
+        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel), Escala: \(newScale)")
+    }
+    
+    private func updatePhysicsForNewSize() {
+        // Actualizar el radio de colisión para el nuevo tamaño de forma más suave
+        guard let currentPhysicsBody = bird.physicsBody else { return }
+        
+        // Preservar el estado actual de la física
+        let currentVelocity = currentPhysicsBody.velocity
+        let currentAngularVelocity = currentPhysicsBody.angularVelocity
+        let isDynamic = currentPhysicsBody.isDynamic
+        
+        // Crear nuevo physicsBody con el tamaño actualizado
+        let newRadius = bird.size.height / 2
+        let newPhysicsBody = SKPhysicsBody(circleOfRadius: newRadius)
+        newPhysicsBody.mass = GameConfig.Physics.birdMass
+        newPhysicsBody.linearDamping = GameConfig.Physics.linearDamping
+        newPhysicsBody.allowsRotation = false
+        newPhysicsBody.categoryBitMask = PhysicsCategory.bird
+        newPhysicsBody.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.top | PhysicsCategory.pipe
+        newPhysicsBody.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe | PhysicsCategory.scoreDetector
+        
+        // Restaurar el estado de movimiento
+        newPhysicsBody.velocity = currentVelocity
+        newPhysicsBody.angularVelocity = currentAngularVelocity
+        newPhysicsBody.isDynamic = isDynamic
+        
+        // Asignar el nuevo physicsBody
+        bird.physicsBody = newPhysicsBody
+    }
+    
+    func getGrowthLevel() -> Int {
+        return growthLevel
+    }
+    
+    func getCurrentScale() -> CGFloat {
+        return baseScale + (CGFloat(growthLevel) * growthIncrement)
+    }
+    
+    func resetGrowth() {
+        growthLevel = 0
+        bird.setScale(baseScale)
+        updatePhysicsForNewSize()
     }
 }

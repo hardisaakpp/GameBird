@@ -134,6 +134,9 @@ extension GameScene {
         score += strawberryValue
         updateScoreDisplay()
         
+        // Hacer crecer al pájaro
+        birdComponent.growFromStrawberry()
+        
         // Reproducir sonido de fresa
         AudioManager.shared.playFruitSound()
         
