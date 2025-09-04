@@ -34,6 +34,10 @@ extension GameScene {
             print("¡Moneda recolectada!")
             handleCoinCollection(contact: contact)
             
+        case PhysicsCategory.bird | PhysicsCategory.strawberry:
+            print("¡Fresa recolectada!")
+            handleStrawberryCollection(contact: contact)
+            
         default:
             break
         }
@@ -112,5 +116,27 @@ extension GameScene {
         AudioManager.shared.playCoinSound()
         
         print("💰 Moneda recolectada! +\(coinValue) puntos. Score total: \(score)")
+    }
+    
+    // MARK: - Manejo de Recolección de Fresas
+    func handleStrawberryCollection(contact: SKPhysicsContact) {
+        // Determinar cuál de los dos cuerpos es la fresa
+        let strawberryBody = contact.bodyA.categoryBitMask == PhysicsCategory.strawberry ? contact.bodyA : contact.bodyB
+        guard let strawberryNode = strawberryBody.node as? StrawberryComponent else { return }
+        
+        // Recolectar la fresa
+        let strawberryValue = strawberryNode.collect()
+        
+        // Notificar al PipeManager para remover de la lista de fresas activas
+        pipeManager?.removeStrawberry(strawberryNode)
+        
+        // Agregar puntos al score
+        score += strawberryValue
+        updateScoreDisplay()
+        
+        // Reproducir sonido de fresa
+        AudioManager.shared.playFruitSound()
+        
+        print("🍓 Fresa recolectada! +\(strawberryValue) puntos. Score total: \(score)")
     }
 }
