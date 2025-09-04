@@ -11,6 +11,7 @@ class BirdComponent {
     let bird: SKSpriteNode
     private var dayTextures: [SKTexture]
     private var nightTextures: [SKTexture]
+    private var redBirdTextures: [SKTexture]
     private var currentTextures: [SKTexture]
     private let initialPosition: CGPoint
     
@@ -35,6 +36,11 @@ class BirdComponent {
         self.nightTextures = [
             SKTexture(imageNamed: "BlueBird-Midflap"),
             SKTexture(imageNamed: "BlueBird-Downflap")
+        ]
+        self.redBirdTextures = [
+            SKTexture(imageNamed: "redbird-midflap"),
+            SKTexture(imageNamed: "redbird-downflap"),
+            SKTexture(imageNamed: "RedBird-Upflap")
         ]
         self.currentTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
         self.bird = SKSpriteNode(texture: currentTextures.first)
@@ -107,6 +113,9 @@ class BirdComponent {
 
     // MARK: - Day/Night switching
     func updateTexturesForCurrentTime() {
+        // Solo cambiar texturas si no está transformado (nivel < 1)
+        guard growthLevel < 1 else { return }
+        
         let newTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
         guard newTextures.first != currentTextures.first else { return }
         currentTextures = newTextures
@@ -118,12 +127,25 @@ class BirdComponent {
         startFlapping()
     }
     
+    // MARK: - Transformación de Sprites
+    func transformToRedBird() {
+        currentTextures = redBirdTextures
+        bird.texture = currentTextures.first
+        restartFlapAnimation()
+        print("🐦 Pájaro transformado a pájaro rojo!")
+    }
+    
     // MARK: - Sistema de Crecimiento
     func growFromStrawberry() {
         guard growthLevel < maxGrowthLevel else { return }
         
         growthLevel += 1
         let newScale = getCurrentScale()
+        
+        // Transformar a pájaro rojo desde la primera fresa
+        if growthLevel == 1 {
+            transformToRedBird()
+        }
         
         // Animación suave de crecimiento sin interrumpir la física
         let growAnimation = SKAction.scale(to: newScale, duration: 0.3)
@@ -137,7 +159,8 @@ class BirdComponent {
         let newMass = getCurrentMass()
         let currentIncrement = getGrowthIncrement(for: growthLevel)
         let growthType = growthLevel < slowGrowthStartLevel ? "Normal" : "Lento"
-        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType)), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
+        let transformation = growthLevel >= 1 ? " (Transformado)" : ""
+        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType))\(transformation), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
     }
     
     private func updatePhysicsForNewSize() {
@@ -201,6 +224,12 @@ class BirdComponent {
     func resetGrowth() {
         growthLevel = 0
         bird.setScale(baseScale)
+        
+        // Resetear a las texturas originales (día/noche)
+        currentTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
+        bird.texture = currentTextures.first
+        restartFlapAnimation()
+        
         updatePhysicsForNewSize()
     }
 }
