@@ -18,6 +18,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var backgroundComponent: BackgroundComponent!   // Fondo
     var moonComponent: MoonComponent!         // Luna
     var sunComponent: SunComponent!           // Sol
+    var coinComponent: CoinComponent!         // Moneda
     var pipeManager: PipeManager!
     
     // UI

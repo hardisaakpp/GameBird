@@ -18,6 +18,10 @@ class CoinComponent: SKSpriteNode {
         let texture = SKTexture(imageNamed: "coin")
         super.init(texture: texture, color: .clear, size: texture.size())
         
+        // Reducir el tamaño de la moneda para que sea más pequeña que el pájaro
+        // El pájaro tiene setScale(2.0), así que la moneda será más pequeña
+        setScale(0.13) // 60% del tamaño original, más pequeña que el pájaro
+        
         setupPhysics()
         setupAppearance()
         setupAnimation()
@@ -29,13 +33,8 @@ class CoinComponent: SKSpriteNode {
     
     // MARK: - Configuración
     private func setupPhysics() {
-        // Configurar física para detección de colisión
-        physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
-        physicsBody?.isDynamic = false
-        physicsBody?.categoryBitMask = PhysicsCategory.coin
-        physicsBody?.contactTestBitMask = PhysicsCategory.bird
-        physicsBody?.collisionBitMask = 0 // No colisiona físicamente
-        physicsBody?.usesPreciseCollisionDetection = true
+        // Por ahora, sin física para visualización estática
+        // La física se puede agregar después cuando implementemos la recolección
     }
     
     private func setupAppearance() {
@@ -43,27 +42,12 @@ class CoinComponent: SKSpriteNode {
         zPosition = GameConfig.ZPosition.pipes + 1 // Justo encima de los tubos
         name = "coin"
         
-        // Agregar un ligero brillo
-        let glowEffect = SKEffectNode()
-        glowEffect.filter = CIFilter(name: "CIGaussianBlur")
-        glowEffect.filter?.setValue(2.0, forKey: "inputRadius")
-        addChild(glowEffect)
+        // Por ahora, sin efectos especiales para visualización básica
     }
     
     private func setupAnimation() {
-        // Animación de flotación suave
-        let floatUp = SKAction.moveBy(x: 0, y: 10, duration: 1.0)
-        let floatDown = SKAction.moveBy(x: 0, y: -10, duration: 1.0)
-        let floatSequence = SKAction.sequence([floatUp, floatDown])
-        let floatForever = SKAction.repeatForever(floatSequence)
-        
-        // Animación de rotación lenta
-        let rotate = SKAction.rotate(byAngle: .pi * 2, duration: 3.0)
-        let rotateForever = SKAction.repeatForever(rotate)
-        
-        // Ejecutar ambas animaciones
-        run(floatForever)
-        run(rotateForever)
+        // Por ahora, sin animaciones para visualización estática
+        // Las animaciones se pueden agregar después
     }
     
     // MARK: - Métodos públicos
@@ -97,7 +81,8 @@ class CoinComponent: SKSpriteNode {
 // MARK: - Extensión para constantes de monedas
 extension CoinComponent {
     struct Constants {
-        static let size = CGSize(width: 32, height: 32)
+        static let size = CGSize(width: 32, height: 32) // Tamaño base antes del escalado
+        static let scale: CGFloat = 0.6 // Escala aplicada (60% del tamaño original)
         static let spawnChance: Float = 0.7 // 70% de probabilidad de aparecer
         static let minSpawnDistance: CGFloat = 200.0
         static let maxSpawnDistance: CGFloat = 400.0

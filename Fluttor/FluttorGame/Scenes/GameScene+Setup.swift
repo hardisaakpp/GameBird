@@ -37,6 +37,10 @@ extension GameScene {
         sunComponent = SunComponent(scene: self)
         sunComponent.updateForDayNight() // Mostrar/ocultar según hora actual
         
+        // Coin Component (estática para visualización)
+        coinComponent = CoinComponent.createCoin(at: CGPoint(x: 0, y: 0)) // Centro de la pantalla
+        addChild(coinComponent)
+        
         // Bird Component
         birdComponent = BirdComponent(
             textures: [birdTexture1, birdTexture2],
