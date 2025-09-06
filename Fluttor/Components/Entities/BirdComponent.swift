@@ -181,9 +181,13 @@ class BirdComponent {
     }
     
     func growFromGrape() {
-        // Las uvas transforman al pájaro a BlueBird pero sin crecimiento
+        // Las uvas resetean completamente el crecimiento del pájaro
+        resetGrowth()
+        
+        // Forzar transformación a BlueBird independientemente del modo día/noche
         transformToBlueBird()
-        print("🍇 Pájaro transformado a BlueBird por la uva!")
+        
+        print("🍇 Pájaro reseteado completamente por la uva! Volvió a su estado inicial y se transformó a BlueBird.")
     }
     
     // MARK: - Sistema de Poder Magnético Simple
