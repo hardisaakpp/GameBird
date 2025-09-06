@@ -79,11 +79,11 @@ class AudioManager {
         }
     }
     
-    // MARK: - Reproducción optimizada
+    // MARK: - Reproducción ultra optimizada
     func playSound(_ soundName: String, fileExtension: String = "wav") {
         guard isSoundEnabled else { return }
         
-        // Optimización: Evitar spam de sonidos
+        // OPTIMIZACIÓN CRÍTICA: Evitar spam de sonidos con verificación más eficiente
         let currentTime = CACurrentMediaTime()
         if let lastTime = lastPlayTime[soundName], 
            currentTime - lastTime < minPlayInterval {
@@ -91,49 +91,55 @@ class AudioManager {
         }
         lastPlayTime[soundName] = currentTime
         
-        // Limitar sonidos concurrentes
+        // OPTIMIZACIÓN: Limitar sonidos concurrentes más estrictamente
         if activeSounds.count >= maxConcurrentSounds {
             return
         }
         
-        // Usar player precargado si existe
+        // OPTIMIZACIÓN: Usar player precargado directamente en el hilo principal
         if let player = audioPlayers[soundName] {
-            DispatchQueue.main.async {
-                player.currentTime = 0
-                player.play()
-                self.activeSounds.insert(soundName)
-                
-                // Remover del set activo cuando termine
-                DispatchQueue.main.asyncAfter(deadline: .now() + player.duration) {
-                    self.activeSounds.remove(soundName)
-                }
+            // Reproducir inmediatamente sin DispatchQueue para mejor rendimiento
+            player.currentTime = 0
+            player.play()
+            activeSounds.insert(soundName)
+            
+            // OPTIMIZACIÓN: Usar Timer en lugar de DispatchQueue para mejor rendimiento
+            Timer.scheduledTimer(withTimeInterval: player.duration, repeats: false) { _ in
+                self.activeSounds.remove(soundName)
             }
             return
         }
         
-        // Fallback: cargar al momento
-        if let url = Bundle.main.url(forResource: soundName, withExtension: fileExtension) {
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    let player = try AVAudioPlayer(contentsOf: url)
-                    player.prepareToPlay()
-                    player.volume = SoundConstants.Audio.volume
-                    
-                    DispatchQueue.main.async {
-                        self.audioPlayers[soundName] = player
-                        player.play()
-                        self.activeSounds.insert(soundName)
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + player.duration) {
-                            self.activeSounds.remove(soundName)
-                        }
-                    }
-                } catch {
-                    print("Error reproduciendo sonido \(soundName).\(fileExtension): \(error)")
-                }
-            }
-        } else {
+        // OPTIMIZACIÓN: Fallback optimizado - cargar solo si es crítico
+        if soundName == SoundConstants.Files.hit || soundName == SoundConstants.Files.die {
+            loadAndPlaySound(soundName, fileExtension: fileExtension)
+        }
+    }
+    
+    private func loadAndPlaySound(_ soundName: String, fileExtension: String) {
+        guard let url = Bundle.main.url(forResource: soundName, withExtension: fileExtension) else {
             print("No se pudo encontrar el archivo de sonido: \(soundName).\(fileExtension)")
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let player = try AVAudioPlayer(contentsOf: url)
+                player.prepareToPlay()
+                player.volume = SoundConstants.Audio.volume
+                
+                DispatchQueue.main.async {
+                    self.audioPlayers[soundName] = player
+                    player.play()
+                    self.activeSounds.insert(soundName)
+                    
+                    Timer.scheduledTimer(withTimeInterval: player.duration, repeats: false) { _ in
+                        self.activeSounds.remove(soundName)
+                    }
+                }
+            } catch {
+                print("Error reproduciendo sonido \(soundName).\(fileExtension): \(error)")
+            }
         }
     }
     

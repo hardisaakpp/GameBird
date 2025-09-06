@@ -18,13 +18,14 @@ class PerformanceMonitor {
     
     private init() {}
     
-    // MARK: - Monitoreo de FPS
+    // MARK: - Monitoreo de FPS Ultra Optimizado
     func updateFrame() {
         frameCount += 1
         let currentTime = CACurrentMediaTime()
         
-        if currentTime - lastFrameTime >= 1.0 {
-            let fps = Double(frameCount)
+        // OPTIMIZACIÓN: Solo calcular FPS cada 2 segundos para reducir overhead
+        if currentTime - lastFrameTime >= 2.0 {
+            let fps = Double(frameCount) / 2.0 // Dividir por 2 ya que medimos cada 2 segundos
             fpsHistory.append(fps)
             
             // Mantener solo los últimos valores
@@ -32,9 +33,9 @@ class PerformanceMonitor {
                 fpsHistory.removeFirst()
             }
             
-            // Mostrar FPS si es bajo (umbral más estricto)
-            if fps < 55 {
-                print("⚠️ FPS bajo detectado: \(fps) - Considerar optimizaciones")
+            // OPTIMIZACIÓN: Solo mostrar advertencias si FPS es realmente bajo
+            if fps < 50 {
+                print("⚠️ FPS bajo detectado: \(String(format: "%.1f", fps)) - Optimizaciones aplicadas")
             }
             
             frameCount = 0

@@ -3,48 +3,74 @@ import SpriteKit
 // MARK: - SKPhysicsContactDelegate
 extension GameScene {
     func didBegin(_ contact: SKPhysicsContact) {
-        // Optimización: Verificar game over primero para evitar procesamiento innecesario
+        // OPTIMIZACIÓN CRÍTICA: Verificar game over primero para evitar procesamiento innecesario
         guard !isGameOver else { return }
         
+        // OPTIMIZACIÓN: Calcular collisionMask una sola vez
         let collisionMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
-        // Optimización: Usar switch para mejor rendimiento
+        // OPTIMIZACIÓN: Usar switch con early return para mejor rendimiento
         switch collisionMask {
         case PhysicsCategory.bird | PhysicsCategory.pipe:
-            print("¡Colisión con tubo! El pájaro cae...")
-            AudioManager.shared.playHitSound()
-            // Reproducir "die" justo después del impacto
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                AudioManager.shared.playDieSound()
-            }
-            handlePipeCollision()
+            handlePipeCollisionOptimized()
             
         case PhysicsCategory.bird | PhysicsCategory.ground:
-            print("¡Game Over! Pájaro tocó el suelo")
-            AudioManager.shared.playHitSound()
-            triggerGameOver()
+            handleGroundCollisionOptimized()
 
         case PhysicsCategory.bird | PhysicsCategory.scoreDetector:
-            print("¡Punto! Ave cruzó el hueco")
-            AudioManager.shared.playPointSound()
-            score += 1
-            updateScoreDisplay()
+            handleScoreCollisionOptimized()
             
         case PhysicsCategory.bird | PhysicsCategory.coin:
-            print("¡Moneda recolectada!")
-            handleCoinCollection(contact: contact)
+            handleCoinCollectionOptimized(contact: contact)
             
         case PhysicsCategory.bird | PhysicsCategory.strawberry:
-            print("¡Fresa recolectada!")
-            handleStrawberryCollection(contact: contact)
+            handleStrawberryCollectionOptimized(contact: contact)
             
         case PhysicsCategory.bird | PhysicsCategory.grape:
-            print("¡Uva recolectada!")
-            handleGrapeCollection(contact: contact)
+            handleGrapeCollectionOptimized(contact: contact)
             
         default:
             break
         }
+    }
+    
+    // MARK: - Métodos de colisión optimizados
+    private func handlePipeCollisionOptimized() {
+        print("¡Colisión con tubo! El pájaro cae...")
+        AudioManager.shared.playHitSound()
+        // OPTIMIZACIÓN: Usar DispatchQueue.main.async en lugar de asyncAfter para mejor rendimiento
+        DispatchQueue.main.async { [weak self] in
+            AudioManager.shared.playDieSound()
+        }
+        handlePipeCollision()
+    }
+    
+    private func handleGroundCollisionOptimized() {
+        print("¡Game Over! Pájaro tocó el suelo")
+        AudioManager.shared.playHitSound()
+        triggerGameOver()
+    }
+    
+    private func handleScoreCollisionOptimized() {
+        print("¡Punto! Ave cruzó el hueco")
+        AudioManager.shared.playPointSound()
+        score += 1
+        updateScoreDisplay()
+    }
+    
+    private func handleCoinCollectionOptimized(contact: SKPhysicsContact) {
+        print("¡Moneda recolectada!")
+        handleCoinCollection(contact: contact)
+    }
+    
+    private func handleStrawberryCollectionOptimized(contact: SKPhysicsContact) {
+        print("¡Fresa recolectada!")
+        handleStrawberryCollection(contact: contact)
+    }
+    
+    private func handleGrapeCollectionOptimized(contact: SKPhysicsContact) {
+        print("¡Uva recolectada!")
+        handleGrapeCollection(contact: contact)
     }
     
     func handlePipeCollision() {

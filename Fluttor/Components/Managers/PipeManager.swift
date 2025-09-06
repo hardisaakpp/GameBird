@@ -93,36 +93,38 @@ class PipeManager {
     private func spawnPipe() {
         lastSpawnTime = CACurrentMediaTime()
         
-        // Suavizado del desplazamiento vertical del hueco
+        // OPTIMIZACIÓN: Crear tubería de forma más eficiente
         let targetPair = pipeComponent.createPipePair()
+        
+        // OPTIMIZACIÓN: Cálculo de posición más eficiente
         if let lastCenter = lastGapCenterY {
             let currentCenter = targetPair.position.y
             let maxDelta: CGFloat = 120.0
             let clampedCenter = min(max(currentCenter, lastCenter - maxDelta), lastCenter + maxDelta)
-            let delta = clampedCenter - currentCenter
-            targetPair.position.y += delta
+            targetPair.position.y = clampedCenter
             lastGapCenterY = clampedCenter
         } else {
             lastGapCenterY = targetPair.position.y
         }
-        let pipePair = targetPair
-        pipePair.name = "pipePair"
-        scene.addChild(pipePair)
-        activePipes.append(pipePair)
         
-        // Generar recompensas con posicionamiento aleatorio para evitar superposición
-        spawnRewardsIfNeeded(at: pipePair.position.y)
+        targetPair.name = "pipePair"
+        scene.addChild(targetPair)
+        activePipes.append(targetPair)
         
-        let moveDistance = scene.frame.width + pipePair.frame.width
+        // OPTIMIZACIÓN: Generar recompensas de forma más eficiente
+        spawnRewardsIfNeeded(at: targetPair.position.y)
+        
+        // OPTIMIZACIÓN: Cálculo de movimiento más eficiente
+        let moveDistance = scene.frame.width + targetPair.frame.width
         let moveDuration = TimeInterval(moveDistance / pipeComponent.movementSpeed)
         
-        pipePair.run(SKAction.sequence([
-            SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
-            SKAction.removeFromParent(),
-            SKAction.run { [weak self] in
-                self?.activePipes.removeAll { $0 == pipePair }
-            }
-        ]))
+        // OPTIMIZACIÓN: Usar SKAction más eficiente
+        let moveAction = SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration)
+        let cleanupAction = SKAction.run { [weak self] in
+            self?.activePipes.removeAll { $0 == targetPair }
+        }
+        
+        targetPair.run(SKAction.sequence([moveAction, SKAction.removeFromParent(), cleanupAction]))
     }
     
     // MARK: - Sistema de Recompensas (Monedas y Fresas)

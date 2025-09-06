@@ -12,6 +12,10 @@ class PhysicsManager {
     static func configureWorld(for scene: SKScene, gravity: CGFloat) {
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: gravity)
         scene.physicsWorld.contactDelegate = scene as? SKPhysicsContactDelegate
+        
+        // OPTIMIZACIÓN CRÍTICA: Configuraciones de física para mejor rendimiento
+        scene.physicsWorld.speed = 1.0 // Velocidad normal de física
+        scene.physicsWorld.contactDelegate = scene as? SKPhysicsContactDelegate
     }
 
     static func configureBirdPhysics(_ bird: SKSpriteNode) {
@@ -23,11 +27,16 @@ class PhysicsManager {
         bird.physicsBody?.contactTestBitMask = PhysicsCategory.ground | PhysicsCategory.pipe
         bird.physicsBody?.restitution = 0.5
         
-        // Optimización: Configuración de física para mejor rendimiento
+        // OPTIMIZACIÓN CRÍTICA: Configuración de física ultra optimizada
         bird.physicsBody?.linearDamping = 0.8 // Reducir fricción para mejor respuesta
         bird.physicsBody?.angularDamping = 1.0 // Sin rotación angular
         bird.physicsBody?.mass = 0.15 // Masa optimizada
         bird.physicsBody?.friction = 0.0 // Sin fricción para mejor rendimiento
+        
+        // OPTIMIZACIÓN: Configuraciones adicionales para mejor rendimiento
+        bird.physicsBody?.usesPreciseCollisionDetection = false // Desactivar detección precisa para mejor rendimiento
+        bird.physicsBody?.affectedByGravity = true
+        bird.physicsBody?.isResting = false // Evitar que se quede en reposo
     }
     
     static func createBoundary(for scene: SKScene, position: CGPoint, size: CGSize, category: UInt32) {

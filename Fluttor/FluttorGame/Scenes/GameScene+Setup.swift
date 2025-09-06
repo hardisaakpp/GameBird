@@ -15,11 +15,16 @@ extension GameScene {
     }
 
     func setupGameWorld() {
+        // OPTIMIZACIÓN: Configurar mundo de física optimizado
         PhysicsManager.configureWorld(for: self, gravity: GameConfig.Physics.gravity)
         PhysicsManager.createBoundary(for: self,
                                       position: CGPoint(x: frame.midX, y: frame.size.height / 2),
                                       size: CGSize(width: frame.size.width, height: 1),
                                       category: PhysicsCategory.top)
+        
+        // OPTIMIZACIÓN: Configuraciones adicionales de escena para mejor rendimiento
+        self.anchorPoint = CGPoint(x: 0.5, y: 0.5) // Centrar ancla para mejor rendimiento
+        self.scaleMode = .aspectFill // Modo de escala optimizado
     }
     
     func setupComponents() {

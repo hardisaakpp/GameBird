@@ -62,4 +62,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - High Score Properties
     var highScoreContainer: SKNode?
     var highScoreDigitsContainer: SKNode?
+    
+    // MARK: - Performance Optimization Properties
+    var lastRotationUpdate: TimeInterval = 0
+    let rotationUpdateInterval: TimeInterval = 1.0/30.0 // 30 FPS para rotación
+    var lastVelocity: CGFloat = 0
+    let velocityThreshold: CGFloat = 5.0 // Solo actualizar si hay cambio significativo
 }
