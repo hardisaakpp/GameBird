@@ -32,9 +32,9 @@ class PerformanceMonitor {
                 fpsHistory.removeFirst()
             }
             
-            // Mostrar FPS si es bajo
-            if fps < 50 {
-                print("⚠️ FPS bajo detectado: \(fps)")
+            // Mostrar FPS si es bajo (umbral más estricto)
+            if fps < 55 {
+                print("⚠️ FPS bajo detectado: \(fps) - Considerar optimizaciones")
             }
             
             frameCount = 0

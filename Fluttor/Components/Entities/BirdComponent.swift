@@ -64,6 +64,8 @@ class BirdComponent {
         let physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2)
         physicsBody.mass = GameConfig.Physics.birdMass
         physicsBody.linearDamping = GameConfig.Physics.linearDamping
+        physicsBody.angularDamping = GameConfig.Physics.angularDamping  // Nuevo: amortiguación angular
+        physicsBody.friction = GameConfig.Physics.friction              // Nuevo: sin fricción
         physicsBody.allowsRotation = false
         physicsBody.categoryBitMask = PhysicsCategory.bird
         physicsBody.collisionBitMask = PhysicsCategory.ground | PhysicsCategory.top | PhysicsCategory.pipe

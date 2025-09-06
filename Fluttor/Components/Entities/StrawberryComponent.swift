@@ -51,18 +51,11 @@ class StrawberryComponent: SKSpriteNode {
     }
     
     private func setupAnimation() {
-        // Animación de flotación suave (movimiento vertical)
-        let floatUp = SKAction.moveBy(x: 0, y: Constants.floatDistance, duration: Constants.floatDuration)
-        let floatDown = SKAction.moveBy(x: 0, y: -Constants.floatDistance, duration: Constants.floatDuration)
-        let floatSequence = SKAction.sequence([floatUp, floatDown])
-        let floatForever = SKAction.repeatForever(floatSequence)
-        
-        // Animación de rotación lenta
+        // OPTIMIZACIÓN: Solo una animación simple de rotación para mejor rendimiento
         let rotate = SKAction.rotate(byAngle: .pi * 2, duration: Constants.rotationDuration)
         let rotateForever = SKAction.repeatForever(rotate)
         
-        // Ejecutar ambas animaciones en paralelo
-        run(floatForever, withKey: "floating")
+        // Solo ejecutar rotación (eliminar flotación para mejor rendimiento)
         run(rotateForever, withKey: "rotating")
     }
     
@@ -113,28 +106,21 @@ class StrawberryComponent: SKSpriteNode {
     
     // MARK: - Efectos Visuales
     private func addGlowEffect() {
-        // Crear nodo de brillo específico para fresas
+        // OPTIMIZACIÓN: Efecto de brillo estático para mejor rendimiento
         let glow = SKSpriteNode(color: .systemRed, size: CGSize(width: size.width * Constants.glowSizeMultiplier, height: size.height * Constants.glowSizeMultiplier))
         glow.name = "strawberryGlow"
-        glow.alpha = Constants.glowAlpha
+        glow.alpha = Constants.glowAlpha * 0.6 // Brillo más sutil y estático
         glow.zPosition = -1 // Detrás de la fresa
         
         addChild(glow)
         
-        // Animación de pulso del brillo
-        let pulseUp = SKAction.scale(to: 1.3, duration: Constants.glowPulseDuration)
+        // Solo una animación simple de pulso (eliminar fade para mejor rendimiento)
+        let pulseUp = SKAction.scale(to: 1.2, duration: Constants.glowPulseDuration)
         let pulseDown = SKAction.scale(to: 0.9, duration: Constants.glowPulseDuration)
         let pulseSequence = SKAction.sequence([pulseUp, pulseDown])
         let pulseForever = SKAction.repeatForever(pulseSequence)
         
-        // Animación de fade del brillo
-        let fadeIn = SKAction.fadeAlpha(to: 0.6, duration: Constants.glowFadeDuration)
-        let fadeOut = SKAction.fadeAlpha(to: 0.2, duration: Constants.glowFadeDuration)
-        let fadeSequence = SKAction.sequence([fadeIn, fadeOut])
-        let fadeForever = SKAction.repeatForever(fadeSequence)
-        
         glow.run(pulseForever, withKey: "glowPulse")
-        glow.run(fadeForever, withKey: "glowFade")
     }
     
     private func removeGlowEffect() {

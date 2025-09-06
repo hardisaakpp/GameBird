@@ -39,7 +39,8 @@ class AudioManager {
     func preloadSounds() {
         guard !isPreloaded else { return }
         
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        // OPTIMIZACIÓN: Usar userInitiated en lugar de background para mejor prioridad
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let soundFiles = [
                 SoundConstants.Files.wing,
                 SoundConstants.Files.hit,
@@ -56,7 +57,7 @@ class AudioManager {
             
             DispatchQueue.main.async {
                 self?.isPreloaded = true
-                print("✅ Sonidos precargados exitosamente")
+                print("✅ Sonidos precargados exitosamente - Rendimiento optimizado")
             }
         }
     }

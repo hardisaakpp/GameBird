@@ -11,12 +11,14 @@ import UIKit
 
 
 struct GameConfig {
-    // MARK: - Física
+    // MARK: - Física (Optimizada para mejor rendimiento)
     struct Physics {
         static let gravity: CGFloat = -4.7
         static let birdImpulse: CGFloat = 62.0
         static let birdMass: CGFloat = 0.15
-        static let linearDamping: CGFloat = 0.5
+        static let linearDamping: CGFloat = 0.8  // Aumentado para mejor control
+        static let angularDamping: CGFloat = 1.0  // Nuevo: amortiguación angular
+        static let friction: CGFloat = 0.0        // Nuevo: sin fricción para mejor rendimiento
     }
     
     // MARK: - Velocidades

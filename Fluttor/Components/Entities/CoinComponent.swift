@@ -52,18 +52,11 @@ class CoinComponent: SKSpriteNode {
     }
     
     private func setupAnimation() {
-        // Animación de flotación suave (movimiento vertical)
-        let floatUp = SKAction.moveBy(x: 0, y: Constants.floatDistance, duration: Constants.floatDuration)
-        let floatDown = SKAction.moveBy(x: 0, y: -Constants.floatDistance, duration: Constants.floatDuration)
-        let floatSequence = SKAction.sequence([floatUp, floatDown])
-        let floatForever = SKAction.repeatForever(floatSequence)
-        
-        // Animación de rotación lenta
+        // OPTIMIZACIÓN: Solo una animación simple de rotación para mejor rendimiento
         let rotate = SKAction.rotate(byAngle: .pi * 2, duration: Constants.rotationDuration)
         let rotateForever = SKAction.repeatForever(rotate)
         
-        // Ejecutar ambas animaciones en paralelo
-        run(floatForever, withKey: "floating")
+        // Solo ejecutar rotación (eliminar flotación para mejor rendimiento)
         run(rotateForever, withKey: "rotating")
     }
     
@@ -114,25 +107,19 @@ class CoinComponent: SKSpriteNode {
     
     // MARK: - Efectos Visuales
     private func addGlowEffect() {
-        // Crear un efecto de resplandor dorado
+        // OPTIMIZACIÓN: Efecto de brillo estático para mejor rendimiento
         let glowSize = CGSize(width: size.width * Constants.glowSizeMultiplier, height: size.height * Constants.glowSizeMultiplier)
         let glow = SKSpriteNode(color: .systemYellow, size: glowSize)
-        glow.alpha = Constants.glowAlpha
+        glow.alpha = Constants.glowAlpha * 0.6 // Brillo más sutil y estático
         glow.zPosition = zPosition - 0.1
         glow.name = "coinGlow"
         addChild(glow)
         
-        // Animación del resplandor pulsante
-        let pulseIn = SKAction.scale(to: 1.2, duration: Constants.glowPulseDuration)
-        let pulseOut = SKAction.scale(to: 0.8, duration: Constants.glowPulseDuration)
+        // Solo una animación simple de pulso (eliminar fade para mejor rendimiento)
+        let pulseIn = SKAction.scale(to: 1.1, duration: Constants.glowPulseDuration)
+        let pulseOut = SKAction.scale(to: 0.9, duration: Constants.glowPulseDuration)
         let pulse = SKAction.repeatForever(SKAction.sequence([pulseIn, pulseOut]))
         glow.run(pulse, withKey: "glowPulse")
-        
-        // Animación de opacidad para efecto de parpadeo sutil
-        let fadeIn = SKAction.fadeAlpha(to: 0.5, duration: Constants.glowFadeDuration)
-        let fadeOut = SKAction.fadeAlpha(to: 0.2, duration: Constants.glowFadeDuration)
-        let fadePulse = SKAction.repeatForever(SKAction.sequence([fadeIn, fadeOut]))
-        glow.run(fadePulse, withKey: "glowFade")
     }
     
     private func removeGlowEffect() {

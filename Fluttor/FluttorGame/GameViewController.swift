@@ -26,8 +26,9 @@ class GameViewController: UIViewController {
                 // Present the scene
                 skView.presentScene(sceneNode)
                 skView.ignoresSiblingOrder = true
-                skView.showsFPS = true
-                skView.showsNodeCount = true
+                // OPTIMIZACIÓN: Desactivar debug para mejor rendimiento
+                skView.showsFPS = false
+                skView.showsNodeCount = false
             }
         }
 
