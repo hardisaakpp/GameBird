@@ -159,10 +159,8 @@ class BirdComponent {
         growthLevel += 1
         let newScale = getCurrentScale()
         
-        // Transformar a pájaro rojo desde la primera fresa
-        if growthLevel == 1 {
-            transformToRedBird()
-        }
+        // Transformar a pájaro rojo siempre que coma una fresa
+        transformToRedBird()
         
         // Animación suave de crecimiento sin interrumpir la física
         let growAnimation = SKAction.scale(to: newScale, duration: 0.3)
@@ -268,16 +266,16 @@ class BirdComponent {
         // Campo exterior con gradiente
         let outerField = SKShapeNode(circleOfRadius: magneticRadius)
         outerField.name = "magneticFieldOuter"
-        outerField.strokeColor = .systemBlue
+        outerField.strokeColor = .systemTeal
         outerField.fillColor = .clear
         outerField.lineWidth = 3.0
         outerField.alpha = 0.3
         outerField.zPosition = -5
         
-        // Campo medio con cian brillante
+        // Campo medio con cian verdoso brillante
         let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.75)
         middleField.name = "magneticFieldMiddle"
-        middleField.strokeColor = .systemCyan
+        middleField.strokeColor = UIColor(red: 0.0, green: 0.8, blue: 0.6, alpha: 1.0) // Cian verdoso
         middleField.fillColor = .clear
         middleField.lineWidth = 2.5
         middleField.alpha = 0.5
@@ -295,7 +293,7 @@ class BirdComponent {
         // Campo central ultra brillante
         let coreField = SKShapeNode(circleOfRadius: magneticRadius * 0.25)
         coreField.name = "magneticFieldCore"
-        coreField.strokeColor = .yellow
+        coreField.strokeColor = UIColor(red: 0.0, green: 1.0, blue: 0.7, alpha: 1.0) // Cian verdoso brillante
         coreField.fillColor = .clear
         coreField.lineWidth = 1.5
         coreField.alpha = 1.0
@@ -348,7 +346,7 @@ class BirdComponent {
         for i in 0..<3 {
             let wave = SKShapeNode(circleOfRadius: 10)
             wave.name = "energyWave\(i)"
-            wave.strokeColor = .systemBlue
+            wave.strokeColor = UIColor(red: 0.0, green: 0.7, blue: 0.5, alpha: 1.0) // Cian verdoso medio
             wave.fillColor = .clear
             wave.lineWidth = 2.0
             wave.alpha = 0.8
@@ -386,8 +384,13 @@ class BirdComponent {
             let particle = SKShapeNode(circleOfRadius: CGFloat.random(in: 2...5))
             particle.name = "magneticParticle\(i)"
             
-            // Colores aleatorios entre azul y cian
-            let colors: [UIColor] = [.systemBlue, .systemCyan, .white, .systemIndigo]
+            // Colores aleatorios entre tonos cian verdosos
+            let colors: [UIColor] = [
+                UIColor(red: 0.0, green: 0.6, blue: 0.4, alpha: 1.0), // Cian verdoso oscuro
+                UIColor(red: 0.0, green: 0.8, blue: 0.6, alpha: 1.0), // Cian verdoso medio
+                UIColor(red: 0.0, green: 1.0, blue: 0.7, alpha: 1.0), // Cian verdoso brillante
+                .white
+            ]
             particle.fillColor = colors[i % colors.count]
             particle.strokeColor = .white
             particle.alpha = 0.8
@@ -477,7 +480,7 @@ class BirdComponent {
             
             line.path = path
             line.name = "energyLine\(i)"
-            line.strokeColor = .systemCyan
+            line.strokeColor = UIColor(red: 0.0, green: 0.9, blue: 0.7, alpha: 1.0) // Cian verdoso brillante
             line.lineWidth = 1.0
             line.alpha = 0.6
             line.zPosition = -7
@@ -498,7 +501,7 @@ class BirdComponent {
         for i in 0..<5 {
             let distortion = SKShapeNode(circleOfRadius: magneticRadius * CGFloat(i + 1) / 5)
             distortion.name = "spaceDistortion\(i)"
-            distortion.strokeColor = .systemPurple
+            distortion.strokeColor = UIColor(red: 0.0, green: 0.5, blue: 0.3, alpha: 1.0) // Cian verdoso oscuro
             distortion.fillColor = .clear
             distortion.lineWidth = 1.0
             distortion.alpha = 0.1
