@@ -166,6 +166,9 @@ extension GameScene {
         // Transformar a BlueBird (sin crecimiento)
         birdComponent.growFromGrape()
         
+        // Activar poder magnético con mejoras de seguridad
+        birdComponent.activateMagneticPower()
+        
         // Reproducir sonido de fruta (reutilizamos el sonido de fresa)
         AudioManager.shared.playFruitSound()
         

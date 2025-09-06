@@ -26,6 +26,11 @@ class BirdComponent {
     private let baseMass: CGFloat = GameConfig.Physics.birdMass
     private let weightIncrement: CGFloat = 0.02 // Incremento muy sutil de peso por cada fresa
     
+    // MARK: - Sistema de Poder Magnético Simple
+    private var isMagneticActive: Bool = false
+    private var magneticRadius: CGFloat = 150.0 // Radio de atracción magnética
+    private var magneticDuration: TimeInterval = 8.0 // Duración del poder en segundos
+    
     // Usar valor directamente desde GameConfig
     init(textures: [SKTexture], position: CGPoint) {
         // textures recibido se ignora en favor de texturas por modo día/noche
@@ -109,6 +114,11 @@ class BirdComponent {
             physicsBody.linearDamping = GameConfig.Physics.linearDamping
             physicsBody.angularVelocity = 0
         }
+        
+        // Desactivar poder magnético si está activo
+        if isMagneticActive {
+            deactivateMagneticPower()
+        }
     }
 
     // MARK: - Day/Night switching
@@ -174,6 +184,90 @@ class BirdComponent {
         // Las uvas transforman al pájaro a BlueBird pero sin crecimiento
         transformToBlueBird()
         print("🍇 Pájaro transformado a BlueBird por la uva!")
+    }
+    
+    // MARK: - Sistema de Poder Magnético Simple
+    func activateMagneticPower() {
+        guard !isMagneticActive else { return }
+        
+        isMagneticActive = true
+        addMagneticVisualEffect()
+        
+        // Usar un timer simple en lugar de acciones complejas
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+            guard let self = self, self.isMagneticActive else {
+                timer.invalidate()
+                return
+            }
+            self.attractNearbyObjectsSimple()
+        }
+        
+        // Desactivar después de la duración
+        DispatchQueue.main.asyncAfter(deadline: .now() + magneticDuration) { [weak self] in
+            self?.deactivateMagneticPower()
+        }
+        
+        print("🧲 Poder magnético simple activado por \(magneticDuration) segundos!")
+    }
+    
+    func deactivateMagneticPower() {
+        guard isMagneticActive else { return }
+        
+        isMagneticActive = false
+        removeMagneticVisualEffect()
+        
+        print("🧲 Poder magnético desactivado")
+    }
+    
+    private func attractNearbyObjectsSimple() {
+        guard let scene = bird.scene, isMagneticActive else { return }
+        
+        // Buscar solo monedas y fresas de forma simple
+        for child in scene.children {
+            guard let name = child.name,
+                  (name == "coin" || name == "strawberry") else { continue }
+            
+            let distance = self.distance(from: bird.position, to: child.position)
+            guard distance <= magneticRadius else { continue }
+            
+            // Mover el objeto directamente hacia el pájaro
+            let moveAction = SKAction.move(to: bird.position, duration: 0.3)
+            child.run(moveAction)
+        }
+    }
+    
+    private func distance(from point1: CGPoint, to point2: CGPoint) -> CGFloat {
+        let dx = point1.x - point2.x
+        let dy = point1.y - point2.y
+        return sqrt(dx * dx + dy * dy)
+    }
+    
+    private func addMagneticVisualEffect() {
+        // Efecto visual simple
+        let magneticField = SKShapeNode(circleOfRadius: magneticRadius)
+        magneticField.name = "magneticField"
+        magneticField.strokeColor = .systemBlue
+        magneticField.fillColor = .clear
+        magneticField.lineWidth = 2.0
+        magneticField.alpha = 0.4
+        magneticField.zPosition = -1
+        
+        bird.addChild(magneticField)
+        
+        // Animación simple de pulso
+        let pulse = SKAction.sequence([
+            SKAction.scale(to: 1.1, duration: 0.5),
+            SKAction.scale(to: 0.9, duration: 0.5)
+        ])
+        magneticField.run(SKAction.repeatForever(pulse))
+    }
+    
+    private func removeMagneticVisualEffect() {
+        bird.childNode(withName: "magneticField")?.removeFromParent()
+    }
+    
+    func isMagneticPowerActive() -> Bool {
+        return isMagneticActive
     }
     
     private func updatePhysicsForNewSize() {
