@@ -243,74 +243,278 @@ class BirdComponent {
     }
     
     private func addMagneticVisualEffect() {
-        // Crear múltiples capas para un efecto más rico
+        // Crear un efecto magnético ultra avanzado con múltiples elementos
         
-        // Capa 1: Campo magnético exterior (más grande, más transparente)
+        // 1. Campo magnético principal con gradiente
+        addMagneticFieldGradient()
+        
+        // 2. Ondas de energía que se expanden
+        addEnergyWaves()
+        
+        // 3. Partículas orbitales mejoradas
+        addAdvancedMagneticParticles()
+        
+        // 4. Efecto de chispas eléctricas
+        addElectricSparks()
+        
+        // 5. Campo de fuerza con líneas de energía
+        addEnergyFieldLines()
+        
+        // 6. Efecto de distorsión del espacio
+        addSpaceDistortion()
+    }
+    
+    private func addMagneticFieldGradient() {
+        // Campo exterior con gradiente
         let outerField = SKShapeNode(circleOfRadius: magneticRadius)
         outerField.name = "magneticFieldOuter"
         outerField.strokeColor = .systemBlue
         outerField.fillColor = .clear
-        outerField.lineWidth = 1.5
-        outerField.alpha = 0.2
-        outerField.zPosition = -3
+        outerField.lineWidth = 3.0
+        outerField.alpha = 0.3
+        outerField.zPosition = -5
         
-        // Capa 2: Campo magnético medio
-        let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.7)
+        // Campo medio con cian brillante
+        let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.75)
         middleField.name = "magneticFieldMiddle"
         middleField.strokeColor = .systemCyan
         middleField.fillColor = .clear
-        middleField.lineWidth = 2.0
-        middleField.alpha = 0.4
-        middleField.zPosition = -2
+        middleField.lineWidth = 2.5
+        middleField.alpha = 0.5
+        middleField.zPosition = -4
         
-        // Capa 3: Campo magnético interior (más brillante)
-        let innerField = SKShapeNode(circleOfRadius: magneticRadius * 0.4)
+        // Campo interior con blanco puro
+        let innerField = SKShapeNode(circleOfRadius: magneticRadius * 0.5)
         innerField.name = "magneticFieldInner"
         innerField.strokeColor = .white
         innerField.fillColor = .clear
-        innerField.lineWidth = 1.0
-        innerField.alpha = 0.6
-        innerField.zPosition = -1
+        innerField.lineWidth = 2.0
+        innerField.alpha = 0.8
+        innerField.zPosition = -3
         
-        // Agregar todas las capas al pájaro
+        // Campo central ultra brillante
+        let coreField = SKShapeNode(circleOfRadius: magneticRadius * 0.25)
+        coreField.name = "magneticFieldCore"
+        coreField.strokeColor = .yellow
+        coreField.fillColor = .clear
+        coreField.lineWidth = 1.5
+        coreField.alpha = 1.0
+        coreField.zPosition = -2
+        
         bird.addChild(outerField)
         bird.addChild(middleField)
         bird.addChild(innerField)
+        bird.addChild(coreField)
         
-        // Animaciones complejas para cada capa
-        
-        // Animación del campo exterior: pulso lento y rotación
+        // Animaciones complejas y sincronizadas
         let outerPulse = SKAction.sequence([
-            SKAction.scale(to: 1.3, duration: 1.0),
-            SKAction.scale(to: 0.8, duration: 1.0)
+            SKAction.scale(to: 1.4, duration: 1.2),
+            SKAction.scale(to: 0.7, duration: 1.2)
         ])
-        let outerRotate = SKAction.rotate(byAngle: .pi * 2, duration: 4.0)
+        let outerRotate = SKAction.rotate(byAngle: .pi * 2, duration: 5.0)
         outerField.run(SKAction.repeatForever(outerPulse))
         outerField.run(SKAction.repeatForever(outerRotate))
         
-        // Animación del campo medio: pulso medio y rotación inversa
         let middlePulse = SKAction.sequence([
-            SKAction.scale(to: 1.2, duration: 0.8),
-            SKAction.scale(to: 0.9, duration: 0.8)
+            SKAction.scale(to: 1.3, duration: 0.9),
+            SKAction.scale(to: 0.8, duration: 0.9)
         ])
-        let middleRotate = SKAction.rotate(byAngle: -.pi * 2, duration: 3.0)
+        let middleRotate = SKAction.rotate(byAngle: -.pi * 2, duration: 3.5)
         middleField.run(SKAction.repeatForever(middlePulse))
         middleField.run(SKAction.repeatForever(middleRotate))
         
-        // Animación del campo interior: pulso rápido y fade
         let innerPulse = SKAction.sequence([
-            SKAction.scale(to: 1.4, duration: 0.4),
-            SKAction.scale(to: 0.6, duration: 0.4)
+            SKAction.scale(to: 1.5, duration: 0.6),
+            SKAction.scale(to: 0.5, duration: 0.6)
         ])
         let innerFade = SKAction.sequence([
-            SKAction.fadeAlpha(to: 0.8, duration: 0.3),
-            SKAction.fadeAlpha(to: 0.3, duration: 0.3)
+            SKAction.fadeAlpha(to: 1.0, duration: 0.4),
+            SKAction.fadeAlpha(to: 0.4, duration: 0.4)
         ])
         innerField.run(SKAction.repeatForever(innerPulse))
         innerField.run(SKAction.repeatForever(innerFade))
         
-        // Efecto de partículas magnéticas (opcional)
-        addMagneticParticles()
+        let corePulse = SKAction.sequence([
+            SKAction.scale(to: 1.8, duration: 0.3),
+            SKAction.scale(to: 0.3, duration: 0.3)
+        ])
+        let coreRotate = SKAction.rotate(byAngle: .pi * 4, duration: 1.0)
+        coreField.run(SKAction.repeatForever(corePulse))
+        coreField.run(SKAction.repeatForever(coreRotate))
+    }
+    
+    private func addEnergyWaves() {
+        // Crear ondas de energía que se expanden desde el centro
+        for i in 0..<3 {
+            let wave = SKShapeNode(circleOfRadius: 10)
+            wave.name = "energyWave\(i)"
+            wave.strokeColor = .systemBlue
+            wave.fillColor = .clear
+            wave.lineWidth = 2.0
+            wave.alpha = 0.8
+            wave.zPosition = -6
+            
+            bird.addChild(wave)
+            
+            // Animación de expansión con delay
+            let expand = SKAction.sequence([
+                SKAction.scale(to: magneticRadius / 10, duration: 1.5),
+                SKAction.fadeOut(withDuration: 0.3),
+                SKAction.removeFromParent()
+            ])
+            
+            let delay = SKAction.wait(forDuration: Double(i) * 0.5)
+            let waveSequence = SKAction.sequence([delay, expand])
+            
+            wave.run(waveSequence)
+            
+            // Repetir la onda
+            let repeatWave = SKAction.sequence([
+                SKAction.wait(forDuration: 2.0),
+                SKAction.run { [weak self] in
+                    self?.addEnergyWaves()
+                }
+            ])
+            bird.run(repeatWave, withKey: "energyWaveRepeat")
+        }
+    }
+    
+    private func addAdvancedMagneticParticles() {
+        // Partículas orbitales con diferentes tamaños y colores
+        let particleCount = 12
+        for i in 0..<particleCount {
+            let particle = SKShapeNode(circleOfRadius: CGFloat.random(in: 2...5))
+            particle.name = "magneticParticle\(i)"
+            
+            // Colores aleatorios entre azul y cian
+            let colors: [UIColor] = [.systemBlue, .systemCyan, .white, .systemIndigo]
+            particle.fillColor = colors[i % colors.count]
+            particle.strokeColor = .white
+            particle.alpha = 0.8
+            particle.zPosition = -1
+            
+            // Posicionar en círculo con variación
+            let angle = (CGFloat(i) / CGFloat(particleCount)) * .pi * 2
+            let radius = magneticRadius * CGFloat.random(in: 0.6...0.9)
+            particle.position = CGPoint(
+                x: cos(angle) * radius,
+                y: sin(angle) * radius
+            )
+            
+            bird.addChild(particle)
+            
+            // Animación orbital compleja
+            let orbitDuration = Double.random(in: 1.5...3.0)
+            let orbit = SKAction.rotate(byAngle: .pi * 2, duration: orbitDuration)
+            let pulse = SKAction.sequence([
+                SKAction.scale(to: 1.5, duration: 0.3),
+                SKAction.scale(to: 0.5, duration: 0.3)
+            ])
+            let fade = SKAction.sequence([
+                SKAction.fadeAlpha(to: 1.0, duration: 0.5),
+                SKAction.fadeAlpha(to: 0.3, duration: 0.5)
+            ])
+            
+            let orbitGroup = SKAction.group([
+                orbit,
+                SKAction.repeatForever(pulse),
+                SKAction.repeatForever(fade)
+            ])
+            particle.run(SKAction.repeatForever(orbitGroup))
+        }
+    }
+    
+    private func addElectricSparks() {
+        // Chispas eléctricas que aparecen aleatoriamente
+        for _ in 0..<6 {
+            let spark = SKShapeNode(circleOfRadius: 1)
+            spark.name = "electricSpark"
+            spark.fillColor = .yellow
+            spark.strokeColor = .white
+            spark.alpha = 0.9
+            spark.zPosition = 0
+            
+            // Posición aleatoria dentro del campo magnético
+            let angle = CGFloat.random(in: 0...(2 * .pi))
+            let radius = CGFloat.random(in: 0...(magneticRadius * 0.8))
+            spark.position = CGPoint(
+                x: cos(angle) * radius,
+                y: sin(angle) * radius
+            )
+            
+            bird.addChild(spark)
+            
+            // Animación de chispa
+            let sparkle = SKAction.sequence([
+                SKAction.scale(to: 3, duration: 0.1),
+                SKAction.fadeOut(withDuration: 0.2),
+                SKAction.removeFromParent()
+            ])
+            spark.run(sparkle)
+        }
+        
+        // Repetir chispas cada cierto tiempo
+        let sparkRepeat = SKAction.sequence([
+            SKAction.wait(forDuration: 0.8),
+            SKAction.run { [weak self] in
+                self?.addElectricSparks()
+            }
+        ])
+        bird.run(sparkRepeat, withKey: "sparkRepeat")
+    }
+    
+    private func addEnergyFieldLines() {
+        // Líneas de energía que conectan el centro con el borde
+        for i in 0..<8 {
+            let line = SKShapeNode()
+            let path = CGMutablePath()
+            path.move(to: CGPoint(x: 0, y: 0))
+            
+            let angle = (CGFloat(i) / 8.0) * .pi * 2
+            let endX = cos(angle) * magneticRadius
+            let endY = sin(angle) * magneticRadius
+            path.addLine(to: CGPoint(x: endX, y: endY))
+            
+            line.path = path
+            line.name = "energyLine\(i)"
+            line.strokeColor = .systemCyan
+            line.lineWidth = 1.0
+            line.alpha = 0.6
+            line.zPosition = -7
+            
+            bird.addChild(line)
+            
+            // Animación de pulso de las líneas
+            let linePulse = SKAction.sequence([
+                SKAction.fadeAlpha(to: 1.0, duration: 0.5),
+                SKAction.fadeAlpha(to: 0.2, duration: 0.5)
+            ])
+            line.run(SKAction.repeatForever(linePulse))
+        }
+    }
+    
+    private func addSpaceDistortion() {
+        // Efecto de distorsión del espacio con múltiples círculos
+        for i in 0..<5 {
+            let distortion = SKShapeNode(circleOfRadius: magneticRadius * CGFloat(i + 1) / 5)
+            distortion.name = "spaceDistortion\(i)"
+            distortion.strokeColor = .systemPurple
+            distortion.fillColor = .clear
+            distortion.lineWidth = 1.0
+            distortion.alpha = 0.1
+            distortion.zPosition = -8
+            
+            bird.addChild(distortion)
+            
+            // Animación de distorsión
+            let distort = SKAction.sequence([
+                SKAction.scale(to: 1.2, duration: 0.8),
+                SKAction.scale(to: 0.8, duration: 0.8)
+            ])
+            let rotate = SKAction.rotate(byAngle: .pi * 2, duration: 4.0)
+            distortion.run(SKAction.repeatForever(distort))
+            distortion.run(SKAction.repeatForever(rotate))
+        }
     }
     
     private func addMagneticParticles() {
@@ -351,11 +555,36 @@ class BirdComponent {
         bird.childNode(withName: "magneticFieldOuter")?.removeFromParent()
         bird.childNode(withName: "magneticFieldMiddle")?.removeFromParent()
         bird.childNode(withName: "magneticFieldInner")?.removeFromParent()
+        bird.childNode(withName: "magneticFieldCore")?.removeFromParent()
         
-        // Remover todas las partículas magnéticas
-        for i in 0..<8 {
+        // Remover ondas de energía
+        for i in 0..<3 {
+            bird.childNode(withName: "energyWave\(i)")?.removeFromParent()
+        }
+        
+        // Remover partículas magnéticas avanzadas
+        for i in 0..<12 {
             bird.childNode(withName: "magneticParticle\(i)")?.removeFromParent()
         }
+        
+        // Remover chispas eléctricas
+        bird.enumerateChildNodes(withName: "electricSpark") { node, _ in
+            node.removeFromParent()
+        }
+        
+        // Remover líneas de energía
+        for i in 0..<8 {
+            bird.childNode(withName: "energyLine\(i)")?.removeFromParent()
+        }
+        
+        // Remover distorsiones del espacio
+        for i in 0..<5 {
+            bird.childNode(withName: "spaceDistortion\(i)")?.removeFromParent()
+        }
+        
+        // Detener acciones repetitivas
+        bird.removeAction(forKey: "energyWaveRepeat")
+        bird.removeAction(forKey: "sparkRepeat")
     }
     
     func isMagneticPowerActive() -> Bool {
