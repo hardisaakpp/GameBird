@@ -243,27 +243,119 @@ class BirdComponent {
     }
     
     private func addMagneticVisualEffect() {
-        // Efecto visual simple
-        let magneticField = SKShapeNode(circleOfRadius: magneticRadius)
-        magneticField.name = "magneticField"
-        magneticField.strokeColor = .systemBlue
-        magneticField.fillColor = .clear
-        magneticField.lineWidth = 2.0
-        magneticField.alpha = 0.4
-        magneticField.zPosition = -1
+        // Crear múltiples capas para un efecto más rico
         
-        bird.addChild(magneticField)
+        // Capa 1: Campo magnético exterior (más grande, más transparente)
+        let outerField = SKShapeNode(circleOfRadius: magneticRadius)
+        outerField.name = "magneticFieldOuter"
+        outerField.strokeColor = .systemBlue
+        outerField.fillColor = .clear
+        outerField.lineWidth = 1.5
+        outerField.alpha = 0.2
+        outerField.zPosition = -3
         
-        // Animación simple de pulso
-        let pulse = SKAction.sequence([
-            SKAction.scale(to: 1.1, duration: 0.5),
-            SKAction.scale(to: 0.9, duration: 0.5)
+        // Capa 2: Campo magnético medio
+        let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.7)
+        middleField.name = "magneticFieldMiddle"
+        middleField.strokeColor = .systemCyan
+        middleField.fillColor = .clear
+        middleField.lineWidth = 2.0
+        middleField.alpha = 0.4
+        middleField.zPosition = -2
+        
+        // Capa 3: Campo magnético interior (más brillante)
+        let innerField = SKShapeNode(circleOfRadius: magneticRadius * 0.4)
+        innerField.name = "magneticFieldInner"
+        innerField.strokeColor = .white
+        innerField.fillColor = .clear
+        innerField.lineWidth = 1.0
+        innerField.alpha = 0.6
+        innerField.zPosition = -1
+        
+        // Agregar todas las capas al pájaro
+        bird.addChild(outerField)
+        bird.addChild(middleField)
+        bird.addChild(innerField)
+        
+        // Animaciones complejas para cada capa
+        
+        // Animación del campo exterior: pulso lento y rotación
+        let outerPulse = SKAction.sequence([
+            SKAction.scale(to: 1.3, duration: 1.0),
+            SKAction.scale(to: 0.8, duration: 1.0)
         ])
-        magneticField.run(SKAction.repeatForever(pulse))
+        let outerRotate = SKAction.rotate(byAngle: .pi * 2, duration: 4.0)
+        outerField.run(SKAction.repeatForever(outerPulse))
+        outerField.run(SKAction.repeatForever(outerRotate))
+        
+        // Animación del campo medio: pulso medio y rotación inversa
+        let middlePulse = SKAction.sequence([
+            SKAction.scale(to: 1.2, duration: 0.8),
+            SKAction.scale(to: 0.9, duration: 0.8)
+        ])
+        let middleRotate = SKAction.rotate(byAngle: -.pi * 2, duration: 3.0)
+        middleField.run(SKAction.repeatForever(middlePulse))
+        middleField.run(SKAction.repeatForever(middleRotate))
+        
+        // Animación del campo interior: pulso rápido y fade
+        let innerPulse = SKAction.sequence([
+            SKAction.scale(to: 1.4, duration: 0.4),
+            SKAction.scale(to: 0.6, duration: 0.4)
+        ])
+        let innerFade = SKAction.sequence([
+            SKAction.fadeAlpha(to: 0.8, duration: 0.3),
+            SKAction.fadeAlpha(to: 0.3, duration: 0.3)
+        ])
+        innerField.run(SKAction.repeatForever(innerPulse))
+        innerField.run(SKAction.repeatForever(innerFade))
+        
+        // Efecto de partículas magnéticas (opcional)
+        addMagneticParticles()
+    }
+    
+    private func addMagneticParticles() {
+        // Crear partículas que orbiten alrededor del pájaro
+        for i in 0..<8 {
+            let particle = SKShapeNode(circleOfRadius: 3)
+            particle.name = "magneticParticle\(i)"
+            particle.fillColor = .systemBlue
+            particle.strokeColor = .white
+            particle.alpha = 0.7
+            particle.zPosition = -1
+            
+            // Posicionar partículas en un círculo
+            let angle = (CGFloat(i) / 8.0) * .pi * 2
+            let radius = magneticRadius * 0.8
+            particle.position = CGPoint(
+                x: cos(angle) * radius,
+                y: sin(angle) * radius
+            )
+            
+            bird.addChild(particle)
+            
+            // Animación orbital
+            let orbit = SKAction.rotate(byAngle: .pi * 2, duration: 2.0)
+            let orbitGroup = SKAction.group([
+                orbit,
+                SKAction.sequence([
+                    SKAction.fadeAlpha(to: 1.0, duration: 0.5),
+                    SKAction.fadeAlpha(to: 0.3, duration: 0.5)
+                ])
+            ])
+            particle.run(SKAction.repeatForever(orbitGroup))
+        }
     }
     
     private func removeMagneticVisualEffect() {
-        bird.childNode(withName: "magneticField")?.removeFromParent()
+        // Remover todas las capas del campo magnético
+        bird.childNode(withName: "magneticFieldOuter")?.removeFromParent()
+        bird.childNode(withName: "magneticFieldMiddle")?.removeFromParent()
+        bird.childNode(withName: "magneticFieldInner")?.removeFromParent()
+        
+        // Remover todas las partículas magnéticas
+        for i in 0..<8 {
+            bird.childNode(withName: "magneticParticle\(i)")?.removeFromParent()
+        }
     }
     
     func isMagneticPowerActive() -> Bool {

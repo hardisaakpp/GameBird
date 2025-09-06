@@ -19,7 +19,7 @@ class GrapeComponent: SKSpriteNode {
         super.init(texture: texture, color: .clear, size: texture.size())
         
         // Reducir el tamaño de la uva para que sea similar a la fresa
-        setScale(0.25) // Ligeramente más pequeña que la fresa (0.3)
+        setScale(0.15) // Ligeramente más pequeña que la fresa (0.3)
         
         setupPhysics()
         setupAppearance()
