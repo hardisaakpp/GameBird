@@ -169,6 +169,8 @@ class BirdComponent {
         // Actualizar física de forma más suave después de la animación
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.updatePhysicsForNewSize()
+            // Actualizar gravedad del mundo después del crecimiento
+            self?.updateWorldGravity()
         }
         
         let newMass = getCurrentMass()
@@ -263,39 +265,39 @@ class BirdComponent {
     }
     
     private func addMagneticFieldGradient() {
-        // Campo exterior con gradiente
+        // Campo exterior psicodélico - Cian vibrante
         let outerField = SKShapeNode(circleOfRadius: magneticRadius)
         outerField.name = "magneticFieldOuter"
-        outerField.strokeColor = .systemTeal
+        outerField.strokeColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0) // Cian brillante
         outerField.fillColor = .clear
-        outerField.lineWidth = 3.0
-        outerField.alpha = 0.3
+        outerField.lineWidth = 4.0
+        outerField.alpha = 0.6
         outerField.zPosition = -5
         
-        // Campo medio con cian verdoso brillante
-        let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.75)
+        // Campo medio psicodélico - Anaranjado rojizo
+        let middleField = SKShapeNode(circleOfRadius: magneticRadius * 0.8)
         middleField.name = "magneticFieldMiddle"
-        middleField.strokeColor = UIColor(red: 0.0, green: 0.8, blue: 0.6, alpha: 1.0) // Cian verdoso
+        middleField.strokeColor = UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0) // Anaranjado rojizo
         middleField.fillColor = .clear
-        middleField.lineWidth = 2.5
-        middleField.alpha = 0.5
+        middleField.lineWidth = 3.5
+        middleField.alpha = 0.7
         middleField.zPosition = -4
         
-        // Campo interior con blanco puro
-        let innerField = SKShapeNode(circleOfRadius: magneticRadius * 0.5)
+        // Campo interior psicodélico - Amarillo brillante
+        let innerField = SKShapeNode(circleOfRadius: magneticRadius * 0.6)
         innerField.name = "magneticFieldInner"
-        innerField.strokeColor = .white
+        innerField.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0) // Amarillo brillante
         innerField.fillColor = .clear
-        innerField.lineWidth = 2.0
-        innerField.alpha = 0.8
+        innerField.lineWidth = 3.0
+        innerField.alpha = 0.9
         innerField.zPosition = -3
         
-        // Campo central ultra brillante
-        let coreField = SKShapeNode(circleOfRadius: magneticRadius * 0.25)
+        // Campo central psicodélico - Blanco puro con relleno
+        let coreField = SKShapeNode(circleOfRadius: magneticRadius * 0.3)
         coreField.name = "magneticFieldCore"
-        coreField.strokeColor = UIColor(red: 0.0, green: 1.0, blue: 0.7, alpha: 1.0) // Cian verdoso brillante
-        coreField.fillColor = .clear
-        coreField.lineWidth = 1.5
+        coreField.strokeColor = .white
+        coreField.fillColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.3) // Relleno blanco semi-transparente
+        coreField.lineWidth = 2.0
         coreField.alpha = 1.0
         coreField.zPosition = -2
         
@@ -346,10 +348,16 @@ class BirdComponent {
         for i in 0..<3 {
             let wave = SKShapeNode(circleOfRadius: 10)
             wave.name = "energyWave\(i)"
-            wave.strokeColor = UIColor(red: 0.0, green: 0.7, blue: 0.5, alpha: 1.0) // Cian verdoso medio
+            // Colores psicodélicos alternados
+            let psychedelicColors = [
+                UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0), // Cian brillante
+                UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0), // Anaranjado rojizo
+                UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)  // Amarillo brillante
+            ]
+            wave.strokeColor = psychedelicColors[i % psychedelicColors.count]
             wave.fillColor = .clear
-            wave.lineWidth = 2.0
-            wave.alpha = 0.8
+            wave.lineWidth = 3.0
+            wave.alpha = 0.9
             wave.zPosition = -6
             
             bird.addChild(wave)
@@ -384,14 +392,16 @@ class BirdComponent {
             let particle = SKShapeNode(circleOfRadius: CGFloat.random(in: 2...5))
             particle.name = "magneticParticle\(i)"
             
-            // Colores aleatorios entre tonos cian verdosos
-            let colors: [UIColor] = [
-                UIColor(red: 0.0, green: 0.6, blue: 0.4, alpha: 1.0), // Cian verdoso oscuro
-                UIColor(red: 0.0, green: 0.8, blue: 0.6, alpha: 1.0), // Cian verdoso medio
-                UIColor(red: 0.0, green: 1.0, blue: 0.7, alpha: 1.0), // Cian verdoso brillante
-                .white
+            // Colores psicodélicos vibrantes
+            let psychedelicColors: [UIColor] = [
+                UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0), // Cian brillante
+                UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0), // Anaranjado rojizo
+                UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0), // Amarillo brillante
+                UIColor(red: 1.0, green: 0.0, blue: 1.0, alpha: 1.0), // Magenta vibrante
+                UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0), // Verde brillante
+                UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)  // Rojo brillante
             ]
-            particle.fillColor = colors[i % colors.count]
+            particle.fillColor = psychedelicColors[i % psychedelicColors.count]
             particle.strokeColor = .white
             particle.alpha = 0.8
             particle.zPosition = -1
@@ -428,11 +438,21 @@ class BirdComponent {
     }
     
     private func addElectricSparks() {
-        // Chispas eléctricas que aparecen aleatoriamente
-        for _ in 0..<6 {
-            let spark = SKShapeNode(circleOfRadius: 1)
+        // Chispas eléctricas psicodélicas que aparecen aleatoriamente
+        for i in 0..<8 {
+            let spark = SKShapeNode(circleOfRadius: CGFloat.random(in: 1...3))
             spark.name = "electricSpark"
-            spark.fillColor = .yellow
+            
+            // Colores psicodélicos aleatorios para las chispas
+            let sparkColors = [
+                UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0), // Cian brillante
+                UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0), // Anaranjado rojizo
+                UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0), // Amarillo brillante
+                UIColor(red: 1.0, green: 0.0, blue: 1.0, alpha: 1.0), // Magenta vibrante
+                UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0), // Verde brillante
+                UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)  // Rojo brillante
+            ]
+            spark.fillColor = sparkColors[i % sparkColors.count]
             spark.strokeColor = .white
             spark.alpha = 0.9
             spark.zPosition = 0
@@ -480,9 +500,17 @@ class BirdComponent {
             
             line.path = path
             line.name = "energyLine\(i)"
-            line.strokeColor = UIColor(red: 0.0, green: 0.9, blue: 0.7, alpha: 1.0) // Cian verdoso brillante
-            line.lineWidth = 1.0
-            line.alpha = 0.6
+            
+            // Colores psicodélicos alternados para las líneas
+            let lineColors = [
+                UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0), // Cian brillante
+                UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0), // Anaranjado rojizo
+                UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0), // Amarillo brillante
+                UIColor(red: 1.0, green: 0.0, blue: 1.0, alpha: 1.0)  // Magenta vibrante
+            ]
+            line.strokeColor = lineColors[i % lineColors.count]
+            line.lineWidth = 2.0
+            line.alpha = 0.8
             line.zPosition = -7
             
             bird.addChild(line)
@@ -501,10 +529,19 @@ class BirdComponent {
         for i in 0..<5 {
             let distortion = SKShapeNode(circleOfRadius: magneticRadius * CGFloat(i + 1) / 5)
             distortion.name = "spaceDistortion\(i)"
-            distortion.strokeColor = UIColor(red: 0.0, green: 0.5, blue: 0.3, alpha: 1.0) // Cian verdoso oscuro
+            
+            // Colores psicodélicos alternados para la distorsión
+            let distortionColors = [
+                UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0), // Cian brillante
+                UIColor(red: 1.0, green: 0.4, blue: 0.2, alpha: 1.0), // Anaranjado rojizo
+                UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0), // Amarillo brillante
+                UIColor(red: 1.0, green: 0.0, blue: 1.0, alpha: 1.0), // Magenta vibrante
+                UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)  // Verde brillante
+            ]
+            distortion.strokeColor = distortionColors[i % distortionColors.count]
             distortion.fillColor = .clear
-            distortion.lineWidth = 1.0
-            distortion.alpha = 0.1
+            distortion.lineWidth = 2.0
+            distortion.alpha = 0.2
             distortion.zPosition = -8
             
             bird.addChild(distortion)
@@ -637,7 +674,23 @@ class BirdComponent {
     }
     
     func getCurrentMass() -> CGFloat {
-        return baseMass + (CGFloat(growthLevel) * weightIncrement)
+return baseMass + (CGFloat(growthLevel) * weightIncrement)
+    }
+    
+    func getCurrentGravity() -> CGFloat {
+        // Gravedad base más gravedad adicional por crecimiento
+        let baseGravity = GameConfig.Physics.gravity
+        let additionalGravity = CGFloat(growthLevel) * 0.8 // +0.8 por cada nivel de crecimiento
+        return baseGravity - additionalGravity // Más negativo = cae más rápido
+    }
+    
+    func updateWorldGravity() {
+        // Actualizar la gravedad del mundo basada en el crecimiento del pájaro
+        guard let scene = bird.scene else { return }
+        let newGravity = getCurrentGravity()
+        scene.physicsWorld.gravity = CGVector(dx: 0, dy: newGravity)
+        
+        print("🌍 Gravedad actualizada: \(newGravity) (Nivel de crecimiento: \(growthLevel))")
     }
     
     private func getGrowthIncrement(for level: Int) -> CGFloat {
@@ -662,5 +715,8 @@ class BirdComponent {
         restartFlapAnimation()
         
         updatePhysicsForNewSize()
+        
+        // Restaurar gravedad original
+        updateWorldGravity()
     }
 }
