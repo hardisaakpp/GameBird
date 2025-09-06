@@ -15,6 +15,7 @@ struct PhysicsCategory {
     static let scoreDetector: UInt32 = 0b1_0000 // 16
     static let coin: UInt32 = 0b10_0000  // 32
     static let strawberry: UInt32 = 0b100_0000 // 64
+    static let grape: UInt32 = 0b1000_0000 // 128
     
     // Método para debugging
     static func name(for category: UInt32) -> String {
@@ -33,6 +34,8 @@ struct PhysicsCategory {
             return "Coin"
         case PhysicsCategory.strawberry:
             return "Strawberry"
+        case PhysicsCategory.grape:
+            return "Grape"
         default:
             return "Unknown"
         }

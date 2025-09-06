@@ -14,6 +14,7 @@ class PipeManager {
     private var activePipes = [SKNode]()
     private var activeCoins = [SKNode]() // Nuevo: rastrear monedas activas
     private var activeStrawberries = [SKNode]() // Nuevo: rastrear fresas activas
+    private var activeGrapes = [SKNode]() // Nuevo: rastrear uvas activas
     private var spawnAction: SKAction?
     private var lastSpawnTime: TimeInterval = 0
     private var lastGapCenterY: CGFloat?
@@ -26,6 +27,10 @@ class PipeManager {
     // Configuración de fresas
     private let strawberrySpawnChance: Float = 0.3 // 30% de probabilidad de aparecer (más raras)
     private let strawberrySpeedMultiplier: CGFloat = 1.4 // 40% más rápido que las monedas
+    
+    // Configuración de uvas
+    private let grapeSpawnChance: Float = 0.15 // 15% de probabilidad de aparecer (más raras que las fresas)
+    private let grapeSpeedMultiplier: CGFloat = 2.8 // 180% más rápido que las monedas (doble que las fresas)
     
     init(scene: SKScene) {
         self.scene = scene
@@ -62,12 +67,16 @@ class PipeManager {
         }
         activePipes.forEach { $0.isPaused = true }
         activeCoins.forEach { $0.isPaused = true }
+        activeStrawberries.forEach { $0.isPaused = true }
+        activeGrapes.forEach { $0.isPaused = true }
     }
 
     func resume() {
         // Reanudar movimiento de tubos existentes
         activePipes.forEach { $0.isPaused = false }
         activeCoins.forEach { $0.isPaused = false }
+        activeStrawberries.forEach { $0.isPaused = false }
+        activeGrapes.forEach { $0.isPaused = false }
         
         // Reanudar generación respetando el tiempo restante para el próximo spawn
         guard scene.action(forKey: "pipeGeneration") == nil else { return }
@@ -126,6 +135,7 @@ class PipeManager {
         // Generar posiciones aleatorias para evitar superposición
         var coinPosition: CGFloat?
         var strawberryPosition: CGFloat?
+        var grapePosition: CGFloat?
         
         // Decidir si generar moneda
         let coinRandom = Float.random(in: 0...1)
@@ -139,7 +149,14 @@ class PipeManager {
             strawberryPosition = CGFloat.random(in: minY...maxY)
         }
         
+        // Decidir si generar uva
+        let grapeRandom = Float.random(in: 0...1)
+        if grapeRandom <= grapeSpawnChance {
+            grapePosition = CGFloat.random(in: minY...maxY)
+        }
+        
         // Verificar que no estén muy cerca (mínimo 60 píxeles de separación)
+        // Verificar proximidad entre moneda y fresa
         if let coinY = coinPosition, let strawberryY = strawberryPosition {
             let distance = abs(coinY - strawberryY)
             if distance < 60.0 {
@@ -151,6 +168,30 @@ class PipeManager {
             }
         }
         
+        // Verificar proximidad entre moneda y uva
+        if let coinY = coinPosition, let grapeY = grapePosition {
+            let distance = abs(coinY - grapeY)
+            if distance < 60.0 {
+                // Si están muy cerca, reposicionar la uva
+                let newGrapeY = grapeY > coinY ? 
+                    min(grapeY + 80, maxY) : 
+                    max(grapeY - 80, minY)
+                grapePosition = newGrapeY
+            }
+        }
+        
+        // Verificar proximidad entre fresa y uva
+        if let strawberryY = strawberryPosition, let grapeY = grapePosition {
+            let distance = abs(strawberryY - grapeY)
+            if distance < 60.0 {
+                // Si están muy cerca, reposicionar la uva
+                let newGrapeY = grapeY > strawberryY ? 
+                    min(grapeY + 80, maxY) : 
+                    max(grapeY - 80, minY)
+                grapePosition = newGrapeY
+            }
+        }
+        
         // Generar moneda si corresponde
         if let coinY = coinPosition {
             spawnCoin(at: coinY)
@@ -159,6 +200,11 @@ class PipeManager {
         // Generar fresa si corresponde
         if let strawberryY = strawberryPosition {
             spawnStrawberry(at: strawberryY)
+        }
+        
+        // Generar uva si corresponde
+        if let grapeY = grapePosition {
+            spawnGrape(at: grapeY)
         }
     }
     
@@ -206,6 +252,28 @@ class PipeManager {
         ]))
     }
     
+    // MARK: - Sistema de Uvas
+    private func spawnGrape(at yPosition: CGFloat) {
+        // Crear uva en la posición específica
+        let grape = GrapeComponent.createGrape(at: CGPoint(x: scene.frame.maxX + 150, y: yPosition))
+        grape.name = "grape"
+        scene.addChild(grape)
+        activeGrapes.append(grape)
+        
+        // Configurar movimiento de la uva con velocidad más rápida
+        let moveDistance = scene.frame.width + 300 // Distancia extra para asegurar que salga de pantalla
+        let grapeSpeed = pipeComponent.movementSpeed * grapeSpeedMultiplier
+        let moveDuration = TimeInterval(moveDistance / grapeSpeed)
+        
+        grape.run(SKAction.sequence([
+            SKAction.moveBy(x: -moveDistance, y: 0, duration: moveDuration),
+            SKAction.removeFromParent(),
+            SKAction.run { [weak self] in
+                self?.activeGrapes.removeAll { $0 == grape }
+            }
+        ]))
+    }
+    
     func stopAllPipes() {
         // Detener la acción de generación
         scene.removeAction(forKey: "pipeGeneration")
@@ -219,6 +287,9 @@ class PipeManager {
         
         // Detener movimiento de todas las fresas
         activeStrawberries.forEach { $0.removeAllActions() }
+        
+        // Detener movimiento de todas las uvas
+        activeGrapes.forEach { $0.removeAllActions() }
     }
     
     func removeAllPipes() {
@@ -243,6 +314,13 @@ class PipeManager {
         }
         activeStrawberries.removeAll()
         
+        // Eliminar todas las uvas
+        activeGrapes.forEach {
+            $0.removeAllActions()
+            $0.removeFromParent()
+        }
+        activeGrapes.removeAll()
+        
         // Limpieza adicional por si hubiera tubos huérfanos
         scene.children
             .filter { $0.name == "pipePair" }
@@ -251,6 +329,16 @@ class PipeManager {
         // Limpieza adicional por si hubiera monedas huérfanas
         scene.children
             .filter { $0.name == "coin" }
+            .forEach { $0.removeFromParent() }
+            
+        // Limpieza adicional por si hubiera fresas huérfanas
+        scene.children
+            .filter { $0.name == "strawberry" }
+            .forEach { $0.removeFromParent() }
+            
+        // Limpieza adicional por si hubiera uvas huérfanas
+        scene.children
+            .filter { $0.name == "grape" }
             .forEach { $0.removeFromParent() }
     }
     
@@ -268,5 +356,9 @@ class PipeManager {
     
     func removeStrawberry(_ strawberry: SKNode) {
         activeStrawberries.removeAll { $0 == strawberry }
+    }
+    
+    func removeGrape(_ grape: SKNode) {
+        activeGrapes.removeAll { $0 == grape }
     }
 }

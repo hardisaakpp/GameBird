@@ -38,6 +38,10 @@ extension GameScene {
             print("¡Fresa recolectada!")
             handleStrawberryCollection(contact: contact)
             
+        case PhysicsCategory.bird | PhysicsCategory.grape:
+            print("¡Uva recolectada!")
+            handleGrapeCollection(contact: contact)
+            
         default:
             break
         }
@@ -141,5 +145,30 @@ extension GameScene {
         AudioManager.shared.playFruitSound()
         
         print("🍓 Fresa recolectada! +\(strawberryValue) puntos. Score total: \(score)")
+    }
+    
+    // MARK: - Manejo de Recolección de Uvas
+    func handleGrapeCollection(contact: SKPhysicsContact) {
+        // Determinar cuál de los dos cuerpos es la uva
+        let grapeBody = contact.bodyA.categoryBitMask == PhysicsCategory.grape ? contact.bodyA : contact.bodyB
+        guard let grapeNode = grapeBody.node as? GrapeComponent else { return }
+        
+        // Recolectar la uva
+        let grapeValue = grapeNode.collect()
+        
+        // Notificar al PipeManager para remover de la lista de uvas activas
+        pipeManager?.removeGrape(grapeNode)
+        
+        // Agregar puntos al score
+        score += grapeValue
+        updateScoreDisplay()
+        
+        // Transformar a BlueBird (sin crecimiento)
+        birdComponent.growFromGrape()
+        
+        // Reproducir sonido de fruta (reutilizamos el sonido de fresa)
+        AudioManager.shared.playFruitSound()
+        
+        print("🍇 Uva recolectada! +\(grapeValue) puntos. Score total: \(score)")
     }
 }

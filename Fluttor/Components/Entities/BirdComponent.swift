@@ -135,6 +135,13 @@ class BirdComponent {
         print("🐦 Pájaro transformado a pájaro rojo!")
     }
     
+    func transformToBlueBird() {
+        currentTextures = nightTextures // BlueBird usa las texturas de noche
+        bird.texture = currentTextures.first
+        restartFlapAnimation()
+        print("🐦 Pájaro transformado a pájaro azul!")
+    }
+    
     // MARK: - Sistema de Crecimiento
     func growFromStrawberry() {
         guard growthLevel < maxGrowthLevel else { return }
@@ -159,8 +166,14 @@ class BirdComponent {
         let newMass = getCurrentMass()
         let currentIncrement = getGrowthIncrement(for: growthLevel)
         let growthType = growthLevel < slowGrowthStartLevel ? "Normal" : "Lento"
-        let transformation = growthLevel >= 1 ? " (Transformado)" : ""
+        let transformation = growthLevel >= 1 ? " (Transformado a Rojo)" : ""
         print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType))\(transformation), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
+    }
+    
+    func growFromGrape() {
+        // Las uvas transforman al pájaro a BlueBird pero sin crecimiento
+        transformToBlueBird()
+        print("🍇 Pájaro transformado a BlueBird por la uva!")
     }
     
     private func updatePhysicsForNewSize() {
