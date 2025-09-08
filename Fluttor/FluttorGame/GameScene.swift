@@ -53,7 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Padding horizontal derecho como fracción del ancho del tablero para alinear a la derecha
     let finalScoreRightPaddingRatio: CGFloat = 0.13
     // Nuevo: factor para reducir el tamaño de los dígitos del puntaje final
-    let finalScoreScaleFactor: CGFloat = 1.0 / 2.1
+    let finalScoreScaleFactor: CGFloat = 1.0 / 1.8
     // Cache de texturas de dígitos y memo de layout final
     var digitTextures: [Character: SKTexture] = [:]
     var lastFinalScoreRendered: Int = -1
