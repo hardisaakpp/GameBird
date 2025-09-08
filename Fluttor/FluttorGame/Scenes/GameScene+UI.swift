@@ -131,8 +131,8 @@ extension GameScene {
         if scoreImg.size.width > 0 {
             let targetWidth = frame.width * 0.55
             let scale = targetWidth / scoreImg.size.width
-            let maxUpscale: CGFloat = 2.0
-            scoreImg.setScale(min(scale, maxUpscale))
+            let maxUpscale: CGFloat = 6.0  // 2.0 * 3.0 para compensar imágenes 3x
+            scoreImg.setScale(min(scale, maxUpscale))  // Ya ajustado el límite
         }
         
         // Calcular una separación equivalente a la que hay entre la imagen "Game Over" y el botón

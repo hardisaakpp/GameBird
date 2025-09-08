@@ -22,7 +22,7 @@ class PipeComponent {
     func createPipePair() -> SKNode {
         let pipePair = SKNode()
         pipePair.zPosition = GameConfig.ZPosition.pipes // Asignar Z-Position correcta
-        let scaleFactor: CGFloat = 1.6
+        let scaleFactor: CGFloat = 4.8  // 1.6 * 3.0 para compensar imágenes 3x
         let startingX = scene.frame.maxX + 150
         
         // Generar desplazamiento vertical aleatorio limitado

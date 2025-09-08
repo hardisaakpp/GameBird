@@ -20,7 +20,7 @@ class CoinComponent: SKSpriteNode {
         
         // Reducir el tamaño de la moneda para que sea más pequeña que el pájaro
         // El pájaro tiene setScale(2.0), así que la moneda será más pequeña
-        setScale(0.13) // 60% del tamaño original, más pequeña que el pájaro
+        setScale(0.39)  // 0.13 * 3.0 para compensar imágenes 3x
         
         setupPhysics()
         setupAppearance()
