@@ -201,7 +201,7 @@ extension GameScene {
         guard let scoreBoard = gameOverScoreImage else { return }
         
         let boardFrame = scoreBoard.calculateAccumulatedFrame()
-        let offsetY = boardFrame.height * -0.26 // Posición más abajo que el puntaje actual
+        let offsetY = boardFrame.height * -0.20 // Posición más arriba que antes
         let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
         let targetX = boardFrame.maxX - rightPadding - 38 // Mover 80 puntos a la izquierda
         

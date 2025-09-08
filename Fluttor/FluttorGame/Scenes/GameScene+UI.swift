@@ -127,9 +127,9 @@ extension GameScene {
     func updateGameOverScoreLayout() {
         guard let scoreImg = gameOverScoreImage else { return }
         
-        // Escalar para que no exceda 65% del ancho de la escena (y permitir ampliación hasta 2x)
+        // Escalar para que no exceda 55% del ancho de la escena (y permitir ampliación hasta 2x)
         if scoreImg.size.width > 0 {
-            let targetWidth = frame.width * 0.65
+            let targetWidth = frame.width * 0.55
             let scale = targetWidth / scoreImg.size.width
             let maxUpscale: CGFloat = 2.0
             scoreImg.setScale(min(scale, maxUpscale))
@@ -149,9 +149,10 @@ extension GameScene {
         // Asegurar un margen mínimo cómodo
         let gapBelow = max(topGap, 24)
         
-        // Posicionar centrado, por debajo del botón con la misma separación
+        // Posicionar centrado, por debajo del botón con la misma separación (con offset adicional hacia abajo)
         let centerY = restartButton.position.y
-        let targetCenterOffsetBelow = buttonHalfH + scoreHalfH + gapBelow
+        let additionalOffset: CGFloat = 25 // Mover 25 píxeles más hacia abajo
+        let targetCenterOffsetBelow = buttonHalfH + scoreHalfH + gapBelow + additionalOffset
         scoreImg.position = CGPoint(x: frame.midX, y: centerY - targetCenterOffsetBelow)
 
         // Actualizar posición/escala de los dígitos del puntaje final para el nuevo tamaño
