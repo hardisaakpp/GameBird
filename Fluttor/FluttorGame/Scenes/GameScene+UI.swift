@@ -108,11 +108,11 @@ extension GameScene {
     func updateGameOverImageLayout() {
         guard let _ = gameOverImage else { return }
         // Posicionar centrada, un poco arriba del botón REINICIAR
-        let offsetY: CGFloat = 110
+        let offsetY: CGFloat = 140
         gameOverImage?.position = CGPoint(x: frame.midX, y: frame.midY + offsetY)
-        // Escalar para que ocupe hasta el 90% del ancho de la escena y permitir ampliar por encima de 1x (máx 2x)
+        // Escalar para que ocupe hasta el 70% del ancho de la escena y permitir ampliar por encima de 1x (máx 2x)
         if let width = gameOverImage?.size.width, width > 0 {
-            let targetWidth = frame.width * 0.9
+            let targetWidth = frame.width * 0.7
             let scale = targetWidth / width
             let maxUpscale: CGFloat = 2.0
             gameOverImage?.setScale(min(scale, maxUpscale))

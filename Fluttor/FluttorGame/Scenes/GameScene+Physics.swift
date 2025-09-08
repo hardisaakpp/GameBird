@@ -39,7 +39,7 @@ extension GameScene {
         print("¡Colisión con tubo! El pájaro cae...")
         AudioManager.shared.playHitSound()
         // OPTIMIZACIÓN: Usar DispatchQueue.main.async en lugar de asyncAfter para mejor rendimiento
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
             AudioManager.shared.playDieSound()
         }
         handlePipeCollision()
