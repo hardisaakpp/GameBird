@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "yellowbird-upflap.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -9,7 +10,6 @@
       "scale" : "2x"
     },
     {
-      "filename" : "yellowbird-upflap.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

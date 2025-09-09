@@ -32,7 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Marcador
     var score: Int = 0
     var scoreContainer: SKNode = SKNode()
-    let scoreDigitScale: CGFloat = 6.0  // 2.0 * 3.0 para compensar imágenes 3x
+    let scoreDigitScale: CGFloat = 2.0
     let scoreTopMargin: CGFloat = 45
     
     // Botón de pausa
@@ -53,7 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Padding horizontal derecho como fracción del ancho del tablero para alinear a la derecha
     let finalScoreRightPaddingRatio: CGFloat = 0.13
     // Nuevo: factor para reducir el tamaño de los dígitos del puntaje final
-    let finalScoreScaleFactor: CGFloat = 1.67  // (1.0 / 1.8) * 3.0 para compensar imágenes 3x
+    let finalScoreScaleFactor: CGFloat = 1.0 / 1.8
     // Cache de texturas de dígitos y memo de layout final
     var digitTextures: [Character: SKTexture] = [:]
     var lastFinalScoreRendered: Int = -1

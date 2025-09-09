@@ -19,7 +19,7 @@ class StrawberryComponent: SKSpriteNode {
         super.init(texture: texture, color: .clear, size: texture.size())
         
         // Reducir el tamaño de la fresa para que sea similar a la moneda
-        setScale(0.9)  // 0.3 * 3.0 para compensar imágenes 3x
+        setScale(0.3) // Ligeramente más grande que la moneda (0.13)
         
         setupPhysics()
         setupAppearance()

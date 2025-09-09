@@ -17,7 +17,7 @@ class BirdComponent {
     
     // MARK: - Sistema de Crecimiento
     private var growthLevel: Int = 0
-    private let baseScale: CGFloat = 6.0  // 2.0 * 3.0 para compensar imágenes 3x
+    private let baseScale: CGFloat = 2.0
     private let baseGrowthIncrement: CGFloat = 0.15 // Incremento base por cada fresa
     private let maxGrowthLevel: Int = 10 // Máximo 10 niveles de crecimiento
     private let slowGrowthStartLevel: Int = 6 // A partir del nivel 6, crecimiento más lento
@@ -54,7 +54,7 @@ class BirdComponent {
     }
     
     private func configureBird(position: CGPoint) {
-        bird.setScale(2.0 * 3.0) // Ajustado para imágenes 3x
+        bird.setScale(2.0)
         bird.position = position
         configurePhysics()
         startFlapping()
