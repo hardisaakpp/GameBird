@@ -67,42 +67,97 @@ extension GameScene {
         subtitle.name = "welcomeSubtitle"
         overlay.addChild(subtitle)
         
-        // Botón de comenzar - Ahora usando imagen Play.png
-        let startButtonContainer = SKNode()
-        startButtonContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
-        startButtonContainer.name = "welcomeStartButton"
+        // Contenedor para los botones de juego
+        let buttonsContainer = SKNode()
+        buttonsContainer.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
+        buttonsContainer.name = "welcomeButtonsContainer"
         
-        // Usar la imagen Play.png en lugar del botón de texto
+        // Ajustar tamaño de los botones
+        let targetWidth: CGFloat = 140  // Ancho objetivo de cada botón (reducido para acomodar dos)
+        let targetHeight: CGFloat = 140  // Alto objetivo de cada botón
+        let buttonSpacing: CGFloat = 200  // Espaciado entre botones
+        
+        // BOTÓN PLAY (Modo Normal) - Lado izquierdo
+        let playButtonContainer = SKNode()
+        playButtonContainer.position = CGPoint(x: -buttonSpacing/2, y: 0)
+        playButtonContainer.name = "welcomePlayButton"
+        
         let playButton = SKSpriteNode(imageNamed: "Play")
-        playButton.name = "welcomeStartButton"
-        
-        // Ajustar tamaño de la imagen para que sea apropiado - AUMENTADO AL DOBLE
-        let targetWidth: CGFloat = 160  // Ancho objetivo del botón (antes 120)
-        let targetHeight: CGFloat = 160  // Alto objetivo del botón (antes 120)
+        playButton.name = "welcomePlayButton"
         
         if playButton.size.width > 0 {
             let scaleX = targetWidth / playButton.size.width
             let scaleY = targetHeight / playButton.size.height
-            let scale = min(scaleX, scaleY)  // Mantener proporción
+            let scale = min(scaleX, scaleY)
             playButton.setScale(scale)
         }
         
-        // Agregar efecto de sombra para mejor visibilidad
-        let shadow = SKSpriteNode(imageNamed: "Play")
-        shadow.name = "welcomeStartButton"
-        shadow.setScale(playButton.xScale)
-        shadow.position = CGPoint(x: 3, y: -3)
-        shadow.alpha = 0.3
-        shadow.color = .black
-        shadow.colorBlendFactor = 1.0
+        // Sombra para botón Play
+        let playShadow = SKSpriteNode(imageNamed: "Play")
+        playShadow.name = "welcomePlayButton"
+        playShadow.setScale(playButton.xScale)
+        playShadow.position = CGPoint(x: 3, y: -3)
+        playShadow.alpha = 0.3
+        playShadow.color = .black
+        playShadow.colorBlendFactor = 1.0
         
-        startButtonContainer.addChild(shadow)
-        startButtonContainer.addChild(playButton)
+        playButtonContainer.addChild(playShadow)
+        playButtonContainer.addChild(playButton)
         
-        // Agregar área táctil invisible para mantener la funcionalidad - AUMENTADA AL DOBLE
-        let touchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
-        touchArea.name = "welcomeStartButton"
-        startButtonContainer.addChild(touchArea)
+        // Área táctil para botón Play
+        let playTouchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
+        playTouchArea.name = "welcomePlayButton"
+        playButtonContainer.addChild(playTouchArea)
+        
+        // Etiqueta para botón Play
+        let playLabel = SKLabelNode(text: "NORMAL")
+        playLabel.fontName = FontConstants.GameUI.hintFont
+        playLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playLabel.fontColor = .white
+        playLabel.position = CGPoint(x: 0, y: -90)
+        playLabel.verticalAlignmentMode = .center
+        playButtonContainer.addChild(playLabel)
+        
+        // BOTÓN PLAY BASIC (Modo Básico) - Lado derecho
+        let playBasicButtonContainer = SKNode()
+        playBasicButtonContainer.position = CGPoint(x: buttonSpacing/2, y: 0)
+        playBasicButtonContainer.name = "welcomePlayBasicButton"
+        
+        let playBasicButton = SKSpriteNode(imageNamed: "playBasic")
+        playBasicButton.name = "welcomePlayBasicButton"
+        
+        if playBasicButton.size.width > 0 {
+            let scaleX = targetWidth / playBasicButton.size.width
+            let scaleY = targetHeight / playBasicButton.size.height
+            let scale = min(scaleX, scaleY)
+            playBasicButton.setScale(scale)
+        }
+        
+        // Sombra para botón Play Basic
+        let playBasicShadow = SKSpriteNode(imageNamed: "playBasic")
+        playBasicShadow.name = "welcomePlayBasicButton"
+        playBasicShadow.setScale(playBasicButton.xScale)
+        playBasicShadow.position = CGPoint(x: 3, y: -3)
+        playBasicShadow.alpha = 0.3
+        playBasicShadow.color = .black
+        playBasicShadow.colorBlendFactor = 1.0
+        
+        playBasicButtonContainer.addChild(playBasicShadow)
+        playBasicButtonContainer.addChild(playBasicButton)
+        
+        // Área táctil para botón Play Basic
+        let playBasicTouchArea = SKSpriteNode(color: .clear, size: CGSize(width: targetWidth, height: targetHeight))
+        playBasicTouchArea.name = "welcomePlayBasicButton"
+        playBasicButtonContainer.addChild(playBasicTouchArea)
+        
+        // Etiqueta para botón Play Basic
+        let playBasicLabel = SKLabelNode(text: "BÁSICO")
+        playBasicLabel.fontName = FontConstants.GameUI.hintFont
+        playBasicLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playBasicLabel.fontColor = .systemYellow
+        playBasicLabel.position = CGPoint(x: 0, y: -90)
+        playBasicLabel.verticalAlignmentMode = .center
+        playBasicButtonContainer.addChild(playBasicLabel)
         
         // Agregar efecto de vibración al botón Play
         let shakeAction = SKAction.sequence([
@@ -113,19 +168,22 @@ extension GameScene {
         ])
         
         let shakeSequence = SKAction.sequence([
-            SKAction.wait(forDuration: 1.0),  // Esperar 1 segundo antes de empezar
+            SKAction.wait(forDuration: 1.5),  // Esperar 1.5 segundos antes de empezar
             SKAction.repeatForever(SKAction.sequence([
                 shakeAction,
-                SKAction.wait(forDuration: 2.0)  // Pausa de 2 segundos entre vibraciones
+                SKAction.wait(forDuration: 3.0)  // Pausa de 3 segundos entre vibraciones
             ]))
         ])
         
         playButton.run(shakeSequence)
         
-        overlay.addChild(startButtonContainer)
+        // Agregar ambos contenedores de botones al contenedor principal
+        buttonsContainer.addChild(playButtonContainer)
+        buttonsContainer.addChild(playBasicButtonContainer)
+        overlay.addChild(buttonsContainer)
         
-        // Indicación para tocar - Actualizada para el botón de imagen
-        let tapHint = SKLabelNode(text: "Toca el botón PLAY para comenzar")
+        // Indicación para tocar - Actualizada para ambos botones
+        let tapHint = SKLabelNode(text: "Elige tu modo de juego: NORMAL o BÁSICO")
         tapHint.fontName = FontConstants.GameUI.hintFont
         tapHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
         tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
@@ -221,8 +279,8 @@ extension GameScene {
         let title = overlay.children.first(where: { $0.name == "welcomeTitle" }) as? SKLabelNode
         title?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.titleOffset)
         
-        let startButton = overlay.children.first(where: { $0.name == "welcomeStartButton" })
-        startButton?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
+        let buttonsContainer = overlay.children.first(where: { $0.name == "welcomeButtonsContainer" })
+        buttonsContainer?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.buttonOffset)
         
         let tapHint = overlay.children.first(where: { $0.name == "welcomeTapHint" }) as? SKLabelNode
         tapHint?.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.playHintOffset)

@@ -36,13 +36,30 @@ extension GameScene {
                     }
                 }
                 
-                if nodes(at: touchLocation).contains(where: { $0.name == "welcomeStartButton" }) {
-                    let buttonContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeStartButton" })
+                // Verificar si se tocó el botón PLAY (Modo Normal)
+                if nodes(at: touchLocation).contains(where: { $0.name == "welcomePlayButton" }) {
+                    let buttonContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeButtonsContainer" })?.children.first(where: { $0.name == "welcomePlayButton" })
                     let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
                     let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
-                    // Sonido al pulsar COMENZAR
+                    // Sonido al pulsar PLAY
                     AudioManager.shared.playSwooshSound()
                     (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                        // Iniciar juego en modo normal
+                        self?.hideWelcomeScreen()
+                    }
+                    return
+                }
+                
+                // Verificar si se tocó el botón PLAY BASIC (Modo Básico)
+                if nodes(at: touchLocation).contains(where: { $0.name == "welcomePlayBasicButton" }) {
+                    let buttonContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeButtonsContainer" })?.children.first(where: { $0.name == "welcomePlayBasicButton" })
+                    let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)
+                    let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
+                    // Sonido al pulsar PLAY BASIC
+                    AudioManager.shared.playSwooshSound()
+                    (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                        // Iniciar juego en modo básico
+                        // TODO: Implementar lógica específica del modo básico
                         self?.hideWelcomeScreen()
                     }
                     return
