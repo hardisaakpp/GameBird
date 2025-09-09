@@ -52,7 +52,7 @@ extension GameScene {
         nameHint.fontName = FontConstants.GameUI.hintFont
         nameHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.8, fontName: FontConstants.GameUI.hintFont)
         nameHint.fontColor = .systemGray
-        nameHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameInputOffset - 40)  // Posicionado justo debajo del campo
+        nameHint.position = CGPoint(x: self.frame.midX, y: self.frame.midY + WelcomeLayout.nameInputOffset - 40)  // Posicionado justo debajo del camp
         nameHint.verticalAlignmentMode = .center
         nameHint.name = "welcomeNameHint"
         overlay.addChild(nameHint)
