@@ -78,14 +78,17 @@ class BirdComponent {
         bird.run(SKAction.repeatForever(flapAnimation), withKey: "flap")
     }
     
-    func applyImpulse() {
+    func applyImpulse(gameMode: GameMode = .normal) {
         if let body = bird.physicsBody {
             // Conservar componente positiva para permitir encadenar saltos
             let upwardVelocity = max(0, body.velocity.dy)
             body.velocity = CGVector(dx: 0, dy: upwardVelocity)
         }
         bird.physicsBody?.angularVelocity = 0
-        bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: GameConfig.Physics.birdImpulse))
+        
+        // Usar impulso específico del modo de juego
+        let impulse = GameConfig.Physics.birdImpulse(for: gameMode)
+        bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: impulse))
         
         let currentScale = getCurrentScale()
         let jumpScale = SKAction.sequence([
@@ -685,18 +688,21 @@ return baseMass + (CGFloat(growthLevel) * weightIncrement)
     
     func getCurrentGravity() -> CGFloat {
         // Gravedad base más gravedad adicional por crecimiento
-        let baseGravity = GameConfig.Physics.gravity
+        // Usar modo normal como base para mantener compatibilidad con sistema de crecimiento
+        let baseGravity = GameConfig.Physics.gravity(for: .normal)
         let additionalGravity = CGFloat(growthLevel) * 0.8 // +0.8 por cada nivel de crecimiento
         return baseGravity - additionalGravity // Más negativo = cae más rápido
     }
     
     func updateWorldGravity() {
-        // Actualizar la gravedad del mundo basada en el crecimiento del pájaro
-        guard let scene = bird.scene else { return }
-        let newGravity = getCurrentGravity()
-        scene.physicsWorld.gravity = CGVector(dx: 0, dy: newGravity)
+        // NOTA: Sistema de crecimiento temporalmente deshabilitado para mantener 
+        // compatibilidad con el sistema de modos de juego
+        // TODO: Integrar sistema de crecimiento con modos de juego en futuras versiones
         
-        print("🌍 Gravedad actualizada: \(newGravity) (Nivel de crecimiento: \(growthLevel))")
+        print("🌍 Sistema de crecimiento detectado (Nivel: \(growthLevel)) - Manteniendo gravedad del modo de juego")
+        
+        // No modificar la gravedad del mundo aquí para no interferir con los modos de juego
+        // La gravedad se controla ahora desde GameScene.applyGameModePhysics()
     }
     
     private func getGrowthIncrement(for level: Int) -> CGFloat {

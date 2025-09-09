@@ -45,7 +45,7 @@ extension GameScene {
                     AudioManager.shared.playSwooshSound()
                     (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
                         // Iniciar juego en modo normal
-                        self?.hideWelcomeScreen()
+                        self?.hideWelcomeScreen(gameMode: .normal)
                     }
                     return
                 }
@@ -59,8 +59,7 @@ extension GameScene {
                     AudioManager.shared.playSwooshSound()
                     (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
                         // Iniciar juego en modo básico
-                        // TODO: Implementar lógica específica del modo básico
-                        self?.hideWelcomeScreen()
+                        self?.hideWelcomeScreen(gameMode: .basic)
                     }
                     return
                 }
@@ -124,7 +123,7 @@ extension GameScene {
             } else {
                 // Optimización: Ejecutar acciones en paralelo
                 DispatchQueue.main.async {
-                    self.birdComponent.applyImpulse()
+                    self.birdComponent.applyImpulse(gameMode: self.currentGameMode)
                     AudioManager.shared.playWingSound()
                 }
             }

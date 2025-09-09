@@ -7,7 +7,8 @@ extension GameScene {
         super.didMove(to: view)
         
         // Optimización: Configuración de física optimizada
-        physicsWorld.gravity = CGVector(dx: 0.0, dy: GameConfig.Physics.gravity)
+        // La gravedad inicial se establecerá cuando se seleccione el modo de juego
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: GameConfig.Physics.gravity(for: currentGameMode))
         physicsWorld.contactDelegate = self
         physicsWorld.speed = 1.0
         

@@ -265,8 +265,15 @@ extension GameScene {
         pauseButton?.isHidden = true
     }
     
-    func hideWelcomeScreen() {
+    func hideWelcomeScreen(gameMode: GameMode = .normal) {
         isWelcomeScreenActive = false
+        currentGameMode = gameMode  // Establecer el modo de juego seleccionado
+        
+        // Mostrar en consola el modo seleccionado (para debugging)
+        print("🎮 Modo de juego seleccionado: \(gameMode.displayName)")
+        
+        // Aplicar configuraciones de física específicas del modo
+        applyGameModePhysics()
         
         // Guardar el nombre del jugador antes de ocultar la pantalla
         if let nameInputBackground = welcomeOverlay?.children.first(where: { $0.name == "textInputBackground" }) {
@@ -324,5 +331,22 @@ extension GameScene {
                 textLabel.text = name
             }
         }
+    }
+    
+    // MARK: - Physics Configuration for Game Modes
+    func applyGameModePhysics() {
+        // Actualizar gravedad del mundo según el modo de juego
+        let newGravity = GameConfig.Physics.gravity(for: currentGameMode)
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: newGravity)
+        
+        // Configurar PipeManager para el modo de juego
+        pipeManager?.setGameMode(currentGameMode)
+        
+        // Debug: Mostrar configuración de física aplicada
+        let impulse = GameConfig.Physics.birdImpulse(for: currentGameMode)
+        print("⚙️ Física aplicada - Gravedad: \(newGravity), Impulso: \(impulse)")
+        
+        // Nota: El impulso se aplicará automáticamente en BirdComponent.applyImpulse()
+        // cuando el usuario toque la pantalla
     }
 }

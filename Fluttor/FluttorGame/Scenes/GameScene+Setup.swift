@@ -16,7 +16,7 @@ extension GameScene {
 
     func setupGameWorld() {
         // OPTIMIZACIÓN: Configurar mundo de física optimizado
-        PhysicsManager.configureWorld(for: self, gravity: GameConfig.Physics.gravity)
+        PhysicsManager.configureWorld(for: self, gravity: GameConfig.Physics.gravity(for: currentGameMode))
         PhysicsManager.createBoundary(for: self,
                                       position: CGPoint(x: frame.midX, y: frame.size.height / 2),
                                       size: CGSize(width: frame.size.width, height: 1),

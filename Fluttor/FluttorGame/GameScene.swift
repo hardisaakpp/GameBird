@@ -7,6 +7,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isPausedGame = false
     var isInitialPauseActive = false
     var isWelcomeScreenActive = false  // Nuevo estado para la pantalla de bienvenida
+    var currentGameMode: GameMode = .normal  // Modo de juego actual
     
     // MARK: - Propiedades del Escenario
     let birdTexture1 = SKTexture(imageNamed: "redbird-midflap")

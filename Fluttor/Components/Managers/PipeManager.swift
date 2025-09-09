@@ -11,6 +11,7 @@ class PipeManager {
     let scene: SKScene
     let pipeComponent: PipeComponent
     var spawnInterval: TimeInterval = 2.0
+    var currentGameMode: GameMode = .normal  // Modo de juego actual
     private var activePipes = [SKNode]()
     private var activeCoins = [SKNode]() // Nuevo: rastrear monedas activas
     private var activeStrawberries = [SKNode]() // Nuevo: rastrear fresas activas
@@ -35,6 +36,32 @@ class PipeManager {
     init(scene: SKScene) {
         self.scene = scene
         self.pipeComponent = PipeComponent(scene: scene)
+    }
+    
+    // MARK: - Game Mode Configuration
+    func setGameMode(_ mode: GameMode) {
+        currentGameMode = mode
+        
+        // Configurar intervalo de spawn según el modo
+        spawnInterval = getSpawnInterval(for: mode)
+        
+        // Configurar gap de pipes en PipeComponent
+        pipeComponent.setGameMode(mode)
+        
+        // Debug: Mostrar configuración
+        let fruitsEnabled = GameConfig.GameFeatures.enableFruits(for: mode)
+        let coinsEnabled = GameConfig.GameFeatures.enableCoins(for: mode)
+        print("🔧 PipeManager configurado para modo \(mode.displayName)")
+        print("   📊 Intervalo: \(spawnInterval)s")
+        print("   🪙 Monedas: \(coinsEnabled ? "✅" : "❌")")
+        print("   🍓 Frutas: \(fruitsEnabled ? "✅" : "❌")")
+    }
+    
+    private func getSpawnInterval(for mode: GameMode) -> TimeInterval {
+        switch mode {
+        case .normal: return 1.8  // Intervalo normal
+        case .basic: return 2.4   // 33% más tiempo entre pipes (más fácil)
+        }
     }
     
     func startGeneratingPipes() {
@@ -127,34 +154,44 @@ class PipeManager {
         targetPair.run(SKAction.sequence([moveAction, SKAction.removeFromParent(), cleanupAction]))
     }
     
-    // MARK: - Sistema de Recompensas (Monedas y Fresas)
+    // MARK: - Sistema de Recompensas (Monedas y Frutas)
     private func spawnRewardsIfNeeded(at gapCenterY: CGFloat) {
         // Definir el rango vertical del hueco (aproximadamente 200 píxeles de altura)
         let gapHeight: CGFloat = 200.0
         let minY = gapCenterY - gapHeight / 2
         let maxY = gapCenterY + gapHeight / 2
         
+        // Verificar qué elementos están habilitados según el modo de juego
+        let enableFruits = GameConfig.GameFeatures.enableFruits(for: currentGameMode)
+        let enableCoins = GameConfig.GameFeatures.enableCoins(for: currentGameMode)
+        
         // Generar posiciones aleatorias para evitar superposición
         var coinPosition: CGFloat?
         var strawberryPosition: CGFloat?
         var grapePosition: CGFloat?
         
-        // Decidir si generar moneda
-        let coinRandom = Float.random(in: 0...1)
-        if coinRandom <= coinSpawnChance {
-            coinPosition = CGFloat.random(in: minY...maxY)
+        // Decidir si generar moneda (siempre habilitado)
+        if enableCoins {
+            let coinRandom = Float.random(in: 0...1)
+            if coinRandom <= coinSpawnChance {
+                coinPosition = CGFloat.random(in: minY...maxY)
+            }
         }
         
-        // Decidir si generar fresa
-        let strawberryRandom = Float.random(in: 0...1)
-        if strawberryRandom <= strawberrySpawnChance {
-            strawberryPosition = CGFloat.random(in: minY...maxY)
+        // Decidir si generar fresa (solo en modo normal)
+        if enableFruits {
+            let strawberryRandom = Float.random(in: 0...1)
+            if strawberryRandom <= strawberrySpawnChance {
+                strawberryPosition = CGFloat.random(in: minY...maxY)
+            }
         }
         
-        // Decidir si generar uva
-        let grapeRandom = Float.random(in: 0...1)
-        if grapeRandom <= grapeSpawnChance {
-            grapePosition = CGFloat.random(in: minY...maxY)
+        // Decidir si generar uva (solo en modo normal)
+        if enableFruits {
+            let grapeRandom = Float.random(in: 0...1)
+            if grapeRandom <= grapeSpawnChance {
+                grapePosition = CGFloat.random(in: minY...maxY)
+            }
         }
         
         // Verificar que no estén muy cerca (mínimo 60 píxeles de separación)
@@ -207,6 +244,17 @@ class PipeManager {
         // Generar uva si corresponde
         if let grapeY = grapePosition {
             spawnGrape(at: grapeY)
+        }
+        
+        // Debug: Confirmar qué se generó
+        let itemsGenerated = [
+            coinPosition != nil ? "🪙" : "",
+            strawberryPosition != nil ? "🍓" : "",
+            grapePosition != nil ? "🍇" : ""
+        ].filter { !$0.isEmpty }.joined(separator: " ")
+        
+        if !itemsGenerated.isEmpty {
+            print("🎁 Elementos generados: \(itemsGenerated) (Modo: \(currentGameMode.displayName))")
         }
     }
     

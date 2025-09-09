@@ -13,9 +13,27 @@ class PipeComponent {
     private let minGapHeight: CGFloat = 200.0 // Mínimo para dificultad
     private let gapDecreasePerPoint: CGFloat = 2.0 // Reduce con el score
     private let pipeCategory: UInt32 = PhysicsCategory.pipe // Categoría de física para los tubos
+    private var currentGameMode: GameMode = .normal // Modo de juego actual
     
     init(scene: SKScene) {
         self.scene = scene
+    }
+    
+    // MARK: - Game Mode Configuration
+    func setGameMode(_ mode: GameMode) {
+        currentGameMode = mode
+        
+        // Configurar gap height según el modo de juego
+        gapHeight = getGapHeight(for: mode)
+        
+        print("🔧 PipeComponent configurado para modo \(mode.displayName) - Gap: \(gapHeight)px")
+    }
+    
+    private func getGapHeight(for mode: GameMode) -> CGFloat {
+        switch mode {
+        case .normal: return 240.0  // Gap normal
+        case .basic: return 300.0   // 25% más gap para modo básico
+        }
     }
     
     /// Crea un par de tubos y lo configura
