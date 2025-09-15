@@ -16,8 +16,8 @@ enum GameMode {
     
     var displayName: String {
         switch self {
-        case .normal: return "Normal"
-        case .basic: return "Básico"
+        case .normal: return "INTERMEDIO"
+        case .basic: return "BÁSICO"
         }
     }
 }

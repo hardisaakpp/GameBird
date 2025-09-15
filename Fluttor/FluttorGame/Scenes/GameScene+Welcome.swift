@@ -110,9 +110,9 @@ extension GameScene {
         playButtonContainer.addChild(playTouchArea)
         
         // Etiqueta para botón Play
-        let playLabel = SKLabelNode(text: "NORMAL")
+        let playLabel = SKLabelNode(text: GameMode.normal.displayName)
         playLabel.fontName = FontConstants.GameUI.hintFont
-        playLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 24, fontName: FontConstants.GameUI.hintFont)
         playLabel.fontColor = .white
         playLabel.position = CGPoint(x: 0, y: -90)
         playLabel.verticalAlignmentMode = .center
@@ -155,9 +155,9 @@ extension GameScene {
         playBasicButtonContainer.addChild(playBasicTouchArea)
         
         // Etiqueta para botón Play Basic
-        let playBasicLabel = SKLabelNode(text: "BÁSICO")
+        let playBasicLabel = SKLabelNode(text: GameMode.basic.displayName)
         playBasicLabel.fontName = FontConstants.GameUI.hintFont
-        playBasicLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 18, fontName: FontConstants.GameUI.hintFont)
+        playBasicLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 24, fontName: FontConstants.GameUI.hintFont)
         playBasicLabel.fontColor = .systemYellow
         playBasicLabel.position = CGPoint(x: 0, y: -90)
         playBasicLabel.verticalAlignmentMode = .center
@@ -205,7 +205,7 @@ extension GameScene {
         overlay.addChild(buttonsContainer)
         
         // Indicación para tocar - Actualizada para ambos botones (más abajo)
-        let tapHint = SKLabelNode(text: "Elige tu modo de juego: NORMAL o BÁSICO")
+        let tapHint = SKLabelNode(text: "Elige tu modo de juego: \(GameMode.normal.displayName) o \(GameMode.basic.displayName)")
         tapHint.fontName = FontConstants.GameUI.hintFont
         tapHint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.9, fontName: FontConstants.GameUI.hintFont)
         tapHint.fontColor = .systemOrange  // Mantener naranja para texto de pista
