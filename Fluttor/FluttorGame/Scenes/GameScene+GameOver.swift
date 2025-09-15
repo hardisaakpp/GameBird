@@ -106,7 +106,7 @@ extension GameScene {
 
         // Posición: centrado horizontalmente, debajo del botón de reiniciar
         let restartButtonY = restartButton?.position.y ?? frame.midY
-        let offsetY: CGFloat = -80 // Debajo del botón de reiniciar
+        let offsetY: CGFloat = -160 // Aún más abajo del botón de reiniciar (era -120)
         finalScoreContainer.position = CGPoint(x: frame.midX, y: restartButtonY + offsetY)
 
         // Si no cambió el puntaje, no reconstruir los hijos
@@ -192,9 +192,9 @@ extension GameScene {
         
         // 1. Nombre del jugador (arriba de todo)
         showPlayerNameAtPosition(y: currentY)
-        currentY -= verticalSpacing * 0.6 // Menos espacio antes del puntaje
+        currentY -= verticalSpacing * 1.0 // Más espacio antes del puntaje (era 0.6)
         
-        // 2. Puntaje de esta partida (justo debajo del nombre)
+        // 2. Puntaje de esta partida (debajo del nombre con más separación)
         showCurrentScoreAtPosition(y: currentY)
         currentY -= verticalSpacing * 1.2 // Más espacio después del puntaje actual
         
