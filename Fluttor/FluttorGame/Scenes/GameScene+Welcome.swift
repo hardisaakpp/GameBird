@@ -259,7 +259,9 @@ extension GameScene {
         
         // Crear y mostrar el overlay de bienvenida
         welcomeOverlay = createWelcomeOverlay()
-        addChild(welcomeOverlay)
+        if let welcomeOverlay = welcomeOverlay {
+            addChild(welcomeOverlay)
+        }
         
         // Ocultar botón de pausa
         pauseButton?.isHidden = true

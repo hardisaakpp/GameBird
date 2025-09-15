@@ -3,7 +3,7 @@ import SpriteKit
 // MARK: - Reinicio
 extension GameScene {
     func restartGame(playPointSound: Bool = true) {
-        restartButton.isHidden = true
+        restartButton?.isHidden = true
         
         // Sonido opcional de punto cuando se reinicia el juego
         if playPointSound {
@@ -20,18 +20,18 @@ extension GameScene {
         removeAllActions()
         
         // Limpiar elementos antiguos (delegado al PipeManager)
-        pipeManager.removeAllPipes()
+        pipeManager?.removeAllPipes()
         
         // Reiniciar componentes
-        birdComponent.reset()
-        groundComponent.reset()
-        backgroundComponent.reset()
-        backgroundComponent.resetBackgroundColor()
-        pipeManager.restart()
+        birdComponent?.reset()
+        groundComponent?.reset()
+        backgroundComponent?.reset()
+        backgroundComponent?.resetBackgroundColor()
+        pipeManager?.restart()
         
         // Restaurar UI
         hideRestartButton()
-        birdComponent.bird.physicsBody?.isDynamic = true
+        birdComponent?.bird.physicsBody?.isDynamic = true
         pauseButton?.isHidden = false
     }
 
@@ -39,7 +39,7 @@ extension GameScene {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
-        if restartButton.contains(touchLocation) {
+        if let restartButton = restartButton, restartButton.contains(touchLocation) {
             // Sonido de botón presionado
             AudioManager.shared.playSwooshSound()
             
@@ -48,7 +48,7 @@ extension GameScene {
             let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
             
             restartButton.run(SKAction.sequence([scaleDown, scaleUp])) {
-                self.restartButton.isHidden = true
+                self.restartButton?.isHidden = true
                 // En modo noche, no reproducir point.wav al reiniciar
                 let isNightMode = BackgroundConstants.isNightNow()
                 self.restartGame(playPointSound: !isNightMode)

@@ -4,19 +4,25 @@ import SpriteKit
 extension GameScene {
     func setupUI() {
         restartButton = UIComponent.createRestartButton(in: self)
-        restartButton.isHidden = true // Inicialmente oculto
-        addChild(restartButton)
+        restartButton?.isHidden = true // Inicialmente oculto
+        if let restartButton = restartButton {
+            addChild(restartButton)
+        }
 
         // Botón de pausa (arriba derecha)
         pauseButton = UIComponent.createPauseButton(in: self)
-        pauseButton.setScale(0.9)
-        addChild(pauseButton)
+        pauseButton?.setScale(0.9)
+        if let pauseButton = pauseButton {
+            addChild(pauseButton)
+        }
         repositionPauseButton()
 
         // Overlay de reanudación
         resumeOverlay = UIComponent.createResumeOverlay(in: self)
-        resumeOverlay.isHidden = true
-        addChild(resumeOverlay)
+        resumeOverlay?.isHidden = true
+        if let resumeOverlay = resumeOverlay {
+            addChild(resumeOverlay)
+        }
 
         // Sombreado de fondo para Game Over (similar a la pausa)
         let dimGO = SKSpriteNode(color: .black, size: frame.size)
@@ -36,15 +42,6 @@ extension GameScene {
         gameOverImage = img
         addChild(img)
         updateGameOverImageLayout()
-        
-        // Imagen de marcador "score.png" debajo del botón Reiniciar
-        let scoreImg = SKSpriteNode(imageNamed: "score")
-        scoreImg.name = "gameOverScore"
-        scoreImg.zPosition = GameConfig.ZPosition.UI - 0.1 // Debajo del botón
-        scoreImg.isHidden = true
-        gameOverScoreImage = scoreImg
-        addChild(scoreImg)
-        updateGameOverScoreLayout()
 
         // Contenedor para los dígitos del puntaje final sobre el tablero (como hermano en la escena)
         finalScoreContainer.name = "finalScoreContainer"
@@ -124,38 +121,4 @@ extension GameScene {
         }
     }
 
-    func updateGameOverScoreLayout() {
-        guard let scoreImg = gameOverScoreImage else { return }
-        
-        // Escalar para que no exceda 55% del ancho de la escena (y permitir ampliación hasta 2x)
-        if scoreImg.size.width > 0 {
-            let targetWidth = frame.width * 0.55
-            let scale = targetWidth / scoreImg.size.width
-            let maxUpscale: CGFloat = 2.0
-            scoreImg.setScale(min(scale, maxUpscale))
-        }
-        
-        // Calcular una separación equivalente a la que hay entre la imagen "Game Over" y el botón
-        let buttonHalfH = restartButton.calculateAccumulatedFrame().height / 2
-        let scoreHalfH = scoreImg.calculateAccumulatedFrame().height / 2
-        var topHalfH: CGFloat = 0
-        if let go = gameOverImage {
-            topHalfH = go.calculateAccumulatedFrame().height / 2
-        }
-        // Distancia centro-a-centro usada para la imagen superior
-        let topCenterOffset: CGFloat = 110
-        // Margen (borde a borde) real arriba del botón
-        let topGap = topCenterOffset - (buttonHalfH + topHalfH)
-        // Asegurar un margen mínimo cómodo
-        let gapBelow = max(topGap, 24)
-        
-        // Posicionar centrado, por debajo del botón con la misma separación (con offset adicional hacia abajo)
-        let centerY = restartButton.position.y
-        let additionalOffset: CGFloat = 25 // Mover 25 píxeles más hacia abajo
-        let targetCenterOffsetBelow = buttonHalfH + scoreHalfH + gapBelow + additionalOffset
-        scoreImg.position = CGPoint(x: frame.midX, y: centerY - targetCenterOffsetBelow)
-
-        // Actualizar posición/escala de los dígitos del puntaje final para el nuevo tamaño
-        updateFinalScoreDisplay()
-    }
 }

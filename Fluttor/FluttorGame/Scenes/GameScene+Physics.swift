@@ -103,7 +103,7 @@ extension GameScene {
         backgroundComponent?.stopMovement()
         
         // Configurar el pájaro para que caiga dramáticamente
-        if let birdPhysics = birdComponent.bird.physicsBody {
+        if let birdPhysics = birdComponent?.bird.physicsBody {
             birdPhysics.mass = 0.1
             let fallImpulse = CGVector(dx: -50, dy: -200)
             birdPhysics.applyImpulse(fallImpulse)
@@ -120,7 +120,7 @@ extension GameScene {
         
         // Mostrar el botón de reinicio con un temporizador de seguridad
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            if let self = self, self.isGameOver && self.restartButton.isHidden {
+            if let self = self, self.isGameOver, let restartButton = self.restartButton, restartButton.isHidden {
                 self.showRestartButton()
             }
         }
@@ -165,7 +165,7 @@ extension GameScene {
         updateScoreDisplay()
         
         // Hacer crecer al pájaro
-        birdComponent.growFromStrawberry()
+        birdComponent?.growFromStrawberry()
         
         // Reproducir sonido de fresa
         AudioManager.shared.playFruitSound()
@@ -190,10 +190,10 @@ extension GameScene {
         updateScoreDisplay()
         
         // Transformar a BlueBird (sin crecimiento)
-        birdComponent.growFromGrape()
+        birdComponent?.growFromGrape()
         
         // Activar poder magnético con mejoras de seguridad
-        birdComponent.activateMagneticPower()
+        birdComponent?.activateMagneticPower()
         
         // Reproducir sonido de fruta (reutilizamos el sonido de fresa)
         AudioManager.shared.playFruitSound()

@@ -32,7 +32,7 @@ ScoreManager.shared.recordGameResult(score: score)
 - Incluye etiqueta "BEST" para claridad
 
 ### **3. Ubicación en la UI**
-- **Puntaje Actual**: Sobre el tablero "score.png"
+- **Puntaje Actual**: Mostrado directamente con dígitos
 - **Mejor Puntaje**: Arriba del puntaje actual con etiqueta "BEST"
 
 ## 🔧 Uso del ScoreManager

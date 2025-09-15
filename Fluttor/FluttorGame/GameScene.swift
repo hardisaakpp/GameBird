@@ -13,22 +13,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let birdTexture1 = SKTexture(imageNamed: "redbird-midflap")
     let birdTexture2 = SKTexture(imageNamed: "redbird-downflap")
     
-    // Componentes
-    var birdComponent: BirdComponent!         // Pájaros
-    var groundComponent: GroundComponent!         // Suelo
-    var backgroundComponent: BackgroundComponent!   // Fondo
-    var moonComponent: MoonComponent!         // Luna
-    var sunComponent: SunComponent!           // Sol
-    var pipeManager: PipeManager!
+    // Componentes - Cambiados a optionales para evitar crashes por nil
+    var birdComponent: BirdComponent?         // Pájaros
+    var groundComponent: GroundComponent?         // Suelo
+    var backgroundComponent: BackgroundComponent?   // Fondo
+    var moonComponent: MoonComponent?         // Luna
+    var sunComponent: SunComponent?           // Sol
+    var pipeManager: PipeManager?
     
-    // UI
-    var restartButton: SKNode!
-    var pauseButton: SKNode!
-    var resumeOverlay: SKNode!
-    var welcomeOverlay: SKNode!  // Nuevo overlay para la pantalla de bienvenida
+    // UI - También cambiados a optionales para mayor seguridad
+    var restartButton: SKNode?
+    var pauseButton: SKNode?
+    var resumeOverlay: SKNode?
+    var welcomeOverlay: SKNode?  // Nuevo overlay para la pantalla de bienvenida
     var gameOverImage: SKSpriteNode? // Imagen de Game Over
     var gameOverDim: SKSpriteNode?   // Sombreado de fondo para Game Over
-    var gameOverScoreImage: SKSpriteNode? // Imagen "score" debajo del botón reiniciar
     
     // Marcador
     var score: Int = 0
@@ -45,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let overlayButtonOffsetY: CGFloat = -10
     let overlayHintOffsetY: CGFloat = -120
     
-    // Puntaje final sobre tablero `score.png`
+    // Puntaje final
     var finalScoreContainer: SKNode = SKNode()
     // Porción del ancho del tablero usada para los dígitos (45%)
     let finalScoreMaxWidthRatio: CGFloat = 0.45

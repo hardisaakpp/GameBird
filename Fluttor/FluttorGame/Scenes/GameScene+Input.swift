@@ -111,7 +111,7 @@ extension GameScene {
                 AudioManager.shared.playSwooshSound()
                 let scaleDown = SKAction.scale(to: 0.9, duration: 0.05)
                 let scaleUp = SKAction.scale(to: 1.0, duration: 0.05)
-                pauseButton.run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                pauseButton?.run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
                     self?.pauseGame()
                 }
             } else if let moonComponent = moonComponent, moonComponent.handleTouch(at: touchLocation) {
@@ -123,7 +123,7 @@ extension GameScene {
             } else {
                 // Optimización: Ejecutar acciones en paralelo
                 DispatchQueue.main.async {
-                    self.birdComponent.applyImpulse(gameMode: self.currentGameMode)
+                    self.birdComponent?.applyImpulse(gameMode: self.currentGameMode)
                     AudioManager.shared.playWingSound()
                 }
             }

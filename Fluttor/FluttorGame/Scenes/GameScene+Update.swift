@@ -9,7 +9,8 @@ extension GameScene {
             PerformanceMonitor.shared.updateFrame()
         }
         
-        guard let physicsBody = birdComponent.bird.physicsBody else { return }
+        guard let birdComponent = birdComponent,
+              let physicsBody = birdComponent.bird.physicsBody else { return }
         
         // OPTIMIZACIÓN CRÍTICA: Actualizar rotación solo cuando sea necesario
         let yVelocity = physicsBody.velocity.dy
@@ -33,7 +34,7 @@ extension GameScene {
         )
         
         // Aplicar rotación directamente (más eficiente que SKAction)
-        birdComponent.bird.zRotation = targetRotation
+        birdComponent?.bird.zRotation = targetRotation
     }
     
     /// Función que limita un valor entre un mínimo y un máximo.

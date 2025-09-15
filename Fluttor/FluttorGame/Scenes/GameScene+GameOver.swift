@@ -57,34 +57,22 @@ extension GameScene {
         }
         
         // Mostrar y animar botón
-        restartButton.isHidden = false
+        restartButton?.isHidden = false
         pauseButton?.isHidden = true
-        restartButton.run(SKAction.sequence([
+        restartButton?.run(SKAction.sequence([
             SKAction.fadeIn(withDuration: 0.3),
             SKAction.scale(to: 1.1, duration: 0.2),
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
         
-        // Mostrar imagen de marcador "score"
-        if let scoreImg = gameOverScoreImage {
-            scoreImg.isHidden = false
-            scoreImg.alpha = 0.0
-            let fadeIn = SKAction.fadeIn(withDuration: 0.25)
-            let pop = SKAction.sequence([
-                SKAction.scale(by: 1.05, duration: 0.15),
-                SKAction.scale(by: 1.0/1.05, duration: 0.1)
-            ])
-            scoreImg.run(SKAction.group([fadeIn, pop]))
-            
-            // Actualizar y mostrar los dígitos del puntaje final sobre el tablero
-            updateFinalScoreDisplay()
-            finalScoreContainer.isHidden = false
-            finalScoreContainer.alpha = 0.0
-            finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.25))
-            
-            // Mostrar el mejor puntaje
-            showHighScoreDisplay()
-        }
+        // Actualizar y mostrar los dígitos del puntaje final
+        updateFinalScoreDisplay()
+        finalScoreContainer.isHidden = false
+        finalScoreContainer.alpha = 0.0
+        finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.25))
+        
+        // Mostrar el mejor puntaje
+        showHighScoreDisplay()
     }
 
     func hideRestartButton() {
@@ -102,12 +90,6 @@ extension GameScene {
             dim.isHidden = true
             dim.alpha = 0.65
         }
-        // Ocultar imagen de marcador
-        if let scoreImg = gameOverScoreImage {
-            scoreImg.removeAllActions()
-            scoreImg.isHidden = true
-            scoreImg.alpha = 1.0
-        }
         // Ocultar dígitos del puntaje final
         finalScoreContainer.removeAllActions()
         finalScoreContainer.isHidden = true
@@ -122,26 +104,16 @@ extension GameScene {
     }
 
     func updateFinalScoreDisplay() {
-        guard let scoreBoard = gameOverScoreImage else { return }
+        // Mostrar los dígitos del puntaje final
+        finalScoreContainer.isHidden = false
 
-        // Si el tablero no está en escena o está oculto, ocultar los dígitos
-        if scoreBoard.parent == nil || scoreBoard.isHidden {
-            finalScoreContainer.isHidden = true
-            return
-        } else {
-            finalScoreContainer.isHidden = false
-        }
+        // Posición: centrado horizontalmente, debajo del botón de reiniciar
+        let restartButtonY = restartButton?.position.y ?? frame.midY
+        let offsetY: CGFloat = -80 // Debajo del botón de reiniciar
+        finalScoreContainer.position = CGPoint(x: frame.midX, y: restartButtonY + offsetY)
 
-        // Posición: alinear vertical con pequeño offset y acercar a borde derecho del tablero
-        let boardFrame = scoreBoard.calculateAccumulatedFrame()
-        let offsetY = boardFrame.height * finalScoreYOffsetRatio
-        let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
-        // Punto X en el borde derecho menos padding, convertido al sistema del padre (la escena)
-        let targetX = boardFrame.maxX - rightPadding
-        finalScoreContainer.position = CGPoint(x: targetX, y: scoreBoard.position.y + offsetY)
-
-        // Si no cambió el puntaje ni el ancho del tablero, no reconstruir los hijos
-        if lastFinalScoreRendered == score && abs(lastFinalBoardWidth - boardFrame.width) < 0.5 && !finalScoreContainer.children.isEmpty {
+        // Si no cambió el puntaje, no reconstruir los hijos
+        if lastFinalScoreRendered == score && !finalScoreContainer.children.isEmpty {
             return
         }
 
@@ -159,14 +131,12 @@ extension GameScene {
         let baseTotalWidth = digitNodes.reduce(CGFloat(0)) { $0 + $1.size.width }
         guard baseTotalWidth > 0 else { return }
 
-        // Calcular escala para que quepa dentro de un % del ancho del tablero (usando tamaño acumulado para incluir escala del tablero)
-        let targetWidth = boardFrame.width * finalScoreMaxWidthRatio
-        let baseScale = max(0.2, min(2.0, targetWidth / baseTotalWidth))
-        let scale = baseScale * finalScoreScaleFactor
+        // Calcular escala fija para los dígitos del puntaje
+        let scale = finalScoreScaleFactor * 1.5 // Un poco más grande sin el tablero
 
-        // Alinear a la derecha: calcular ancho total escalado y ubicar desde el borde derecho hacia la izquierda
+        // Centrar los dígitos horizontalmente
         let totalScaledWidth = baseTotalWidth * scale
-        var currentX = -totalScaledWidth // contenedor se coloca en el borde derecho; empezamos desde -ancho
+        var currentX = -totalScaledWidth / 2.0 // Empezar desde la mitad izquierda
         for node in digitNodes {
             let nodeWidth = node.size.width * scale
             node.setScale(scale)
@@ -176,7 +146,6 @@ extension GameScene {
         }
 
         lastFinalScoreRendered = score
-        lastFinalBoardWidth = boardFrame.width
     }
     
     // MARK: - High Score Display
@@ -198,15 +167,12 @@ extension GameScene {
     }
     
     private func createHighScoreContainer() {
-        guard let scoreBoard = gameOverScoreImage else { return }
-        
-        let boardFrame = scoreBoard.calculateAccumulatedFrame()
-        let offsetY = boardFrame.height * -0.20 // Posición más arriba que antes
-        let rightPadding = boardFrame.width * finalScoreRightPaddingRatio
-        let targetX = boardFrame.maxX - rightPadding - 38 // Mover 80 puntos a la izquierda
+        // Posición: centrado horizontalmente, arriba del puntaje actual
+        let finalScoreY = finalScoreContainer.position.y
+        let offsetY: CGFloat = 50 // Arriba del puntaje actual
         
         highScoreContainer = SKNode()
-        highScoreContainer?.position = CGPoint(x: targetX, y: scoreBoard.position.y + offsetY)
+        highScoreContainer?.position = CGPoint(x: frame.midX, y: finalScoreY + offsetY)
         highScoreContainer?.zPosition = GameConfig.ZPosition.UI
         
         // Agregar contenedor para dígitos del mejor puntaje

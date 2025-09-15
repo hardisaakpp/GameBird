@@ -48,7 +48,6 @@ extension GameScene {
         updateResumeOverlayLayout()
         updateWelcomeOverlayLayout()
         updateGameOverImageLayout()
-        updateGameOverScoreLayout()
         // Ajustar dígitos si cambia el tamaño de la escena
         updateFinalScoreDisplay()
         // Reposicionar la luna y el sol cuando cambia el tamaño

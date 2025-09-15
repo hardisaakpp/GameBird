@@ -29,7 +29,6 @@ El proyecto ahora tiene una organización profesional de todos sus recursos grá
 - **Restart.imageset/** - **NUEVO** Botón de reiniciar para la pantalla de pausa
 - **UI-GameOver.imageset/** - Pantalla de game over
 - **UI-Message.imageset/** - Mensaje de instrucciones
-- **score.imageset/** - Tablero de puntuación
 - **GameIcon.imageset/** - Icono del juego
 
 #### **🔢 Números para Puntuación:**

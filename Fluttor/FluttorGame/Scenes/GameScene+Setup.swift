@@ -29,18 +29,22 @@ extension GameScene {
     
     func setupComponents() {
         backgroundComponent = BackgroundComponent(scene: self)
-        addChild(backgroundComponent.createBackground())
+        if let backgroundComponent = backgroundComponent {
+            addChild(backgroundComponent.createBackground())
+        }
         
         groundComponent = GroundComponent(scene: self)
-        addChild(groundComponent.createGround())
+        if let groundComponent = groundComponent {
+            addChild(groundComponent.createGround())
+        }
         
         // Moon Component
         moonComponent = MoonComponent(scene: self)
-        moonComponent.updateForDayNight() // Mostrar/ocultar según hora actual
+        moonComponent?.updateForDayNight() // Mostrar/ocultar según hora actual
         
         // Sun Component
         sunComponent = SunComponent(scene: self)
-        sunComponent.updateForDayNight() // Mostrar/ocultar según hora actual
+        sunComponent?.updateForDayNight() // Mostrar/ocultar según hora actual
         
         // Coin Component ya no se inicializa aquí - se genera dinámicamente por PipeManager
         
@@ -49,6 +53,8 @@ extension GameScene {
             textures: [birdTexture1, birdTexture2],
             position: CGPoint(x: -frame.size.width / 4, y: frame.midY)
         )
-        addChild(birdComponent.bird)
+        if let birdComponent = birdComponent {
+            addChild(birdComponent.bird)
+        }
     }
 }
