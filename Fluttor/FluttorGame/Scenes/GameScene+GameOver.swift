@@ -185,28 +185,25 @@ extension GameScene {
     // MARK: - Organized Score Display
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
-        let startingY = restartButtonY - 60 // Empezar 60 puntos debajo del botón
-        let verticalSpacing: CGFloat = 45 // Espaciado entre elementos
+        let startingY = restartButtonY - 100 // Empezar 100 puntos debajo del botón (más espacio)
+        let verticalSpacing: CGFloat = 50 // Espaciado entre elementos (más amplio)
         
         var currentY = startingY
         
         // 1. Nombre del jugador (arriba de todo)
         showPlayerNameAtPosition(y: currentY)
-        currentY -= verticalSpacing
+        currentY -= verticalSpacing * 0.6 // Menos espacio antes del puntaje
         
-        // 2. Texto "Top 5 Jugadores" 
+        // 2. Puntaje de esta partida (justo debajo del nombre)
+        showCurrentScoreAtPosition(y: currentY)
+        currentY -= verticalSpacing * 1.2 // Más espacio después del puntaje actual
+        
+        // 3. Texto "Top 5 Jugadores" 
         showGlobalLeaderboardLabelAtPosition(y: currentY)
         currentY -= verticalSpacing * 0.7 // Menos espacio para el label
         
-        // 3. Los mejores puntajes de diferentes jugadores (leaderboard global)
+        // 4. Los mejores puntajes de diferentes jugadores (leaderboard global)
         currentY = showGlobalLeaderboardAtPosition(startingY: currentY)
-        
-        // 4. Texto "Esta partida"
-        showCurrentGameLabelAtPosition(y: currentY) 
-        currentY -= verticalSpacing * 0.7 // Menos espacio para el label
-        
-        // 5. Puntaje de esta partida (números medianos)
-        showCurrentScoreAtPosition(y: currentY)
         
         print("📊 Información de puntajes organizada debajo del botón REINICIAR")
     }
@@ -241,8 +238,8 @@ extension GameScene {
     }
     
     private func showGlobalLeaderboardAtPosition(startingY: CGFloat) -> CGFloat {
-        let globalLeaderboard = ScoreManager.shared.getGlobalLeaderboard()
-        let scoreSpacing: CGFloat = 25 // Espaciado entre cada puntaje
+        let globalLeaderboard = ScoreManager.shared.getTop5Leaderboard()
+        let scoreSpacing: CGFloat = 30 // Espaciado entre cada puntaje (más amplio)
         var currentY = startingY
         let currentPlayerName = Player.current.name
         
@@ -302,7 +299,15 @@ extension GameScene {
             currentY -= scoreSpacing
         }
         
-        return currentY - 10 // Espacio extra después de la lista
+        // Verificar si el jugador actual no está en el top 5
+        let currentPlayerInTop5 = globalLeaderboard.contains { $0.playerName == currentPlayerName }
+        if !currentPlayerInTop5 {
+            currentY -= 15 // Espacio antes del mensaje
+            showPlayerNotInTop5Message(y: currentY, playerScore: ScoreManager.shared.getCurrentPlayerHighScore())
+            currentY -= 25 // Espacio después del mensaje
+        }
+        
+        return currentY - 20 // Espacio extra después de la lista (más amplio)
     }
     
     private func getMedalForPosition(_ position: Int) -> String {
@@ -316,18 +321,19 @@ extension GameScene {
         }
     }
     
-    private func showCurrentGameLabelAtPosition(y: CGFloat) {
-        let currentGameLabel = SKLabelNode(text: "📊 Esta partida")
-        currentGameLabel.fontName = "AvenirNext-Medium"
-        currentGameLabel.fontSize = 16
-        currentGameLabel.fontColor = .systemGray
-        currentGameLabel.name = "currentGameLabel"
-        currentGameLabel.zPosition = GameConfig.ZPosition.UI
-        currentGameLabel.position = CGPoint(x: frame.midX, y: y)
+    private func showPlayerNotInTop5Message(y: CGFloat, playerScore: Int) {
+        let message = "Tu mejor: \(playerScore) pts - ¡Sigue jugando para entrar al top 5!"
+        let messageLabel = SKLabelNode(text: message)
+        messageLabel.fontName = "AvenirNext-Medium"
+        messageLabel.fontSize = 14
+        messageLabel.fontColor = .systemGray2
+        messageLabel.name = "notInTop5Message"
+        messageLabel.zPosition = GameConfig.ZPosition.UI
+        messageLabel.position = CGPoint(x: frame.midX, y: y)
         
-        currentGameLabel.alpha = 0.0
-        addChild(currentGameLabel)
-        currentGameLabel.run(SKAction.fadeIn(withDuration: 0.7))
+        messageLabel.alpha = 0.0
+        addChild(messageLabel)
+        messageLabel.run(SKAction.fadeIn(withDuration: 0.9))
     }
     
     private func showCurrentScoreAtPosition(y: CGFloat) {
@@ -343,7 +349,7 @@ extension GameScene {
     
     private func cleanupOrganizedScoreDisplay() {
         // Remover todos los labels de la información organizada
-        var labelsToRemove = ["playerNameLabel", "globalLeaderboardLabel", "currentGameLabel", "noScoresLabel"]
+        var labelsToRemove = ["playerNameLabel", "globalLeaderboardLabel", "noScoresLabel", "notInTop5Message"]
         
         // Agregar los 5 puntajes del leaderboard global
         for i in 1...5 {

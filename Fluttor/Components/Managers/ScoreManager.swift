@@ -204,6 +204,28 @@ class ScoreManager {
             .map { $0 }
     }
     
+    /// Obtener el top 5 de todos los jugadores (para el leaderboard de Game Over)
+    func getTop5Leaderboard() -> [PlayerScore] {
+        let allScores = getAllPlayerScores()
+        // Agrupar por jugador y tomar el mejor puntaje de cada uno
+        var bestScorePerPlayer: [String: PlayerScore] = [:]
+        
+        for score in allScores {
+            if let existingScore = bestScorePerPlayer[score.playerName] {
+                if score.score > existingScore.score {
+                    bestScorePerPlayer[score.playerName] = score
+                }
+            } else {
+                bestScorePerPlayer[score.playerName] = score
+            }
+        }
+        
+        return Array(bestScorePerPlayer.values)
+            .sorted { $0.score > $1.score }
+            .prefix(5) // Solo los mejores 5 jugadores
+            .map { $0 }
+    }
+    
     /// Obtener estadísticas detalladas del jugador actual
     func getCurrentPlayerStats() -> String {
         let playerName = Player.current.name
