@@ -65,14 +65,8 @@ extension GameScene {
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
         
-        // Actualizar y mostrar los dígitos del puntaje final
-        updateFinalScoreDisplay()
-        finalScoreContainer.isHidden = false
-        finalScoreContainer.alpha = 0.0
-        finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.25))
-        
-        // Mostrar el mejor puntaje
-        showHighScoreDisplay()
+        // Organizar toda la información de puntajes debajo del botón REINICIAR
+        organizeScoreInfoDisplay()
     }
 
     func hideRestartButton() {
@@ -101,6 +95,9 @@ extension GameScene {
             highScoreContainer.isHidden = true
             highScoreContainer.alpha = 1.0
         }
+        
+        // Ocultar todos los elementos de la información organizada
+        cleanupOrganizedScoreDisplay()
     }
 
     func updateFinalScoreDisplay() {
@@ -148,40 +145,7 @@ extension GameScene {
         lastFinalScoreRendered = score
     }
     
-    // MARK: - High Score Display
-    func showHighScoreDisplay() {
-        // Crear contenedor para el mejor puntaje si no existe
-        if highScoreContainer == nil {
-            createHighScoreContainer()
-        }
-        
-        // Actualizar el mejor puntaje
-        updateHighScoreDisplay()
-        
-        // Mostrar con animación
-        if let highScoreContainer = highScoreContainer {
-            highScoreContainer.isHidden = false
-            highScoreContainer.alpha = 0.0
-            highScoreContainer.run(SKAction.fadeIn(withDuration: 0.3))
-        }
-    }
-    
-    private func createHighScoreContainer() {
-        // Posición: centrado horizontalmente, arriba del puntaje actual
-        let finalScoreY = finalScoreContainer.position.y
-        let offsetY: CGFloat = 50 // Arriba del puntaje actual
-        
-        highScoreContainer = SKNode()
-        highScoreContainer?.position = CGPoint(x: frame.midX, y: finalScoreY + offsetY)
-        highScoreContainer?.zPosition = GameConfig.ZPosition.UI
-        
-        // Agregar contenedor para dígitos del mejor puntaje
-        highScoreDigitsContainer = SKNode()
-        highScoreDigitsContainer?.position = CGPoint(x: 0, y: 0)
-        highScoreContainer?.addChild(highScoreDigitsContainer!)
-        
-        addChild(highScoreContainer!)
-    }
+    // MARK: - High Score Display (Legacy functions - now integrated in organizeScoreInfoDisplay)
     
     private func updateHighScoreDisplay() {
         guard let highScoreDigitsContainer = highScoreDigitsContainer else { return }
@@ -189,7 +153,8 @@ extension GameScene {
         // Limpiar dígitos anteriores
         highScoreDigitsContainer.removeAllChildren()
         
-        let highScore = ScoreManager.shared.highScore
+        // Usar el mejor puntaje del jugador actual en lugar del global
+        let highScore = ScoreManager.shared.getCurrentPlayerHighScore()
         let highScoreString = String(highScore)
         
         var digitNodes: [SKSpriteNode] = []
@@ -215,5 +180,182 @@ extension GameScene {
             highScoreDigitsContainer.addChild(node)
             currentX += nodeWidth
         }
+    }
+    
+    // MARK: - Organized Score Display
+    func organizeScoreInfoDisplay() {
+        let restartButtonY = restartButton?.position.y ?? frame.midY
+        let startingY = restartButtonY - 60 // Empezar 60 puntos debajo del botón
+        let verticalSpacing: CGFloat = 45 // Espaciado entre elementos
+        
+        var currentY = startingY
+        
+        // 1. Nombre del jugador (arriba de todo)
+        showPlayerNameAtPosition(y: currentY)
+        currentY -= verticalSpacing
+        
+        // 2. Texto "Top 5 Jugadores" 
+        showGlobalLeaderboardLabelAtPosition(y: currentY)
+        currentY -= verticalSpacing * 0.7 // Menos espacio para el label
+        
+        // 3. Los mejores puntajes de diferentes jugadores (leaderboard global)
+        currentY = showGlobalLeaderboardAtPosition(startingY: currentY)
+        
+        // 4. Texto "Esta partida"
+        showCurrentGameLabelAtPosition(y: currentY) 
+        currentY -= verticalSpacing * 0.7 // Menos espacio para el label
+        
+        // 5. Puntaje de esta partida (números medianos)
+        showCurrentScoreAtPosition(y: currentY)
+        
+        print("📊 Información de puntajes organizada debajo del botón REINICIAR")
+    }
+    
+    private func showPlayerNameAtPosition(y: CGFloat) {
+        let playerName = Player.current.name
+        let playerLabel = SKLabelNode(text: "👤 \(playerName)")
+        playerLabel.fontName = "AvenirNext-Bold"
+        playerLabel.fontSize = 22
+        playerLabel.fontColor = .systemYellow
+        playerLabel.name = "playerNameLabel"
+        playerLabel.zPosition = GameConfig.ZPosition.UI
+        playerLabel.position = CGPoint(x: frame.midX, y: y)
+        
+        playerLabel.alpha = 0.0
+        addChild(playerLabel)
+        playerLabel.run(SKAction.fadeIn(withDuration: 0.4))
+    }
+    
+    private func showGlobalLeaderboardLabelAtPosition(y: CGFloat) {
+        let leaderboardLabel = SKLabelNode(text: "🌟 Top 5 Jugadores")
+        leaderboardLabel.fontName = "AvenirNext-Medium"
+        leaderboardLabel.fontSize = 16
+        leaderboardLabel.fontColor = .systemGray
+        leaderboardLabel.name = "globalLeaderboardLabel"
+        leaderboardLabel.zPosition = GameConfig.ZPosition.UI
+        leaderboardLabel.position = CGPoint(x: frame.midX, y: y)
+        
+        leaderboardLabel.alpha = 0.0
+        addChild(leaderboardLabel)
+        leaderboardLabel.run(SKAction.fadeIn(withDuration: 0.5))
+    }
+    
+    private func showGlobalLeaderboardAtPosition(startingY: CGFloat) -> CGFloat {
+        let globalLeaderboard = ScoreManager.shared.getGlobalLeaderboard()
+        let scoreSpacing: CGFloat = 25 // Espaciado entre cada puntaje
+        var currentY = startingY
+        let currentPlayerName = Player.current.name
+        
+        // Si no hay puntajes, mostrar mensaje
+        if globalLeaderboard.isEmpty {
+            let noScoresLabel = SKLabelNode(text: "¡Sé el primer jugador en el leaderboard!")
+            noScoresLabel.fontName = "AvenirNext-Regular"
+            noScoresLabel.fontSize = 14
+            noScoresLabel.fontColor = .systemGray2
+            noScoresLabel.name = "noScoresLabel"
+            noScoresLabel.zPosition = GameConfig.ZPosition.UI
+            noScoresLabel.position = CGPoint(x: frame.midX, y: currentY)
+            
+            noScoresLabel.alpha = 0.0
+            addChild(noScoresLabel)
+            noScoresLabel.run(SKAction.fadeIn(withDuration: 0.6))
+            
+            return currentY - scoreSpacing
+        }
+        
+        // Mostrar cada jugador con su mejor puntaje
+        for (index, playerScore) in globalLeaderboard.enumerated() {
+            let position = index + 1
+            let medal = getMedalForPosition(position)
+            let isCurrentPlayer = playerScore.playerName == currentPlayerName
+            
+            // Formato: "🥇 1. Juan - 1250 pts"
+            let scoreText = "\(medal) \(position). \(playerScore.playerName) - \(playerScore.score) pts"
+            
+            let scoreLabel = SKLabelNode(text: scoreText)
+            scoreLabel.fontName = position == 1 ? "AvenirNext-Bold" : "AvenirNext-Medium"
+            scoreLabel.fontSize = position == 1 ? 18 : 16
+            
+            // Destacar al jugador actual
+            if isCurrentPlayer {
+                scoreLabel.fontColor = .systemYellow
+                // Agregar un indicador visual
+                let indicator = "👤 "
+                scoreLabel.text = "\(indicator)\(scoreText)"
+            } else {
+                scoreLabel.fontColor = position == 1 ? .systemOrange : .white
+            }
+            
+            scoreLabel.name = "globalScore\(position)"
+            scoreLabel.zPosition = GameConfig.ZPosition.UI
+            scoreLabel.position = CGPoint(x: frame.midX, y: currentY)
+            
+            // Animación escalonada
+            scoreLabel.alpha = 0.0
+            addChild(scoreLabel)
+            let delay = 0.6 + (Double(index) * 0.1)
+            scoreLabel.run(SKAction.sequence([
+                SKAction.wait(forDuration: delay),
+                SKAction.fadeIn(withDuration: 0.3)
+            ]))
+            
+            currentY -= scoreSpacing
+        }
+        
+        return currentY - 10 // Espacio extra después de la lista
+    }
+    
+    private func getMedalForPosition(_ position: Int) -> String {
+        switch position {
+        case 1: return "🥇"
+        case 2: return "🥈" 
+        case 3: return "🥉"
+        case 4: return "🏅"
+        case 5: return "🎖️"
+        default: return "•"
+        }
+    }
+    
+    private func showCurrentGameLabelAtPosition(y: CGFloat) {
+        let currentGameLabel = SKLabelNode(text: "📊 Esta partida")
+        currentGameLabel.fontName = "AvenirNext-Medium"
+        currentGameLabel.fontSize = 16
+        currentGameLabel.fontColor = .systemGray
+        currentGameLabel.name = "currentGameLabel"
+        currentGameLabel.zPosition = GameConfig.ZPosition.UI
+        currentGameLabel.position = CGPoint(x: frame.midX, y: y)
+        
+        currentGameLabel.alpha = 0.0
+        addChild(currentGameLabel)
+        currentGameLabel.run(SKAction.fadeIn(withDuration: 0.7))
+    }
+    
+    private func showCurrentScoreAtPosition(y: CGFloat) {
+        // Posicionar el contenedor del puntaje actual
+        finalScoreContainer.position = CGPoint(x: frame.midX, y: y)
+        
+        // Actualizar y mostrar los dígitos del puntaje final
+        updateFinalScoreDisplay()
+        finalScoreContainer.isHidden = false
+        finalScoreContainer.alpha = 0.0
+        finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.8))
+    }
+    
+    private func cleanupOrganizedScoreDisplay() {
+        // Remover todos los labels de la información organizada
+        var labelsToRemove = ["playerNameLabel", "globalLeaderboardLabel", "currentGameLabel", "noScoresLabel"]
+        
+        // Agregar los 5 puntajes del leaderboard global
+        for i in 1...5 {
+            labelsToRemove.append("globalScore\(i)")
+        }
+        
+        for labelName in labelsToRemove {
+            if let label = childNode(withName: labelName) {
+                label.removeFromParent()
+            }
+        }
+        
+        print("🧹 Leaderboard global limpiado")
     }
 }

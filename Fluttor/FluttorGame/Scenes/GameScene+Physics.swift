@@ -94,6 +94,8 @@ extension GameScene {
         
         // Registrar el resultado del juego
         ScoreManager.shared.recordGameResult(score: score)
+        // Nuevo: Registrar puntaje específico del jugador
+        ScoreManager.shared.recordPlayerScore(score: score, gameMode: currentGameMode)
         
         // Detener la generación de nuevos tubos pero mantener los existentes
         pipeManager?.stopAllPipes()
