@@ -129,7 +129,7 @@ extension GameScene {
         guard baseTotalWidth > 0 else { return }
 
         // Calcular escala fija para los dígitos del puntaje
-        let scale = finalScoreScaleFactor * 1.5 // Un poco más grande sin el tablero
+        let scale = finalScoreScaleFactor * 2.0 // Mucho más grande para mejor visibilidad
 
         // Centrar los dígitos horizontalmente
         let totalScaledWidth = baseTotalWidth * scale
@@ -186,13 +186,13 @@ extension GameScene {
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
         let startingY = restartButtonY - 100 // Empezar 100 puntos debajo del botón (más espacio)
-        let verticalSpacing: CGFloat = 50 // Espaciado entre elementos (más amplio)
+        let verticalSpacing: CGFloat = 65 // Espaciado entre elementos (aún más amplio)
         
-        var currentY = startingY
+        var currentY = startingY - 25 // Mover el nombre del jugador 25 puntos más abajo
         
-        // 1. Nombre del jugador (arriba de todo)
+        // 1. Nombre del jugador (un poco más abajo)
         showPlayerNameAtPosition(y: currentY)
-        currentY -= verticalSpacing * 1.0 // Más espacio antes del puntaje (era 0.6)
+        currentY = startingY - verticalSpacing * 1.0 // Resetear posición para el puntaje (mantener posición original)
         
         // 2. Puntaje de esta partida (debajo del nombre con más separación)
         showCurrentScoreAtPosition(y: currentY)
@@ -212,7 +212,7 @@ extension GameScene {
         let playerName = Player.current.name
         let playerLabel = SKLabelNode(text: "👤 \(playerName)")
         playerLabel.fontName = "AvenirNext-Bold"
-        playerLabel.fontSize = 22
+        playerLabel.fontSize = 34
         playerLabel.fontColor = .systemYellow
         playerLabel.name = "playerNameLabel"
         playerLabel.zPosition = GameConfig.ZPosition.UI
@@ -226,7 +226,7 @@ extension GameScene {
     private func showGlobalLeaderboardLabelAtPosition(y: CGFloat) {
         let leaderboardLabel = SKLabelNode(text: "🌟 Top 5 Jugadores")
         leaderboardLabel.fontName = "AvenirNext-Medium"
-        leaderboardLabel.fontSize = 16
+        leaderboardLabel.fontSize = 26
         leaderboardLabel.fontColor = .systemGray
         leaderboardLabel.name = "globalLeaderboardLabel"
         leaderboardLabel.zPosition = GameConfig.ZPosition.UI
@@ -239,7 +239,7 @@ extension GameScene {
     
     private func showGlobalLeaderboardAtPosition(startingY: CGFloat) -> CGFloat {
         let globalLeaderboard = ScoreManager.shared.getTop5Leaderboard()
-        let scoreSpacing: CGFloat = 30 // Espaciado entre cada puntaje (más amplio)
+        let scoreSpacing: CGFloat = 40 // Espaciado entre cada puntaje (aún más amplio)
         var currentY = startingY
         let currentPlayerName = Player.current.name
         
@@ -247,7 +247,7 @@ extension GameScene {
         if globalLeaderboard.isEmpty {
             let noScoresLabel = SKLabelNode(text: "¡Sé el primer jugador en el leaderboard!")
             noScoresLabel.fontName = "AvenirNext-Regular"
-            noScoresLabel.fontSize = 14
+            noScoresLabel.fontSize = 22
             noScoresLabel.fontColor = .systemGray2
             noScoresLabel.name = "noScoresLabel"
             noScoresLabel.zPosition = GameConfig.ZPosition.UI
@@ -271,7 +271,7 @@ extension GameScene {
             
             let scoreLabel = SKLabelNode(text: scoreText)
             scoreLabel.fontName = position == 1 ? "AvenirNext-Bold" : "AvenirNext-Medium"
-            scoreLabel.fontSize = position == 1 ? 18 : 16
+            scoreLabel.fontSize = position == 1 ? 28 : 24
             
             // Destacar al jugador actual
             if isCurrentPlayer {
@@ -325,7 +325,7 @@ extension GameScene {
         let message = "Tu mejor: \(playerScore) pts - ¡Sigue jugando para entrar al top 5!"
         let messageLabel = SKLabelNode(text: message)
         messageLabel.fontName = "AvenirNext-Medium"
-        messageLabel.fontSize = 14
+        messageLabel.fontSize = 22
         messageLabel.fontColor = .systemGray2
         messageLabel.name = "notInTop5Message"
         messageLabel.zPosition = GameConfig.ZPosition.UI
