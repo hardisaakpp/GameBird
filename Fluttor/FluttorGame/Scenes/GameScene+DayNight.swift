@@ -10,6 +10,9 @@ extension GameScene {
         // Actualizar visibilidad de la luna y el sol
         moonComponent?.updateForDayNight()
         sunComponent?.updateForDayNight()
+        
+        // Actualizar color del subtítulo BÁSICO en la pantalla de bienvenida
+        updateBasicSubtitleColor()
     }
     
     func forceDayMode() {

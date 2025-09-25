@@ -113,7 +113,7 @@ extension GameScene {
         let playLabel = SKLabelNode(text: GameMode.normal.displayName)
         playLabel.fontName = FontConstants.GameUI.hintFont
         playLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 24, fontName: FontConstants.GameUI.hintFont)
-        playLabel.fontColor = .white
+        playLabel.fontColor = .systemYellow
         playLabel.position = CGPoint(x: 0, y: -90)
         playLabel.verticalAlignmentMode = .center
         playButtonContainer.addChild(playLabel)
@@ -158,10 +158,16 @@ extension GameScene {
         let playBasicLabel = SKLabelNode(text: GameMode.basic.displayName)
         playBasicLabel.fontName = FontConstants.GameUI.hintFont
         playBasicLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 24, fontName: FontConstants.GameUI.hintFont)
-        playBasicLabel.fontColor = .systemYellow
+        playBasicLabel.fontColor = getBasicSubtitleColor()  // Color dinámico según día/noche
         playBasicLabel.position = CGPoint(x: 0, y: -90)
         playBasicLabel.verticalAlignmentMode = .center
+        playBasicLabel.zPosition = 10  // Asegurar que esté por encima de otros elementos
+        playBasicLabel.alpha = 1.0     // Asegurar opacidad completa
+        playBasicLabel.name = "basicSubtitle"  // Agregar nombre para debug
         playBasicButtonContainer.addChild(playBasicLabel)
+        
+        // Debug: verificar que el label se creó correctamente
+        print("🔍 DEBUG: Label BÁSICO creado - Texto: '\(playBasicLabel.text ?? "nil")', Color: \(String(describing: playBasicLabel.fontColor)), Posición: \(playBasicLabel.position)")
         
         // Agregar efecto de vibración al botón Play (Normal)
         let shakeActionPlay = SKAction.sequence([
@@ -350,5 +356,32 @@ extension GameScene {
         
         // Nota: El impulso se aplicará automáticamente en BirdComponent.applyImpulse()
         // cuando el usuario toque la pantalla
+    }
+    
+    // MARK: - Dynamic Color Helper
+    private func getBasicSubtitleColor() -> UIColor {
+        // Verificar si es modo noche usando el mismo sistema que el fondo
+        let isNightMode = BackgroundConstants.textureName == "Background-Night"
+        
+        if isNightMode {
+            return .white  // Blanco para modo noche
+        } else {
+            return .systemGreen  // Verde para modo día (como el color del botón)
+        }
+    }
+    
+    // MARK: - Update Subtitle Color on Day/Night Change
+    func updateBasicSubtitleColor() {
+        // Buscar el subtítulo BÁSICO en el overlay de bienvenida
+        if let welcomeOverlay = welcomeOverlay,
+           let buttonsContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeButtonsContainer" }),
+           let playBasicButtonContainer = buttonsContainer.children.first(where: { $0.name == "welcomePlayBasicButton" }),
+           let basicSubtitle = playBasicButtonContainer.children.first(where: { $0.name == "basicSubtitle" }) as? SKLabelNode {
+            
+            let newColor = getBasicSubtitleColor()
+            basicSubtitle.fontColor = newColor
+            
+            print("🌅🌙 Subtítulo BÁSICO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Blanco (Noche)" : "Verde (Día)")")
+        }
     }
 }
