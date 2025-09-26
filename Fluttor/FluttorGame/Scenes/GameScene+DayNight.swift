@@ -11,8 +11,9 @@ extension GameScene {
         moonComponent?.updateForDayNight()
         sunComponent?.updateForDayNight()
         
-        // Actualizar color del subtítulo BÁSICO en la pantalla de bienvenida
+        // Actualizar color de los subtítulos en la pantalla de bienvenida
         updateBasicSubtitleColor()
+        updateIntermediateSubtitleColor()
     }
     
     func forceDayMode() {

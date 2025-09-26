@@ -113,9 +113,10 @@ extension GameScene {
         let playLabel = SKLabelNode(text: GameMode.normal.displayName)
         playLabel.fontName = FontConstants.GameUI.hintFont
         playLabel.fontSize = FontConstants.getAdaptiveFontSize(for: 24, fontName: FontConstants.GameUI.hintFont)
-        playLabel.fontColor = .systemYellow
+        playLabel.fontColor = getIntermediateSubtitleColor()  // Color dinámico
         playLabel.position = CGPoint(x: 0, y: -90)
         playLabel.verticalAlignmentMode = .center
+        playLabel.name = "intermediateSubtitle"  // Agregar nombre para identificarlo
         playButtonContainer.addChild(playLabel)
         
         // BOTÓN PLAY BASIC (Modo Básico) - Lado izquierdo
@@ -370,6 +371,17 @@ extension GameScene {
         }
     }
     
+    private func getIntermediateSubtitleColor() -> UIColor {
+        // Verificar si es modo noche usando el mismo sistema que el fondo
+        let isNightMode = BackgroundConstants.textureName == "Background-Night"
+        
+        if isNightMode {
+            return .systemYellow  // Amarillo para modo noche (color actual)
+        } else {
+            return .systemTeal  // Azul turquesa para modo día
+        }
+    }
+    
     // MARK: - Update Subtitle Color on Day/Night Change
     func updateBasicSubtitleColor() {
         // Buscar el subtítulo BÁSICO en el overlay de bienvenida
@@ -382,6 +394,20 @@ extension GameScene {
             basicSubtitle.fontColor = newColor
             
             print("🌅🌙 Subtítulo BÁSICO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Blanco (Noche)" : "Verde (Día)")")
+        }
+    }
+    
+    func updateIntermediateSubtitleColor() {
+        // Buscar el subtítulo INTERMEDIO en el overlay de bienvenida
+        if let welcomeOverlay = welcomeOverlay,
+           let buttonsContainer = welcomeOverlay.children.first(where: { $0.name == "welcomeButtonsContainer" }),
+           let playButtonContainer = buttonsContainer.children.first(where: { $0.name == "welcomePlayButton" }),
+           let intermediateSubtitle = playButtonContainer.children.first(where: { $0.name == "intermediateSubtitle" }) as? SKLabelNode {
+            
+            let newColor = getIntermediateSubtitleColor()
+            intermediateSubtitle.fontColor = newColor
+            
+            print("🌅🌙 Subtítulo INTERMEDIO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Amarillo (Noche)" : "Azul Turquesa (Día)")")
         }
     }
 }
