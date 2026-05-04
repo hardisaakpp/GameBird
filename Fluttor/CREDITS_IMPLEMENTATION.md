@@ -1,3 +1,9 @@
+# (Anexo) Créditos en pantalla
+
+Capítulo: [`docs/06-assets-interfaz-y-creditos.md`](docs/06-assets-interfaz-y-creditos.md).
+
+---
+
 # Implementación de Créditos del Juego
 
 ## Descripción General

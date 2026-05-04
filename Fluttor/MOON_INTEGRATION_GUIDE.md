@@ -1,3 +1,9 @@
+# (Anexo) Guía luna y sol
+
+Documentación canónica: [`docs/09-ambiente-dia-noche-luna-y-sol.md`](docs/09-ambiente-dia-noche-luna-y-sol.md).
+
+---
+
 # 🌙☀️ Guía de Integración de la Luna y el Sol
 
 ## Descripción

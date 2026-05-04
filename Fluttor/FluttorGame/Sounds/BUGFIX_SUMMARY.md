@@ -1,3 +1,9 @@
+# (Anexo) Correcciones de audio
+
+Capítulo: [`docs/10-anexos-historial-y-referencias.md`](../../docs/10-anexos-historial-y-referencias.md).
+
+---
+
 # 🐛 Corrección de Errores - AudioManager
 
 ## ❌ **Errores Identificados:**

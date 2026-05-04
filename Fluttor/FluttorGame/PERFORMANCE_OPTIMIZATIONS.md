@@ -1,3 +1,9 @@
+# (Anexo) Optimizaciones de rendimiento
+
+Capítulo: [`docs/08-rendimiento.md`](docs/08-rendimiento.md).
+
+---
+
 # 🚀 Optimizaciones de Rendimiento - WordCraftGame
 
 ## 📊 **Problemas de Lag Identificados y Solucionados**

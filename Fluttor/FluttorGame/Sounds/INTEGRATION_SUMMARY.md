@@ -1,3 +1,9 @@
+# (Anexo) Integración de sonidos
+
+Capítulo: [`docs/07-audio.md`](../../docs/07-audio.md).
+
+---
+
 # 🎵 Integración de Sonidos - WordCraftGame
 
 ## 📋 Sonidos Integrados

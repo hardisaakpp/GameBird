@@ -1,3 +1,9 @@
+# (Manual) Guía de Fuentes Gaming para iOS
+
+Resumen en el capítulo: **[`docs/03-configuracion-herramientas-y-fuentes.md`](docs/03-configuracion-herramientas-y-fuentes.md)**.
+
+---
+
 # 🎮 Guía de Fuentes Gaming para iOS
 
 ## ⚠️ **IMPORTANTE: Fuentes Pixel Art NO Disponibles por Defecto**

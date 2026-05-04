@@ -1,3 +1,12 @@
+# (Movido) Organización de assets
+
+Resumen e índice en el manual; el inventario detallado por *imageset* se mantiene aquí como referencia extendida:
+
+- **[`docs/06-assets-interfaz-y-creditos.md`](docs/06-assets-interfaz-y-creditos.md)** — capítulo principal.
+- Este archivo conserva el **listado largo** de carpetas en `Assets.xcassets` (útil como anexo).
+
+---
+
 # 🎨 Organización de Assets del Proyecto
 
 ## 📁 Estructura de Assets.xcassets

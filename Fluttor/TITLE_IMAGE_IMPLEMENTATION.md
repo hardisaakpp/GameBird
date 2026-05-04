@@ -1,3 +1,9 @@
+# (Anexo) Título con imagen
+
+Capítulo: [`docs/06-assets-interfaz-y-creditos.md`](docs/06-assets-interfaz-y-creditos.md).
+
+---
+
 # 🎨 Implementación del Título con Imagen
 
 ## 🆕 **Cambio Implementado: Título Visual**

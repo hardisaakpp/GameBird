@@ -1,3 +1,9 @@
+# (Anexo) Resumen de correcciones — bienvenida
+
+Índice del manual: **[`docs/10-anexos-historial-y-referencias.md`](docs/10-anexos-historial-y-referencias.md)**.
+
+---
+
 # 🐛 Resumen de Corrección de Errores - Pantalla de Bienvenida
 
 ## ❌ Errores Identificados

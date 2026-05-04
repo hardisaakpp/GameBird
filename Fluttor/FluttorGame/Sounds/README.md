@@ -1,9 +1,15 @@
-# 🎵 Estructura de Audio - WordCraftGame
+# Estructura de audio
+
+**Manual del proyecto (cap. 7):** [`Fluttor/docs/07-audio.md`](../../docs/07-audio.md)
+
+---
+
+# Inventario de archivos WAV
 
 ## 📁 Organización de Archivos
 
 ```
-WordCraftGame/
+FluttorGame/Sounds/
 ├── die.wav      (194KB) - Sonido de muerte del pájaro
 ├── hit.wav      (96KB)  - Sonido de impacto con tubería
 ├── point.wav    (177KB) - Sonido de puntuación
@@ -50,7 +56,7 @@ AudioManager.shared.stopAllSounds()
 
 ## 📋 Estándares iOS
 
-✅ **Ubicación correcta**: `WordCraftGame/Sounds/`
+✅ **Ubicación correcta**: `Fluttor/FluttorGame/Sounds/`
 ✅ **Formato recomendado**: `.wav` para mejor compatibilidad
 ✅ **Gestión centralizada**: `AudioManager` singleton
 ✅ **Configuración automática**: Sesión de audio configurada
@@ -58,7 +64,7 @@ AudioManager.shared.stopAllSounds()
 
 ## 🔧 Configuración
 
-Los archivos de audio están ubicados en el directorio principal de WordCraftGame y se incluyen automáticamente en el bundle de la aplicación. No se requiere configuración adicional en Xcode.
+Los archivos de audio están en el directorio de sonidos del target del juego y se incluyen automáticamente en el bundle de la aplicación. No se requiere configuración adicional en Xcode.
 
 ## 📝 Notas
 

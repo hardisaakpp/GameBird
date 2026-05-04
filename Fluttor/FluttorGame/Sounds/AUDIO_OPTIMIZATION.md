@@ -1,3 +1,9 @@
+# (Anexo) Optimización de audio
+
+Capítulo: [`docs/07-audio.md`](../../docs/07-audio.md).
+
+---
+
 # 🚀 Optimización de Audio - WordCraftGame
 
 ## 📊 Problemas de Rendimiento Identificados
