@@ -8,6 +8,7 @@ extension GameScene {
         guard let overlay = resumeOverlay else { return }
         let resumeButton = overlay.children.first(where: { $0.name == "resumeButton" })
         let startButton = overlay.children.first(where: { $0.name == "startButton" })
+        let levelSelectButton = overlay.children.first(where: { $0.name == "pauseLevelSelectButton" })
         let startMessage = overlay.children.first(where: { $0.name == "startMessage" }) as? SKSpriteNode
         let titleLabel = overlay.children.first(where: { $0.name == "resumeTitle" }) as? SKLabelNode
         let hintLabel = overlay.children.first(where: { $0.name == "resumeHint" }) as? SKLabelNode
@@ -19,6 +20,7 @@ extension GameScene {
             overlay.isHidden = false
             resumeButton?.isHidden = true
             startButton?.isHidden = true
+            levelSelectButton?.isHidden = true
             startMessage?.isHidden = false
             titleLabel?.isHidden = true
             hintLabel?.removeAllActions()
@@ -31,6 +33,7 @@ extension GameScene {
             hintLabel?.isHidden = true
             resumeButton?.isHidden = false
             startButton?.isHidden = false
+            levelSelectButton?.isHidden = false
             startMessage?.isHidden = true
         }
         updateResumeOverlayLayout()
@@ -87,6 +90,16 @@ extension GameScene {
         // UI de pausa inicial
         configureResumeOverlay(for: .initial)
         pauseButton?.isHidden = false
+    }
+
+    /// Vuelve a la pantalla de selección de nivel (BÁSICO / NORMAL) desde la pausa o el Game Over.
+    func showLevelSelectScreen() {
+        guard !isWelcomeScreenActive else { return }
+        // Reinicia todo el estado de la partida sin sonido de punto (también oculta la UI de Game Over)
+        restartGame(playPointSound: false)
+        configureResumeOverlay(for: .hidden)
+        isInitialPauseActive = false
+        showWelcomeScreen()
     }
 
     func showStartScreenFromPause() {

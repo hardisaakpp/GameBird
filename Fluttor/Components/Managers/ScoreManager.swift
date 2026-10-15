@@ -152,7 +152,7 @@ class ScoreManager {
         
         savePlayerScores(allScores)
         
-        print("💾 Puntaje guardado: \(playerName) - \(score) pts (\(gameMode.displayName))")
+        debugLog("💾 Puntaje guardado: \(playerName) - \(score) pts (\(gameMode.displayName))")
     }
     
     /// Obtener el mejor puntaje del jugador actual

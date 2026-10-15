@@ -168,7 +168,7 @@ extension GameScene {
         playBasicButtonContainer.addChild(playBasicLabel)
         
         // Debug: verificar que el label se creó correctamente
-        print("🔍 DEBUG: Label BÁSICO creado - Texto: '\(playBasicLabel.text ?? "nil")', Color: \(String(describing: playBasicLabel.fontColor)), Posición: \(playBasicLabel.position)")
+        debugLog("🔍 DEBUG: Label BÁSICO creado - Texto: '\(playBasicLabel.text ?? "nil")', Color: \(String(describing: playBasicLabel.fontColor)), Posición: \(playBasicLabel.position)")
         
         // Agregar efecto de vibración al botón Play (Normal)
         let shakeActionPlay = SKAction.sequence([
@@ -393,7 +393,7 @@ extension GameScene {
             let newColor = getBasicSubtitleColor()
             basicSubtitle.fontColor = newColor
             
-            print("🌅🌙 Subtítulo BÁSICO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Blanco (Noche)" : "Verde (Día)")")
+            debugLog("🌅🌙 Subtítulo BÁSICO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Blanco (Noche)" : "Verde (Día)")")
         }
     }
     
@@ -407,7 +407,7 @@ extension GameScene {
             let newColor = getIntermediateSubtitleColor()
             intermediateSubtitle.fontColor = newColor
             
-            print("🌅🌙 Subtítulo INTERMEDIO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Amarillo (Noche)" : "Azul Turquesa (Día)")")
+            debugLog("🌅🌙 Subtítulo INTERMEDIO actualizado: \(BackgroundConstants.textureName == "Background-Night" ? "Amarillo (Noche)" : "Azul Turquesa (Día)")")
         }
     }
 }

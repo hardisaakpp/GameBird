@@ -65,13 +65,29 @@ extension GameScene {
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
         
-        // Organizar toda la información de puntajes debajo del botón REINICIAR
+        // Botón NIVELES justo debajo de REINICIAR
+        if let restartButton = restartButton, let levelSelectButton = levelSelectButton {
+            levelSelectButton.removeAllActions()
+            levelSelectButton.setScale(1.0)
+            levelSelectButton.position = CGPoint(x: restartButton.position.x,
+                                                 y: restartButton.position.y - levelSelectButtonOffsetY)
+            levelSelectButton.alpha = 0.0
+            levelSelectButton.isHidden = false
+            levelSelectButton.run(SKAction.fadeIn(withDuration: 0.3))
+        }
+
+        // Organizar toda la información de puntajes debajo de los botones
         organizeScoreInfoDisplay()
     }
 
     func hideRestartButton() {
         // Mostrar nuevamente el marcador principal
         scoreContainer.isHidden = false
+
+        // Ocultar botón NIVELES
+        levelSelectButton?.removeAllActions()
+        levelSelectButton?.isHidden = true
+        levelSelectButton?.alpha = 0.0
         
         // Ocultar imagen y sombreado Game Over
         if let img = gameOverImage {
@@ -185,7 +201,8 @@ extension GameScene {
     // MARK: - Organized Score Display
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
-        let startingY = restartButtonY - 100 // Empezar 100 puntos debajo del botón (más espacio)
+        // Empezar debajo de REINICIAR + NIVELES (se suma la separación del botón NIVELES)
+        let startingY = restartButtonY - 100 - levelSelectButtonOffsetY
         let verticalSpacing: CGFloat = 65 // Espaciado entre elementos (aún más amplio)
         
         var currentY = startingY - 25 // Mover el nombre del jugador 25 puntos más abajo
@@ -205,7 +222,7 @@ extension GameScene {
         // 4. Los mejores puntajes de diferentes jugadores (leaderboard global)
         currentY = showGlobalLeaderboardAtPosition(startingY: currentY)
         
-        print("📊 Información de puntajes organizada debajo del botón REINICIAR")
+        debugLog("📊 Información de puntajes organizada debajo del botón REINICIAR")
     }
     
     private func showPlayerNameAtPosition(y: CGFloat) {
@@ -362,6 +379,6 @@ extension GameScene {
             }
         }
         
-        print("🧹 Leaderboard global limpiado")
+        debugLog("🧹 Leaderboard global limpiado")
     }
 }

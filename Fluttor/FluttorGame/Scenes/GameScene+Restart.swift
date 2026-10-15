@@ -53,6 +53,18 @@ extension GameScene {
                 let isNightMode = BackgroundConstants.isNightNow()
                 self.restartGame(playPointSound: !isNightMode)
             }
+            return
+        }
+
+        // Botón NIVELES: volver a la pantalla de selección de nivel
+        if let levelSelectButton = levelSelectButton, !levelSelectButton.isHidden,
+           levelSelectButton.contains(touchLocation) {
+            AudioManager.shared.playSwooshSound()
+            let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
+            let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
+            levelSelectButton.run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
+                self?.showLevelSelectScreen()
+            }
         }
     }
 }
