@@ -279,7 +279,7 @@ extension GameScene {
         currentGameMode = gameMode  // Establecer el modo de juego seleccionado
         
         // Mostrar en consola el modo seleccionado (para debugging)
-        print("🎮 Modo de juego seleccionado: \(gameMode.displayName)")
+        debugLog("🎮 Modo de juego seleccionado: \(gameMode.displayName)")
         
         // Aplicar configuraciones de física específicas del modo
         applyGameModePhysics()
@@ -353,7 +353,7 @@ extension GameScene {
         
         // Debug: Mostrar configuración de física aplicada
         let impulse = GameConfig.Physics.birdImpulse(for: currentGameMode)
-        print("⚙️ Física aplicada - Gravedad: \(newGravity), Impulso: \(impulse)")
+        debugLog("⚙️ Física aplicada - Gravedad: \(newGravity), Impulso: \(impulse)")
         
         // Nota: El impulso se aplicará automáticamente en BirdComponent.applyImpulse()
         // cuando el usuario toque la pantalla

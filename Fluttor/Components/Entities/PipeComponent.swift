@@ -26,7 +26,7 @@ class PipeComponent {
         // Configurar gap height según el modo de juego
         gapHeight = getGapHeight(for: mode)
         
-        print("🔧 PipeComponent configurado para modo \(mode.displayName) - Gap: \(gapHeight)px")
+        debugLog("🔧 PipeComponent configurado para modo \(mode.displayName) - Gap: \(gapHeight)px")
     }
     
     private func getGapHeight(for mode: GameMode) -> CGFloat {

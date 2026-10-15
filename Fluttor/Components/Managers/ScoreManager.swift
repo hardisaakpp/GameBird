@@ -75,19 +75,17 @@ class ScoreManager {
         let isNewRecord = updateHighScore(score)
         
         if isNewRecord {
-            print("🎉 ¡Nuevo récord! Puntaje: \(score)")
+            debugLog("🎉 ¡Nuevo récord! Puntaje: \(score)")
         }
         
         // Guardar inmediatamente
-        UserDefaults.standard.synchronize()
     }
     
     func resetAllScores() {
         highScore = 0
         totalGamesPlayed = 0
         totalScore = 0
-        UserDefaults.standard.synchronize()
-        print("🔄 Todos los puntajes han sido reseteados")
+        debugLog("🔄 Todos los puntajes han sido reseteados")
     }
     
     func getAverageScore() -> Double {

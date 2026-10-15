@@ -50,6 +50,9 @@ class BirdComponent {
         self.currentTextures = BackgroundConstants.isNightNow() ? nightTextures : dayTextures
         self.bird = SKSpriteNode(texture: currentTextures.first)
         self.initialPosition = position
+        // Subir a GPU todas las variantes del pájaro ahora, para que el cambio de textura
+        // al comer una fruta no decodifique ni suba nada en pleno gameplay.
+        SKTexture.preload(dayTextures + nightTextures + redBirdTextures) {}
         configureBird(position: position)
     }
     
@@ -147,14 +150,14 @@ class BirdComponent {
         currentTextures = redBirdTextures
         bird.texture = currentTextures.first
         restartFlapAnimation()
-        print("🐦 Pájaro transformado a pájaro rojo!")
+        debugLog("🐦 Pájaro transformado a pájaro rojo!")
     }
     
     func transformToBlueBird() {
         currentTextures = nightTextures // BlueBird usa las texturas de noche
         bird.texture = currentTextures.first
         restartFlapAnimation()
-        print("🐦 Pájaro transformado a pájaro azul!")
+        debugLog("🐦 Pájaro transformado a pájaro azul!")
     }
     
     // MARK: - Sistema de Crecimiento
@@ -182,7 +185,7 @@ class BirdComponent {
         let currentIncrement = getGrowthIncrement(for: growthLevel)
         let growthType = growthLevel < slowGrowthStartLevel ? "Normal" : "Lento"
         let transformation = growthLevel >= 1 ? " (Transformado a Rojo)" : ""
-        print("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType))\(transformation), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
+        debugLog("🍓 Pájaro creció! Nivel: \(growthLevel)/\(maxGrowthLevel) (\(growthType))\(transformation), Escala: \(newScale), Incremento: \(currentIncrement), Peso: \(newMass)")
     }
     
     func growFromGrape() {
@@ -192,7 +195,7 @@ class BirdComponent {
         // Forzar transformación a BlueBird independientemente del modo día/noche
         transformToBlueBird()
         
-        print("🍇 Pájaro reseteado completamente por la uva! Volvió a su estado inicial y se transformó a BlueBird.")
+        debugLog("🍇 Pájaro reseteado completamente por la uva! Volvió a su estado inicial y se transformó a BlueBird.")
     }
     
     // MARK: - Sistema de Poder Magnético Simple
@@ -216,7 +219,7 @@ class BirdComponent {
             self?.deactivateMagneticPower()
         }
         
-        print("🧲 Poder magnético simple activado por \(magneticDuration) segundos!")
+        debugLog("🧲 Poder magnético simple activado por \(magneticDuration) segundos!")
     }
     
     func deactivateMagneticPower() {
@@ -225,7 +228,7 @@ class BirdComponent {
         isMagneticActive = false
         removeMagneticVisualEffect()
         
-        print("🧲 Poder magnético desactivado")
+        debugLog("🧲 Poder magnético desactivado")
     }
     
     private func attractNearbyObjectsSimple() {
@@ -699,7 +702,7 @@ return baseMass + (CGFloat(growthLevel) * weightIncrement)
         // compatibilidad con el sistema de modos de juego
         // TODO: Integrar sistema de crecimiento con modos de juego en futuras versiones
         
-        print("🌍 Sistema de crecimiento detectado (Nivel: \(growthLevel)) - Manteniendo gravedad del modo de juego")
+        debugLog("🌍 Sistema de crecimiento detectado (Nivel: \(growthLevel)) - Manteniendo gravedad del modo de juego")
         
         // No modificar la gravedad del mundo aquí para no interferir con los modos de juego
         // La gravedad se controla ahora desde GameScene.applyGameModePhysics()

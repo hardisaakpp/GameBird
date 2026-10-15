@@ -36,7 +36,7 @@ extension GameScene {
     
     // MARK: - Métodos de colisión optimizados
     private func handlePipeCollisionOptimized() {
-        print("¡Colisión con tubo! El pájaro cae...")
+        debugLog("¡Colisión con tubo! El pájaro cae...")
         AudioManager.shared.playHitSound()
         // OPTIMIZACIÓN: Usar DispatchQueue.main.async en lugar de asyncAfter para mejor rendimiento
         DispatchQueue.main.async {
@@ -46,30 +46,30 @@ extension GameScene {
     }
     
     private func handleGroundCollisionOptimized() {
-        print("¡Game Over! Pájaro tocó el suelo")
+        debugLog("¡Game Over! Pájaro tocó el suelo")
         AudioManager.shared.playHitSound()
         triggerGameOver()
     }
     
     private func handleScoreCollisionOptimized() {
-        print("¡Punto! Ave cruzó el hueco")
+        debugLog("¡Punto! Ave cruzó el hueco")
         AudioManager.shared.playPointSound()
         score += 1
         updateScoreDisplay()
     }
     
     private func handleCoinCollectionOptimized(contact: SKPhysicsContact) {
-        print("¡Moneda recolectada!")
+        debugLog("¡Moneda recolectada!")
         handleCoinCollection(contact: contact)
     }
     
     private func handleStrawberryCollectionOptimized(contact: SKPhysicsContact) {
-        print("¡Fresa recolectada!")
+        debugLog("¡Fresa recolectada!")
         handleStrawberryCollection(contact: contact)
     }
     
     private func handleGrapeCollectionOptimized(contact: SKPhysicsContact) {
-        print("¡Uva recolectada!")
+        debugLog("¡Uva recolectada!")
         handleGrapeCollection(contact: contact)
     }
     
@@ -83,7 +83,7 @@ extension GameScene {
         // Solo ejecutar si no se ha ejecutado ya
         guard !isGameOver else { return }
         
-        print("¡Game Over final!")
+        debugLog("¡Game Over final!")
         enterGameOverState()
     }
     
@@ -147,7 +147,7 @@ extension GameScene {
         // Reproducir sonido de moneda
         AudioManager.shared.playCoinSound()
         
-        print("💰 Moneda recolectada! +\(coinValue) puntos. Score total: \(score)")
+        debugLog("💰 Moneda recolectada! +\(coinValue) puntos. Score total: \(score)")
     }
     
     // MARK: - Manejo de Recolección de Fresas
@@ -172,7 +172,7 @@ extension GameScene {
         // Reproducir sonido de fresa
         AudioManager.shared.playFruitSound()
         
-        print("🍓 Fresa recolectada! +\(strawberryValue) puntos. Score total: \(score)")
+        debugLog("🍓 Fresa recolectada! +\(strawberryValue) puntos. Score total: \(score)")
     }
     
     // MARK: - Manejo de Recolección de Uvas
@@ -200,6 +200,6 @@ extension GameScene {
         // Reproducir sonido de fruta (reutilizamos el sonido de fresa)
         AudioManager.shared.playFruitSound()
         
-        print("🍇 Uva recolectada! +\(grapeValue) puntos. Score total: \(score)")
+        debugLog("🍇 Uva recolectada! +\(grapeValue) puntos. Score total: \(score)")
     }
 }

@@ -51,10 +51,10 @@ class PipeManager {
         // Debug: Mostrar configuración
         let fruitsEnabled = GameConfig.GameFeatures.enableFruits(for: mode)
         let coinsEnabled = GameConfig.GameFeatures.enableCoins(for: mode)
-        print("🔧 PipeManager configurado para modo \(mode.displayName)")
-        print("   📊 Intervalo: \(spawnInterval)s")
-        print("   🪙 Monedas: \(coinsEnabled ? "✅" : "❌")")
-        print("   🍓 Frutas: \(fruitsEnabled ? "✅" : "❌")")
+        debugLog("🔧 PipeManager configurado para modo \(mode.displayName)")
+        debugLog("   📊 Intervalo: \(spawnInterval)s")
+        debugLog("   🪙 Monedas: \(coinsEnabled ? "✅" : "❌")")
+        debugLog("   🍓 Frutas: \(fruitsEnabled ? "✅" : "❌")")
     }
     
     private func getSpawnInterval(for mode: GameMode) -> TimeInterval {
@@ -254,7 +254,7 @@ class PipeManager {
         ].filter { !$0.isEmpty }.joined(separator: " ")
         
         if !itemsGenerated.isEmpty {
-            print("🎁 Elementos generados: \(itemsGenerated) (Modo: \(currentGameMode.displayName))")
+            debugLog("🎁 Elementos generados: \(itemsGenerated) (Modo: \(currentGameMode.displayName))")
         }
     }
     

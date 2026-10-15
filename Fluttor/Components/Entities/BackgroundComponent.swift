@@ -216,7 +216,7 @@ class BackgroundComponent {
             
             // Si las imágenes son diferentes, hay un cambio
             if existingImage != currentImage {
-                print("🌅🌙 Cambio automático detectado: \(shouldBeNight ? "Noche" : "Día")")
+                debugLog("🌅🌙 Cambio automático detectado: \(shouldBeNight ? "Noche" : "Día")")
                 
                 // Actualizar fondo
                 applyCurrentBackgroundTexture()
