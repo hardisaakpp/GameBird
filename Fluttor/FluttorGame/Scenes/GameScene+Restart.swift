@@ -14,7 +14,8 @@ extension GameScene {
         score = 0
         updateScoreDisplay()
         
-        // Resetear estado general
+        // Resetear estado general (y permitir que la oferta de INTERMEDIO vuelva a aparecer)
+        hasOfferedModeUpgrade = false
         isGameOver = false
         physicsWorld.speed = 1.0
         removeAllActions()

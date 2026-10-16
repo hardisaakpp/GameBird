@@ -30,6 +30,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameOverImage: SKSpriteNode? // Imagen de Game Over
     var gameOverDim: SKSpriteNode?   // Sombreado de fondo para Game Over
     
+    // Oferta de cambio BÁSICO -> INTERMEDIO
+    var modeUpgradeOverlay: SKNode?
+    var isModeUpgradeOfferActive = false
+    var hasOfferedModeUpgrade = false
+    let modeUpgradeScoreThreshold = 20
+    // Variante de BÁSICO: ENTRENAMIENTO nunca ofrece pasar a INTERMEDIO
+    var isTrainingMode = false
+    var basicVariantOverlay: SKNode?
+    
     // Marcador
     var score: Int = 0
     var scoreContainer: SKNode = SKNode()

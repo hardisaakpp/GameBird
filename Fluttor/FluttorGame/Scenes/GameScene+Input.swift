@@ -6,6 +6,18 @@ extension GameScene {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
+        // Elección DINÁMICO / ENTRENAMIENTO tras tocar BÁSICO
+        if basicVariantOverlay != nil {
+            handleBasicVariantTouch(touches)
+            return
+        }
+        
+        // Oferta de cambio de modo: solo sus botones responden
+        if isModeUpgradeOfferActive {
+            handleModeUpgradeTouch(touches)
+            return
+        }
+        
         // Optimización: Procesar inmediatamente sin verificar ubicación
         if isGameOver {
             handleRestart(touches)
@@ -45,6 +57,7 @@ extension GameScene {
                     AudioManager.shared.playSwooshSound()
                     (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
                         // Iniciar juego en modo normal
+                        self?.isTrainingMode = false
                         self?.hideWelcomeScreen(gameMode: .normal)
                     }
                     return
@@ -58,8 +71,8 @@ extension GameScene {
                     // Sonido al pulsar PLAY BASIC
                     AudioManager.shared.playSwooshSound()
                     (buttonContainer ?? welcomeOverlay).run(SKAction.sequence([scaleDown, scaleUp])) { [weak self] in
-                        // Iniciar juego en modo básico
-                        self?.hideWelcomeScreen(gameMode: .basic)
+                        // BÁSICO: primero elegir DINÁMICO o ENTRENAMIENTO
+                        self?.showBasicVariantChoice()
                     }
                     return
                 }

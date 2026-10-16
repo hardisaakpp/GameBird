@@ -281,4 +281,173 @@ class UIComponent {
 
         return overlay
     }
+
+    // MARK: - Oferta de cambio de modo
+    /// Pantalla que se muestra al llegar al puntaje umbral en modo BÁSICO.
+    static func createModeUpgradeOverlay(in scene: SKScene, score: Int) -> SKNode {
+        let overlay = SKNode()
+        overlay.zPosition = GameConfig.ZPosition.UI + 100
+        overlay.name = "modeUpgradeOverlay"
+
+        let dim = SKSpriteNode(color: .black.withAlphaComponent(0.7), size: scene.frame.size)
+        dim.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        dim.name = "modeUpgradeDim"
+        overlay.addChild(dim)
+
+        let maxWidth = scene.frame.width * 0.85
+        func fit(_ label: SKLabelNode, to width: CGFloat) {
+            if label.frame.width > width { label.fontSize *= width / label.frame.width }
+        }
+
+        let title = SKLabelNode(text: "¡\(score) PUNTOS!")
+        title.fontName = FontConstants.GameUI.titleFont
+        title.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.titleFontSize, fontName: FontConstants.GameUI.titleFont)
+        title.fontColor = .systemYellow
+        title.verticalAlignmentMode = .center
+        title.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 150)
+        title.name = "modeUpgradeTitle"
+        fit(title, to: maxWidth)
+        overlay.addChild(title)
+
+        let subtitle = SKLabelNode(text: "¿Quieres más reto?")
+        subtitle.fontName = FontConstants.GameUI.hintFont
+        subtitle.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize, fontName: FontConstants.GameUI.hintFont)
+        subtitle.fontColor = .white
+        subtitle.verticalAlignmentMode = .center
+        subtitle.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY + 85)
+        subtitle.name = "modeUpgradeSubtitle"
+        fit(subtitle, to: maxWidth)
+        overlay.addChild(subtitle)
+
+        func makeButton(text: String, color: UIColor, name: String, y: CGFloat) -> SKNode {
+            let container = SKNode()
+            container.name = name
+            container.position = CGPoint(x: scene.frame.midX, y: y)
+            let bg = SKShapeNode(rectOf: CGSize(width: 300, height: 64), cornerRadius: 18)
+            bg.fillColor = color
+            bg.strokeColor = .white
+            bg.lineWidth = 3
+            let label = SKLabelNode(text: text)
+            label.fontName = FontConstants.GameUI.buttonFont
+            label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
+            label.fontColor = .white
+            label.verticalAlignmentMode = .center
+            fit(label, to: 270)
+            [bg, label].forEach { node in
+                node.name = name
+                container.addChild(node)
+            }
+            return container
+        }
+
+        overlay.addChild(makeButton(text: "PASAR A \(GameMode.normal.displayName)", color: .systemTeal, name: "modeSwitchNormal", y: scene.frame.midY - 10))
+        overlay.addChild(makeButton(text: "SEGUIR EN \(GameMode.basic.displayName)", color: .systemGreen, name: "modeKeepBasic", y: scene.frame.midY - 100))
+
+        let note = SKLabelNode(text: "Tu puntaje se conserva")
+        note.fontName = FontConstants.GameUI.hintFont
+        note.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.7, fontName: FontConstants.GameUI.hintFont)
+        note.fontColor = .white.withAlphaComponent(0.7)
+        note.verticalAlignmentMode = .center
+        note.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 175)
+        note.name = "modeUpgradeNote"
+        overlay.addChild(note)
+
+        return overlay
+    }
+
+    // MARK: - Variante de BÁSICO
+    /// Elección DINÁMICO / ENTRENAMIENTO que aparece sobre la pantalla de bienvenida.
+    static func createBasicVariantOverlay(in scene: SKScene, backButtonPosition: CGPoint) -> SKNode {
+        let overlay = SKNode()
+        // Muy por encima de la bienvenida (sus hijos llegan a UI + 12) para que el fondo oscuro los cubra
+        overlay.zPosition = GameConfig.ZPosition.UI + 100
+        overlay.name = "basicVariantOverlay"
+
+        let dim = SKSpriteNode(color: .black.withAlphaComponent(0.8), size: scene.frame.size)
+        dim.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        dim.name = "basicVariantDim"
+        overlay.addChild(dim)
+
+        func fit(_ label: SKLabelNode, to width: CGFloat) {
+            if label.frame.width > width { label.fontSize *= width / label.frame.width }
+        }
+        func makeLabel(_ text: String, font: String, size: CGFloat, color: UIColor, y: CGFloat) -> SKLabelNode {
+            let label = SKLabelNode(text: text)
+            label.fontName = font
+            label.fontSize = FontConstants.getAdaptiveFontSize(for: size, fontName: font)
+            label.fontColor = color
+            label.verticalAlignmentMode = .center
+            label.position = CGPoint(x: scene.frame.midX, y: y)
+            fit(label, to: scene.frame.width * 0.85)
+            return label
+        }
+
+        overlay.addChild(makeLabel(GameMode.basic.displayName, font: FontConstants.GameUI.titleFont,
+                                   size: FontConstants.GameUI.titleFontSize, color: .systemGreen, y: scene.frame.midY + 170))
+        overlay.addChild(makeLabel("Elige cómo quieres jugar", font: FontConstants.GameUI.hintFont,
+                                   size: FontConstants.GameUI.hintFontSize, color: .white, y: scene.frame.midY + 105))
+
+        func makeOption(title: String, detail: String, color: UIColor, name: String, y: CGFloat) {
+            let container = SKNode()
+            container.name = name
+            container.position = CGPoint(x: scene.frame.midX, y: y)
+            let bg = SKShapeNode(rectOf: CGSize(width: 300, height: 64), cornerRadius: 18)
+            bg.fillColor = color
+            bg.strokeColor = .white
+            bg.lineWidth = 3
+            let label = SKLabelNode(text: title)
+            label.fontName = FontConstants.GameUI.buttonFont
+            label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
+            label.fontColor = .white
+            label.verticalAlignmentMode = .center
+            fit(label, to: 270)
+            let hit = SKSpriteNode(color: .clear, size: CGSize(width: 300, height: 100))
+            [bg, label, hit].forEach { node in
+                node.name = name
+                container.addChild(node)
+            }
+            let hint = SKLabelNode(text: detail)
+            hint.fontName = FontConstants.GameUI.hintFont
+            hint.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.hintFontSize * 0.65, fontName: FontConstants.GameUI.hintFont)
+            hint.fontColor = .white.withAlphaComponent(0.75)
+            hint.verticalAlignmentMode = .center
+            hint.position = CGPoint(x: 0, y: -50)
+            hint.name = name
+            fit(hint, to: scene.frame.width * 0.85)
+            container.addChild(hint)
+            overlay.addChild(container)
+        }
+
+        makeOption(title: "DINÁMICO", detail: "A los 20 puntos puedes subir a INTERMEDIO",
+                   color: .systemOrange, name: "basicDynamic", y: scene.frame.midY + 20)
+        makeOption(title: "ENTRENAMIENTO", detail: "Practica sin cambios de modo",
+                   color: .systemGreen, name: "basicTraining", y: scene.frame.midY - 110)
+
+        // Botón de regreso: esquina superior izquierda (estándar iOS), circular con flecha
+        let radius: CGFloat = 28
+        let back = SKNode()
+        back.name = "basicBack"
+        back.position = backButtonPosition
+        let circle = SKShapeNode(circleOfRadius: radius)
+        circle.fillColor = UIColor.white.withAlphaComponent(0.18)
+        circle.strokeColor = .white
+        circle.lineWidth = 3
+        let chevronPath = UIBezierPath()
+        chevronPath.move(to: CGPoint(x: 6, y: 14))
+        chevronPath.addLine(to: CGPoint(x: -6, y: 0))
+        chevronPath.addLine(to: CGPoint(x: 6, y: -14))
+        let chevron = SKShapeNode(path: chevronPath.cgPath)
+        chevron.strokeColor = .white
+        chevron.lineWidth = 5
+        chevron.lineCap = .round
+        chevron.lineJoin = .round
+        let backHit = SKSpriteNode(color: .clear, size: CGSize(width: 64, height: 64))
+        [circle, chevron, backHit].forEach { node in
+            node.name = "basicBack"
+            back.addChild(node)
+        }
+        overlay.addChild(back)
+
+        return overlay
+    }
 }

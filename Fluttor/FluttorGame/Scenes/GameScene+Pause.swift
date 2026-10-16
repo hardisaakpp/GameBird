@@ -39,7 +39,7 @@ extension GameScene {
         updateResumeOverlayLayout()
     }
 
-    func pauseGame() {
+    func pauseGame(showOverlay: Bool = true) {
         guard !isGameOver, !isPausedGame else { return }
         isPausedGame = true
         // Pausar físicas y acciones
@@ -52,7 +52,7 @@ extension GameScene {
         birdComponent?.bird.isPaused = true
 
         // UI
-        configureResumeOverlay(for: .paused)
+        if showOverlay { configureResumeOverlay(for: .paused) }
         pauseButton?.isHidden = true
     }
 

@@ -66,6 +66,7 @@ extension GameScene {
         scoreContainer.addChild(playerNameLabel)
 
         repositionScoreDisplay()
+        checkModeUpgradeOffer()
     }
 
     func repositionScoreDisplay() {

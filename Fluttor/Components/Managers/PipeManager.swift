@@ -401,6 +401,14 @@ class PipeManager {
             .forEach { $0.removeFromParent() }
     }
     
+    /// Limpia los tubos y programa el siguiente para reanudar tras un cambio de modo a mitad de partida.
+    func prepareForModeSwitch() {
+        stopAllPipes()
+        removeAllPipes()
+        lastGapCenterY = nil
+        timeToNextSpawn = spawnInterval * TimeInterval(GameConfig.Timing.initialSpawnDelayFactor)
+    }
+    
     func restart() {
         stopAllPipes()
         removeAllPipes()
