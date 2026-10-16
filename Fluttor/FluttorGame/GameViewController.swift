@@ -35,12 +35,19 @@ class GameViewController: UIViewController {
         // Auto-pausar cuando la app pierde foco o entra en background
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDeactivation), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDeactivation), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAppActivation), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     @objc private func handleAppDeactivation() {
         guard let skView = self.view as? SKView,
               let gameScene = skView.scene as? GameScene else { return }
         gameScene.pauseGame()
+    }
+
+    @objc private func handleAppActivation() {
+        guard let skView = self.view as? SKView,
+              let gameScene = skView.scene as? GameScene else { return }
+        gameScene.enforcePauseIfNeeded()
     }
 
     deinit {

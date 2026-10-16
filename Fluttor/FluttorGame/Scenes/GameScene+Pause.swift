@@ -56,6 +56,17 @@ extension GameScene {
         pauseButton?.isHidden = true
     }
 
+    /// Reaplica el estado de pausa. Al volver del escritorio, SpriteKit reanuda la vista y puede
+    /// descongelar físicas y nodos pausados aunque el juego siga en pausa.
+    func enforcePauseIfNeeded() {
+        guard isPausedGame else { return }
+        if physicsWorld.speed != 0 { physicsWorld.speed = 0 }
+        groundComponent?.stopMovement()
+        backgroundComponent?.stopMovement()
+        pipeManager?.pause()
+        birdComponent?.bird.isPaused = true
+    }
+
     func resumeGame() {
         guard isPausedGame else { return }
         let resumingFromInitial = isInitialPauseActive

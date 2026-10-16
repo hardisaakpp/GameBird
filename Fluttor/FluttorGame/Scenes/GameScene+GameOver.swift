@@ -202,20 +202,20 @@ extension GameScene {
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
         // Empezar debajo de REINICIAR + INICIO (se suma la separación del botón INICIO)
-        let startingY = restartButtonY - 90 - levelSelectButtonOffsetY
+        let startingY = restartButtonY - 120 - levelSelectButtonOffsetY
         
         // 1. Puntaje de esta partida (arriba, justo debajo de los botones)
         var currentY = startingY
         showCurrentScoreAtPosition(y: currentY)
         
         // 2. Nombre del jugador (debajo del puntaje, con separación para que no se toquen)
-        currentY -= 70
+        currentY -= 65
         showPlayerNameAtPosition(y: currentY)
         
         // 3. Texto "Top 5 Jugadores" + leyenda de colores
-        currentY -= 65
+        currentY -= 60
         showGlobalLeaderboardLabelAtPosition(y: currentY)
-        currentY -= 80
+        currentY -= 75
         
         // 4. Los mejores puntajes de diferentes jugadores (leaderboard global)
         currentY = showGlobalLeaderboardAtPosition(startingY: currentY)

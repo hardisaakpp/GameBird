@@ -155,6 +155,21 @@ class ScoreManager {
         debugLog("💾 Puntaje guardado: \(playerName) - \(score) pts (\(gameMode.displayName))")
     }
     
+    /// Mejor puntaje de un jugador cualquiera
+    func getBestScore(for playerName: String) -> Int {
+        return getAllPlayerScores().filter { $0.playerName == playerName }.map { $0.score }.max() ?? 0
+    }
+    
+    /// Nombres de todos los jugadores con partidas guardadas (el más reciente primero)
+    func getRegisteredPlayerNames() -> [String] {
+        var seen = Set<String>()
+        var names: [String] = []
+        for score in getAllPlayerScores().sorted(by: { $0.date > $1.date }) {
+            if seen.insert(score.playerName).inserted { names.append(score.playerName) }
+        }
+        return names
+    }
+    
     /// Obtener el mejor puntaje del jugador actual
     func getCurrentPlayerHighScore() -> Int {
         let playerName = Player.current.name

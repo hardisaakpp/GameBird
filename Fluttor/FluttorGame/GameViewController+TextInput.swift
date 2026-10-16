@@ -29,9 +29,31 @@ extension GameViewController {
         }
         
         alertController.addAction(confirmAction)
+        
+        // Permitir volver a usar un jugador registrado anteriormente
+        let registered = ScoreManager.shared.getRegisteredPlayerNames()
+        if !registered.isEmpty {
+            alertController.addAction(UIAlertAction(title: "Elegir jugador registrado", style: .default) { [weak self] _ in
+                self?.showRegisteredPlayersAlert(registered, completion: completion)
+            })
+        }
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
+    }
+    
+    private func showRegisteredPlayersAlert(_ names: [String], completion: @escaping (String) -> Void) {
+        let picker = UIAlertController(title: "Jugadores registrados", message: "Elige tu usuario para seguir sumando puntos", preferredStyle: .alert)
+        for name in names.prefix(8) {
+            let best = ScoreManager.shared.getBestScore(for: name)
+            picker.addAction(UIAlertAction(title: "\(name) · \(best) pts", style: .default) { _ in
+                completion(name)
+            })
+        }
+        picker.addAction(UIAlertAction(title: "Cancelar", style: .cancel) { _ in
+            completion(Player.current.name)
+        })
+        present(picker, animated: true)
     }
     
     func updatePlayerNameInScene(_ name: String) {

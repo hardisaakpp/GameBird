@@ -4,6 +4,12 @@ import SpriteKit
 extension GameScene {
     
     override func update(_ currentTime: TimeInterval) {
+        // Si el juego está en pausa, garantizar que nada se mueva (p. ej. al volver del escritorio)
+        if isPausedGame {
+            enforcePauseIfNeeded()
+            return
+        }
+        
         // Monitoreo de rendimiento (reducido)
         if Int(currentTime * 10) % 10 == 0 { // Solo cada 0.1 segundos
             PerformanceMonitor.shared.updateFrame()
