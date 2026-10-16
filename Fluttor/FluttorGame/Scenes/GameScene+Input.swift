@@ -102,7 +102,7 @@ extension GameScene {
                     }
                     return
                 }
-                // Botón INICIO en la pausa: volver a la pantalla de selección de nivel
+                // Botón casita en la pausa: volver a la pantalla de selección de nivel
                 if nodes(at: touchLocation).contains(where: { $0.name == "pauseLevelSelectButton" }) {
                     let levelContainer = resumeOverlay.children.first(where: { $0.name == "pauseLevelSelectButton" })
                     let scaleDown = SKAction.scale(to: 0.95, duration: 0.05)

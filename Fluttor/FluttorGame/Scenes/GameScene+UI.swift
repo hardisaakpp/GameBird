@@ -9,7 +9,7 @@ extension GameScene {
             addChild(restartButton)
         }
 
-        // Botón INICIO de Game Over (debajo de REINICIAR; se posiciona al mostrarse)
+        // Botón casita de Game Over (debajo de REINICIAR; se posiciona al mostrarse)
         levelSelectButton = UIComponent.createLevelSelectButton(named: "levelSelectButton")
         levelSelectButton?.isHidden = true
         levelSelectButton?.alpha = 0.0
@@ -95,10 +95,10 @@ extension GameScene {
             }
             // Posicionar el botón de Inicio debajo del de reanudar
             if child.name == "startButton" {
-                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY - 80)
+                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY - 116)
             }
             if child.name == "pauseLevelSelectButton" {
-                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY - 200)
+                child.position = CGPoint(x: frame.midX, y: frame.midY + overlayButtonOffsetY - 224)
             }
             if let sprite = child as? SKSpriteNode, sprite.name == "startMessage" {
                 sprite.position = CGPoint(x: frame.midX, y: frame.midY)

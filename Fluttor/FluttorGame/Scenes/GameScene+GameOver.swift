@@ -65,7 +65,7 @@ extension GameScene {
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
         
-        // Botón INICIO justo debajo de REINICIAR
+        // Botón casita justo debajo de REINICIAR
         if let restartButton = restartButton, let levelSelectButton = levelSelectButton {
             levelSelectButton.removeAllActions()
             levelSelectButton.setScale(1.0)
@@ -202,7 +202,7 @@ extension GameScene {
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
         // Empezar debajo de REINICIAR + INICIO (se suma la separación del botón INICIO)
-        let startingY = restartButtonY - 120 - levelSelectButtonOffsetY
+        let startingY = restartButtonY - 95 - levelSelectButtonOffsetY
         
         // 1. Puntaje de esta partida (arriba, justo debajo de los botones)
         var currentY = startingY
@@ -369,11 +369,10 @@ extension GameScene {
     }
     
     private func showCurrentScoreAtPosition(y: CGFloat) {
-        // Posicionar el contenedor del puntaje actual
-        finalScoreContainer.position = CGPoint(x: frame.midX, y: y)
-        
         // Actualizar y mostrar los dígitos del puntaje final
+        // (updateFinalScoreDisplay reposiciona el contenedor, por eso la posición se fija después)
         updateFinalScoreDisplay()
+        finalScoreContainer.position = CGPoint(x: frame.midX, y: y)
         finalScoreContainer.isHidden = false
         finalScoreContainer.alpha = 0.0
         finalScoreContainer.run(SKAction.fadeIn(withDuration: 0.8))

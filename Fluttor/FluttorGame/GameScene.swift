@@ -23,7 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // UI - También cambiados a optionales para mayor seguridad
     var restartButton: SKNode?
-    var levelSelectButton: SKNode?  // Botón INICIO de la pantalla de Game Over
+    var levelSelectButton: SKNode?  // Botón casita de la pantalla de Game Over
     var pauseButton: SKNode?
     var resumeOverlay: SKNode?
     var welcomeOverlay: SKNode?  // Nuevo overlay para la pantalla de bienvenida

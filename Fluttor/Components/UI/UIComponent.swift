@@ -55,37 +55,50 @@ class UIComponent {
         return buttonContainer
     }
 
-    /// Botón "INICIO" (mismo tamaño y estilo que REINICIAR, en azul) para volver a elegir el nivel.
+    /// Botón circular azul con una casita para volver a la pantalla de inicio (selección de nivel).
     /// Todos los nodos llevan `name` para que `nodes(at:)` lo detecte al tocar cualquier parte.
     static func createLevelSelectButton(named name: String) -> SKNode {
         let container = SKNode()
         container.name = name
         container.zPosition = GameConfig.ZPosition.UI
 
-        let background = SKShapeNode(rectOf: CGSize(width: 240, height: 64), cornerRadius: 18)
+        let radius: CGFloat = 34
+        let shadow = SKShapeNode(circleOfRadius: radius)
+        shadow.fillColor = UIColor.black.withAlphaComponent(0.3)
+        shadow.strokeColor = .clear
+        shadow.position = CGPoint(x: 2, y: -3)
+
+        let background = SKShapeNode(circleOfRadius: radius)
         background.fillColor = .systemBlue
         background.strokeColor = .white
         background.lineWidth = 3
 
-        let textShadow = SKLabelNode(text: "INICIO")
-        textShadow.fontName = FontConstants.GameUI.buttonFont
-        textShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        textShadow.fontColor = .black
-        textShadow.position = CGPoint(x: 2, y: -2)
-        textShadow.alpha = 0.3
+        // Casita: techo triangular + cuerpo
+        let housePath = UIBezierPath()
+        housePath.move(to: CGPoint(x: -24, y: 2))
+        housePath.addLine(to: CGPoint(x: 0, y: 24))
+        housePath.addLine(to: CGPoint(x: 24, y: 2))
+        housePath.addLine(to: CGPoint(x: 16, y: 2))
+        housePath.addLine(to: CGPoint(x: 16, y: -18))
+        housePath.addLine(to: CGPoint(x: -16, y: -18))
+        housePath.addLine(to: CGPoint(x: -16, y: 2))
+        housePath.close()
+        let house = SKShapeNode(path: housePath.cgPath)
+        house.fillColor = .white
+        house.strokeColor = .white
+        house.lineWidth = 2
+        house.lineJoin = .round
 
-        let label = SKLabelNode(text: "INICIO")
-        label.fontName = FontConstants.GameUI.buttonFont
-        label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
-        label.fontColor = .white
+        // Puerta
+        let door = SKShapeNode(rect: CGRect(x: -5, y: -18, width: 10, height: 16), cornerRadius: 2)
+        door.fillColor = .systemBlue
+        door.strokeColor = .clear
 
-        [background, textShadow, label].forEach { node in
-            let skNode = node as SKNode
-            skNode.name = name
-            if let labelNode = skNode as? SKLabelNode {
-                labelNode.verticalAlignmentMode = .center
-            }
-            container.addChild(skNode)
+        let hitArea = SKSpriteNode(color: .clear, size: CGSize(width: 72, height: 72))
+
+        [shadow, background, house, door, hitArea].forEach { node in
+            node.name = name
+            container.addChild(node)
         }
         return container
     }
@@ -209,7 +222,7 @@ class UIComponent {
 
         // Botón de Inicio (mismo estilo) -> Renombrado de texto a REINICIAR
         let startButtonContainer = SKNode()
-        startButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 90)
+        startButtonContainer.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 126)
         startButtonContainer.name = "startButton"
 
         // Usar la imagen restart.png en lugar del botón de texto
@@ -246,9 +259,9 @@ class UIComponent {
 
         overlay.addChild(startButtonContainer)
 
-        // Botón INICIO: vuelve a la pantalla de selección de nivel (solo visible en pausa)
+        // Botón casita: vuelve a la pantalla de selección de nivel (solo visible en pausa)
         let levelSelectButton = createLevelSelectButton(named: "pauseLevelSelectButton")
-        levelSelectButton.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 210)
+        levelSelectButton.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 234)
         overlay.addChild(levelSelectButton)
 
         // Mensaje de inicio (imagen de Assets: UI-Message)

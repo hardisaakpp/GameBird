@@ -58,7 +58,7 @@ extension GameScene {
             return
         }
 
-        // Botón INICIO: volver a la pantalla de selección de nivel
+        // Botón casita: volver a la pantalla de selección de nivel
         if let levelSelectButton = levelSelectButton, !levelSelectButton.isHidden,
            levelSelectButton.contains(touchLocation) {
             AudioManager.shared.playSwooshSound()
