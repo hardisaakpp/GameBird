@@ -48,6 +48,8 @@ extension GameScene {
         groundComponent?.stopMovement()
         backgroundComponent?.stopMovement()
         pipeManager?.pause()
+        // Congela aleteo, crecimiento y poder magnético (acciones del pájaro y sus efectos)
+        birdComponent?.bird.isPaused = true
 
         // UI
         configureResumeOverlay(for: .paused)
@@ -61,6 +63,7 @@ extension GameScene {
         isInitialPauseActive = false
 
         // Reanudar físicas y acciones
+        birdComponent?.bird.isPaused = false
         physicsWorld.speed = 1.0
         groundComponent?.startMovement()
         backgroundComponent?.startMovement()
@@ -68,9 +71,8 @@ extension GameScene {
             // Retrasar ligeramente el primer tubo para empezar rápido
             let base = pipeManager?.spawnInterval ?? GameConfig.Timing.pipeSpawnInterval
             let delay = base * Double(GameConfig.Timing.initialSpawnDelayFactor)
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                self?.pipeManager?.startGeneratingPipes()
-            }
+            // El primer tubo es una acción de la escena: si se pausa/reinicia antes, se cancela sola
+            pipeManager?.startGeneratingPipes(afterDelay: delay)
         } else {
             pipeManager?.resume()
         }

@@ -9,7 +9,7 @@ extension GameScene {
             addChild(restartButton)
         }
 
-        // Botón NIVELES de Game Over (debajo de REINICIAR; se posiciona al mostrarse)
+        // Botón INICIO de Game Over (debajo de REINICIAR; se posiciona al mostrarse)
         levelSelectButton = UIComponent.createLevelSelectButton(named: "levelSelectButton")
         levelSelectButton?.isHidden = true
         levelSelectButton?.alpha = 0.0
@@ -116,7 +116,7 @@ extension GameScene {
     func updateGameOverImageLayout() {
         guard let _ = gameOverImage else { return }
         // Posicionar centrada, un poco arriba del botón REINICIAR
-        let offsetY: CGFloat = 140
+        let offsetY: CGFloat = 200
         gameOverImage?.position = CGPoint(x: frame.midX, y: frame.midY + offsetY)
         // Escalar para que ocupe hasta el 70% del ancho de la escena y permitir ampliar por encima de 1x (máx 2x)
         if let width = gameOverImage?.size.width, width > 0 {

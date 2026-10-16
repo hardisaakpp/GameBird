@@ -17,7 +17,10 @@ class PipeManager {
     private var activeStrawberries = [SKNode]() // Nuevo: rastrear fresas activas
     private var activeGrapes = [SKNode]() // Nuevo: rastrear uvas activas
     private var spawnAction: SKAction?
-    private var lastSpawnTime: TimeInterval = 0
+    // Cuenta atrás hacia el próximo tubo: se reinicia en cada spawn y al (re)programar la
+    // generación, así la pausa puede calcular exactamente cuánto falta (sin depender de módulos).
+    private var countdownStart: TimeInterval = 0
+    private var countdownDelay: TimeInterval = 0
     private var lastGapCenterY: CGFloat?
     private var timeToNextSpawn: TimeInterval = 0
     
@@ -64,33 +67,45 @@ class PipeManager {
         }
     }
     
-    func startGeneratingPipes() {
+    /// Inicia la generación de tubos. El primer tubo sale tras `delay` segundos (0 = inmediato) y
+    /// luego cada `spawnInterval`. Al ser una sola acción de la escena con clave, pausar, reiniciar
+    /// o detener los tubos también cancela el primer tubo pendiente.
+    func startGeneratingPipes(afterDelay delay: TimeInterval = 0) {
         // Limpiar acción previa si existe
         stopAllPipes()
-        
-        // En inicio, generamos inmediatamente y luego esperamos
+        runGeneration(firstDelay: delay)
+    }
+
+    private func runGeneration(firstDelay: TimeInterval) {
         let createPipe = SKAction.run { [weak self] in
             self?.spawnPipe()
         }
-        
-        let wait = SKAction.wait(forDuration: spawnInterval)
-        let sequence = SKAction.sequence([createPipe, wait])
-        spawnAction = SKAction.repeatForever(sequence)
-        
-        scene.run(spawnAction!, withKey: "pipeGeneration")
+        let repeating = SKAction.repeatForever(SKAction.sequence([
+            SKAction.wait(forDuration: spawnInterval),
+            createPipe
+        ]))
+        let sequence = SKAction.sequence([
+            SKAction.wait(forDuration: max(0, firstDelay)),
+            createPipe,
+            repeating
+        ])
+        spawnAction = sequence
+        beginCountdown(firstDelay)
+        scene.run(sequence, withKey: "pipeGeneration")
+    }
+
+    private func beginCountdown(_ delay: TimeInterval) {
+        countdownDelay = max(0, delay)
+        countdownStart = CACurrentMediaTime()
     }
 
     func pause() {
-        // Pausar generación y movimiento de tubos existentes
-        scene.removeAction(forKey: "pipeGeneration")
-        // Calcular tiempo restante para el próximo spawn manteniendo la fase
-        let now = CACurrentMediaTime()
-        let elapsed = now - lastSpawnTime
-        if elapsed >= 0 {
-            let remainder = spawnInterval - (elapsed.truncatingRemainder(dividingBy: spawnInterval))
-            timeToNextSpawn = max(0, min(spawnInterval, remainder))
-        } else {
-            timeToNextSpawn = spawnInterval
+        // Si la generación está corriendo, guardar cuánto falta para el próximo tubo y detenerla.
+        // (Si ya estaba detenida por una pausa previa, se conserva el tiempo restante guardado.)
+        if scene.action(forKey: "pipeGeneration") != nil {
+            let elapsed = CACurrentMediaTime() - countdownStart
+            timeToNextSpawn = max(0, countdownDelay - elapsed)
+            scene.removeAction(forKey: "pipeGeneration")
         }
         activePipes.forEach { $0.isPaused = true }
         activeCoins.forEach { $0.isPaused = true }
@@ -107,18 +122,12 @@ class PipeManager {
         
         // Reanudar generación respetando el tiempo restante para el próximo spawn
         guard scene.action(forKey: "pipeGeneration") == nil else { return }
-        let initialWait = SKAction.wait(forDuration: timeToNextSpawn)
-        let createPipe = SKAction.run { [weak self] in
-            self?.spawnPipe()
-        }
-        let wait = SKAction.wait(forDuration: spawnInterval)
-        let repeatSeq = SKAction.repeatForever(SKAction.sequence([wait, createPipe]))
-        let startSequence = SKAction.sequence([initialWait, createPipe, repeatSeq])
-        scene.run(startSequence, withKey: "pipeGeneration")
+        runGeneration(firstDelay: timeToNextSpawn)
     }
-    
+
     private func spawnPipe() {
-        lastSpawnTime = CACurrentMediaTime()
+        // Desde este spawn se cuenta el intervalo hasta el siguiente
+        beginCountdown(spawnInterval)
         
         // OPTIMIZACIÓN: Crear tubería de forma más eficiente
         let targetPair = pipeComponent.createPipePair()

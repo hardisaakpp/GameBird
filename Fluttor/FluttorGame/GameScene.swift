@@ -23,7 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // UI - También cambiados a optionales para mayor seguridad
     var restartButton: SKNode?
-    var levelSelectButton: SKNode?  // Botón NIVELES de la pantalla de Game Over
+    var levelSelectButton: SKNode?  // Botón INICIO de la pantalla de Game Over
     var pauseButton: SKNode?
     var resumeOverlay: SKNode?
     var welcomeOverlay: SKNode?  // Nuevo overlay para la pantalla de bienvenida
@@ -36,8 +36,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let scoreDigitScale: CGFloat = 2.0
     let scoreTopMargin: CGFloat = 45
     
-    // Separación vertical entre REINICIAR y el botón NIVELES en Game Over
-    let levelSelectButtonOffsetY: CGFloat = 75
+    // Separación vertical entre REINICIAR y el botón INICIO en Game Over
+    let levelSelectButtonOffsetY: CGFloat = 100
 
     // Botón de pausa
     let pauseButtonMargin: CGFloat = 16

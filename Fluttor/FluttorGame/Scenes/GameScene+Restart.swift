@@ -22,7 +22,9 @@ extension GameScene {
         // Limpiar elementos antiguos (delegado al PipeManager)
         pipeManager?.removeAllPipes()
         
-        // Reiniciar componentes
+        // Reiniciar componentes (el pájaro puede venir pausado: reanudarlo antes del reset
+        // para que sus animaciones y la limpieza del poder magnético corran normalmente)
+        birdComponent?.bird.isPaused = false
         birdComponent?.reset()
         groundComponent?.reset()
         backgroundComponent?.reset()
@@ -56,7 +58,7 @@ extension GameScene {
             return
         }
 
-        // Botón NIVELES: volver a la pantalla de selección de nivel
+        // Botón INICIO: volver a la pantalla de selección de nivel
         if let levelSelectButton = levelSelectButton, !levelSelectButton.isHidden,
            levelSelectButton.contains(touchLocation) {
             AudioManager.shared.playSwooshSound()

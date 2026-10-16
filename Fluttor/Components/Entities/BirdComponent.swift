@@ -205,19 +205,18 @@ class BirdComponent {
         isMagneticActive = true
         addMagneticVisualEffect()
         
-        // Usar un timer simple en lugar de acciones complejas
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
-            guard let self = self, self.isMagneticActive else {
-                timer.invalidate()
-                return
-            }
-            self.attractNearbyObjectsSimple()
-        }
-        
-        // Desactivar después de la duración
-        DispatchQueue.main.asyncAfter(deadline: .now() + magneticDuration) { [weak self] in
-            self?.deactivateMagneticPower()
-        }
+        // Atracción y expiración como acciones con clave sobre el pájaro: al pausar el nodo
+        // (bird.isPaused) se congelan, así el poder cuenta solo tiempo de juego, y al
+        // desactivar se cancelan (un aviso viejo ya no puede apagar una activación nueva).
+        let attract = SKAction.repeatForever(SKAction.sequence([
+            SKAction.wait(forDuration: 0.1),
+            SKAction.run { [weak self] in self?.attractNearbyObjectsSimple() }
+        ]))
+        bird.run(attract, withKey: "magneticAttract")
+        bird.run(SKAction.sequence([
+            SKAction.wait(forDuration: magneticDuration),
+            SKAction.run { [weak self] in self?.deactivateMagneticPower() }
+        ]), withKey: "magneticExpire")
         
         debugLog("🧲 Poder magnético simple activado por \(magneticDuration) segundos!")
     }
@@ -226,6 +225,8 @@ class BirdComponent {
         guard isMagneticActive else { return }
         
         isMagneticActive = false
+        bird.removeAction(forKey: "magneticAttract")
+        bird.removeAction(forKey: "magneticExpire")
         removeMagneticVisualEffect()
         
         debugLog("🧲 Poder magnético desactivado")

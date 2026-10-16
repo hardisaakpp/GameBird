@@ -65,7 +65,7 @@ extension GameScene {
             SKAction.scale(to: 1.0, duration: 0.1)
         ]))
         
-        // Botón NIVELES justo debajo de REINICIAR
+        // Botón INICIO justo debajo de REINICIAR
         if let restartButton = restartButton, let levelSelectButton = levelSelectButton {
             levelSelectButton.removeAllActions()
             levelSelectButton.setScale(1.0)
@@ -84,7 +84,7 @@ extension GameScene {
         // Mostrar nuevamente el marcador principal
         scoreContainer.isHidden = false
 
-        // Ocultar botón NIVELES
+        // Ocultar botón INICIO
         levelSelectButton?.removeAllActions()
         levelSelectButton?.isHidden = true
         levelSelectButton?.alpha = 0.0
@@ -201,23 +201,21 @@ extension GameScene {
     // MARK: - Organized Score Display
     func organizeScoreInfoDisplay() {
         let restartButtonY = restartButton?.position.y ?? frame.midY
-        // Empezar debajo de REINICIAR + NIVELES (se suma la separación del botón NIVELES)
-        let startingY = restartButtonY - 100 - levelSelectButtonOffsetY
-        let verticalSpacing: CGFloat = 65 // Espaciado entre elementos (aún más amplio)
+        // Empezar debajo de REINICIAR + INICIO (se suma la separación del botón INICIO)
+        let startingY = restartButtonY - 90 - levelSelectButtonOffsetY
         
-        var currentY = startingY - 25 // Mover el nombre del jugador 25 puntos más abajo
-        
-        // 1. Nombre del jugador (un poco más abajo)
-        showPlayerNameAtPosition(y: currentY)
-        currentY = startingY - verticalSpacing * 1.0 // Resetear posición para el puntaje (mantener posición original)
-        
-        // 2. Puntaje de esta partida (debajo del nombre con más separación)
+        // 1. Puntaje de esta partida (arriba, justo debajo de los botones)
+        var currentY = startingY
         showCurrentScoreAtPosition(y: currentY)
-        currentY -= verticalSpacing * 1.2 // Más espacio después del puntaje actual
         
-        // 3. Texto "Top 5 Jugadores" 
+        // 2. Nombre del jugador (debajo del puntaje, con separación para que no se toquen)
+        currentY -= 70
+        showPlayerNameAtPosition(y: currentY)
+        
+        // 3. Texto "Top 5 Jugadores" + leyenda de colores
+        currentY -= 65
         showGlobalLeaderboardLabelAtPosition(y: currentY)
-        currentY -= verticalSpacing * 0.7 // Menos espacio para el label
+        currentY -= 80
         
         // 4. Los mejores puntajes de diferentes jugadores (leaderboard global)
         currentY = showGlobalLeaderboardAtPosition(startingY: currentY)
@@ -230,7 +228,7 @@ extension GameScene {
         let playerLabel = SKLabelNode(text: "👤 \(playerName)")
         playerLabel.fontName = "AvenirNext-Bold"
         playerLabel.fontSize = 34
-        playerLabel.fontColor = .systemYellow
+        playerLabel.fontColor = modeColor(for: currentGameMode.displayName)
         playerLabel.name = "playerNameLabel"
         playerLabel.zPosition = GameConfig.ZPosition.UI
         playerLabel.position = CGPoint(x: frame.midX, y: y)
@@ -252,6 +250,26 @@ extension GameScene {
         leaderboardLabel.alpha = 0.0
         addChild(leaderboardLabel)
         leaderboardLabel.run(SKAction.fadeIn(withDuration: 0.5))
+        
+        // Leyenda de colores por modo, justo debajo del título
+        let legend = SKLabelNode()
+        let font = UIFont(name: "AvenirNext-DemiBold", size: 18) ?? UIFont.boldSystemFont(ofSize: 18)
+        let text = NSMutableAttributedString()
+        text.append(NSAttributedString(string: "● \(GameMode.basic.displayName)", attributes: [.font: font, .foregroundColor: modeColor(for: GameMode.basic.displayName)]))
+        text.append(NSAttributedString(string: "     ", attributes: [.font: font]))
+        text.append(NSAttributedString(string: "● \(GameMode.normal.displayName)", attributes: [.font: font, .foregroundColor: modeColor(for: GameMode.normal.displayName)]))
+        legend.attributedText = text
+        legend.name = "globalLeaderboardLegend"
+        legend.zPosition = GameConfig.ZPosition.UI
+        legend.position = CGPoint(x: frame.midX, y: y - 30)
+        legend.alpha = 0.0
+        addChild(legend)
+        legend.run(SKAction.fadeIn(withDuration: 0.5))
+    }
+    
+    /// Color fijo por modo (verde = BÁSICO, turquesa = INTERMEDIO), igual al de los botones de inicio de día
+    private func modeColor(for modeName: String) -> UIColor {
+        return modeName == GameMode.basic.displayName ? .systemGreen : .systemTeal
     }
     
     private func showGlobalLeaderboardAtPosition(startingY: CGFloat) -> CGFloat {
@@ -291,13 +309,10 @@ extension GameScene {
             scoreLabel.fontSize = position == 1 ? 28 : 24
             
             // Destacar al jugador actual
+            scoreLabel.fontColor = modeColor(for: playerScore.gameMode)
             if isCurrentPlayer {
-                scoreLabel.fontColor = .systemYellow
-                // Agregar un indicador visual
-                let indicator = "👤 "
-                scoreLabel.text = "\(indicator)\(scoreText)"
-            } else {
-                scoreLabel.fontColor = position == 1 ? .systemOrange : .white
+                scoreLabel.fontName = "AvenirNext-Bold"
+                scoreLabel.text = "👤 \(scoreText)"
             }
             
             scoreLabel.name = "globalScore\(position)"
@@ -366,7 +381,7 @@ extension GameScene {
     
     private func cleanupOrganizedScoreDisplay() {
         // Remover todos los labels de la información organizada
-        var labelsToRemove = ["playerNameLabel", "globalLeaderboardLabel", "noScoresLabel", "notInTop5Message"]
+        var labelsToRemove = ["playerNameLabel", "globalLeaderboardLabel", "globalLeaderboardLegend", "noScoresLabel", "notInTop5Message"]
         
         // Agregar los 5 puntajes del leaderboard global
         for i in 1...5 {

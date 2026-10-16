@@ -55,7 +55,7 @@ class UIComponent {
         return buttonContainer
     }
 
-    /// Botón "NIVELES" (mismo tamaño y estilo que REINICIAR, en azul) para volver a elegir el nivel.
+    /// Botón "INICIO" (mismo tamaño y estilo que REINICIAR, en azul) para volver a elegir el nivel.
     /// Todos los nodos llevan `name` para que `nodes(at:)` lo detecte al tocar cualquier parte.
     static func createLevelSelectButton(named name: String) -> SKNode {
         let container = SKNode()
@@ -67,14 +67,14 @@ class UIComponent {
         background.strokeColor = .white
         background.lineWidth = 3
 
-        let textShadow = SKLabelNode(text: "NIVELES")
+        let textShadow = SKLabelNode(text: "INICIO")
         textShadow.fontName = FontConstants.GameUI.buttonFont
         textShadow.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         textShadow.fontColor = .black
         textShadow.position = CGPoint(x: 2, y: -2)
         textShadow.alpha = 0.3
 
-        let label = SKLabelNode(text: "NIVELES")
+        let label = SKLabelNode(text: "INICIO")
         label.fontName = FontConstants.GameUI.buttonFont
         label.fontSize = FontConstants.getAdaptiveFontSize(for: FontConstants.GameUI.buttonFontSize, fontName: FontConstants.GameUI.buttonFont)
         label.fontColor = .white
@@ -246,7 +246,7 @@ class UIComponent {
 
         overlay.addChild(startButtonContainer)
 
-        // Botón NIVELES: vuelve a la pantalla de selección de nivel (solo visible en pausa)
+        // Botón INICIO: vuelve a la pantalla de selección de nivel (solo visible en pausa)
         let levelSelectButton = createLevelSelectButton(named: "pauseLevelSelectButton")
         levelSelectButton.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY - 210)
         overlay.addChild(levelSelectButton)
