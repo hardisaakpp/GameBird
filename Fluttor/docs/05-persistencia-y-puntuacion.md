@@ -37,11 +37,20 @@ Consultar el archivo fuente para la lista completa. Incluye, entre otros:
 - `updateHighScore(_:)`, `getAverageScore()`, `getScoreStats()`
 - `getCurrentPlayerHighScore()`, `getCurrentPlayerRecentScores()`, `getCurrentPlayerTop5Scores()`
 - `getTop5Leaderboard()`, `getGlobalLeaderboard()`, `getCurrentPlayerStats()`
+- `getRegisteredPlayerNames()` (nombres con partidas guardadas, el más reciente primero) y `getBestScore(for:)`, usados por el selector de jugadores
 - `resetAllScores()` — reinicia estadísticas globales; **no** borra por sí solo el JSON de `PlayerScores` salvo que se amplíe ese método.
 
 ## 5.6 Presentación en pantalla
 
 La visualización de puntaje final y tablas en **game over** está en **`GameScene+GameOver.swift`** (nodos y layout pueden cambiar con el tiempo).
+
+### Jugadores registrados
+
+Al tocar el campo de nombre en la bienvenida, la alerta (`GameViewController+TextInput.swift`) incluye **«Elegir jugador registrado»** cuando ya existen partidas guardadas: lista hasta 8 nombres con su mejor puntaje. Al elegir uno, el nombre pasa a `Player.current` y sus puntajes siguen acumulándose en el mismo historial.
+
+### Colores por modo
+
+En el top 5 de game over cada fila usa un color fijo según el modo del mejor puntaje (verde = BÁSICO, turquesa = INTERMEDIO), con una leyenda bajo el título; el jugador actual se marca con 👤 y letra en negrita. El nombre del jugador usa el color del modo recién jugado. El campo `gameMode` de `PlayerScore` guarda el nombre del modo; ENTRENAMIENTO y DINÁMICO sin cambio se guardan como BÁSICO.
 
 ## 5.7 Pruebas auxiliares
 

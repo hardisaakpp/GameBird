@@ -18,6 +18,14 @@ Temas típicos allí descritos:
 - Límites y espaciado de reproducción de sonidos.
 - Parámetros de damping / masa del pájaro.
 
+### Optimizaciones posteriores (rendimiento y latencia en colisión)
+
+- **Registro apagado por defecto**: `debugLog(_:)` (`Fluttor/Utilities/DebugLog.swift`) sustituye a `print` y solo imprime en DEBUG con `DebugLog.enabled = true`. Los `print` en contactos y puntajes causaban tirones justo al colisionar.
+- **Audio sin bloqueo**: motor `AVAudioEngine` con buffers precargados y cola propia (véase [7. Audio](07-audio.md) §7.4).
+- **Texturas del pájaro precargadas** con `SKTexture.preload` en `BirdComponent`, para evitar cargas perezosas en el primer cambio de apariencia.
+- **`UserDefaults.synchronize()` eliminado** de `ScoreManager` (innecesario y bloqueante).
+- **Poder magnético y pausa**: acciones con clave sobre el pájaro en lugar de `Timer`/`asyncAfter`, que seguían corriendo en pausa.
+
 ## 8.3 Monitor opcional
 
 **`PerformanceMonitor.swift`** puede usarse para observar tiempos en desarrollo (consultar implementación actual).

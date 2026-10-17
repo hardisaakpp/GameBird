@@ -2,6 +2,8 @@
 
 Capítulo: [`docs/07-audio.md`](../../docs/07-audio.md).
 
+> **Nota:** este anexo describe el diseño anterior basado en `AVAudioPlayer`. El motor actual (`AVAudioEngine` con grupo de voces) se documenta en [`docs/07-audio.md`](../../docs/07-audio.md) §7.4.
+
 ---
 
 # 🚀 Optimización de Audio - WordCraftGame

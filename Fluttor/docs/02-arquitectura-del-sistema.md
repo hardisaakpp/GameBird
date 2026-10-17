@@ -62,7 +62,7 @@ La lista puede evolucionar; ante duda, el inventario real está en el directorio
 
 ## 2.5 Punto de entrada de la aplicación
 
-- **`AppDelegate`**, **`GameViewController`**: creación de la vista SpriteKit y presentación de la escena.
+- **`AppDelegate`**, **`SceneDelegate`**, **`GameViewController`**: creación de la vista SpriteKit y presentación de la escena. El SDK de iOS 27 exige el ciclo de vida **UIScene**: `AppDelegate.application(_:configurationForConnecting:options:)` devuelve una configuración cuyo delegado es `SceneDelegate`, que crea la `UIWindow` y carga `Main.storyboard`. Sin ello la app arranca en pantalla negra.
 - **`GameViewController+TextInput`**: entrada de texto del sistema para el nombre del jugador en la bienvenida.
 
 ## 2.6 Pruebas
